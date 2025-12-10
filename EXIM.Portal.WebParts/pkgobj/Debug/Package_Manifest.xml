@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Solution xmlns="http://schemas.microsoft.com/sharepoint/" SolutionId="e66af7dc-1570-4f8f-bd24-135576b1c0b7" SharePointProductVersion="19.0">
+  <Assemblies>
+    <Assembly Location="EXIM.Portal.Web.dll" DeploymentTarget="WebApplication" />
+    <Assembly Location="EXIM.Common.Lib.dll" DeploymentTarget="WebApplication" />
+    <Assembly Location="NLog.dll" DeploymentTarget="WebApplication" />
+    <Assembly Location="Newtonsoft.Json.dll" DeploymentTarget="WebApplication" />
+    <Assembly Location="EXIM.Portal.WebParts.dll" DeploymentTarget="WebApplication">
+      <SafeControls>
+        <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts" TypeName="*" />
+      </SafeControls>
+    </Assembly>
+  </Assemblies>
+  <TemplateFiles>
+    <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
+    <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\Captcha.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Workshops\App_LocalResources\Workshop_Subscribe.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Workshops\App_LocalResources\Workshop_Subscribe.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\LabelMessage\App_LocalResources\LabelMessage.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\LabelMessage\App_LocalResources\LabelMessage.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\App_LocalResources\ConsultationRequest.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\App_LocalResources\ConsultationRequest.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\ContactUs\App_LocalResources\ContactRequest.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\ContactUs\App_LocalResources\ContactRequest.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\App_LocalResources\ReportAViolation.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\App_LocalResources\ReportAViolation.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.en-US.resx" />
+  </TemplateFiles>
+  <FeatureManifests>
+    <FeatureManifest Location="EXIM.Portal.WebParts_Exim Webparts feature\Feature.xml" />
+  </FeatureManifests>
+</Solution>

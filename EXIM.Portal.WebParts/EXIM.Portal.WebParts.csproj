@@ -1,0 +1,206 @@
+﻿<Project ToolsVersion="17.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{113EF8E5-E2F1-42D5-BF29-DD5044E3CB55}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EXIM.Portal.WebParts</RootNamespace>
+    <AssemblyName>EXIM.Portal.WebParts</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetOfficeVersion>19.0</TargetOfficeVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{C1CDDADD-2546-481F-9697-4EA41081F2FC};{14822709-B5A1-4724-98CA-57A101D1B079};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <MinimumOfficeToolsVersion>14.1</MinimumOfficeToolsVersion>
+    <SandboxedSolution>False</SandboxedSolution>
+    <AssemblyDeploymentTarget>WebApplication</AssemblyDeploymentTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.SharePoint.Taxonomy, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.SharePoint" />
+    <Reference Include="Microsoft.SharePoint.Client.ServerRuntime" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ControlLoaderWebPart\ControlLoaderWebPart.cs" />
+    <Compile Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx.cs">
+      <DependentUpon>ConsultationRequest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx.designer.cs">
+      <DependentUpon>ConsultationRequest.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Captcha\Captcha.ascx.cs">
+      <DependentUpon>Captcha.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Captcha\Captcha.ascx.designer.cs">
+      <DependentUpon>Captcha.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.cs">
+      <DependentUpon>ContactRequest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
+      <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx.cs">
+      <DependentUpon>DownloadRequest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx.designer.cs">
+      <DependentUpon>DownloadRequest.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx.cs">
+      <DependentUpon>LabelMessage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx.designer.cs">
+      <DependentUpon>LabelMessage.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.cs">
+      <DependentUpon>ReportAViolation.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.designer.cs">
+      <DependentUpon>ReportAViolation.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.cs">
+      <DependentUpon>Workshop_Subscribe.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.designer.cs">
+      <DependentUpon>Workshop_Subscribe.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Layouts\EXIM.Portal\Captcha.aspx.cs">
+      <DependentUpon>Captcha.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\EXIM.Portal\Captcha.aspx.designer.cs">
+      <DependentUpon>Captcha.aspx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ControlLoaderWebPart\ControlLoaderWebPart.webpart" />
+    <None Include="ControlLoaderWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{4f2fbf12-fb54-4b3f-95b9-ab618fff8419}</SharePointProjectItemId>
+    </None>
+    <None Include="CONTROLTEMPLATES\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{62e17fd2-499d-4b9d-818a-bc5871dec502}</SharePointProjectItemId>
+    </None>
+    <None Include="Features\Exim Webparts feature\Exim Webparts feature.feature">
+      <FeatureId>{efb532ac-d15d-42a4-881b-e1fa2451bc60}</FeatureId>
+    </None>
+    <None Include="key.snk" />
+    <None Include="Layouts\EXIM.Portal\PortalHandler.ashx" />
+    <None Include="Layouts\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{fbb7974d-54f9-439b-9344-d208180e70f6}</SharePointProjectItemId>
+    </None>
+    <None Include="Package\Package.package">
+      <PackageId>{e66af7dc-1570-4f8f-bd24-135576b1c0b7}</PackageId>
+    </None>
+    <None Include="Package\Package.Template.xml">
+      <DependentUpon>Package.package</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
+    <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
+    <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ControlLoaderWebPart\Elements.xml" />
+    <Content Include="CONTROLTEMPLATES\Exim\Captcha\Captcha.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx" />
+    <Content Include="Features\Exim Webparts feature\Exim Webparts feature.Template.xml">
+      <DependentUpon>Exim Webparts feature.feature</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\EXIM.Common.Lib\EXIM.Common.Lib.csproj">
+      <Project>{CC425B94-C44F-4DE2-944D-2F50DA19287C}</Project>
+      <Name>EXIM.Common.Lib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\Workshops\App_LocalResources\Workshop_Subscribe.ascx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\Workshops\App_LocalResources\Workshop_Subscribe.ascx.en-US.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\App_LocalResources\LabelMessage.ascx.en-US.resx" />
+    <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\App_LocalResources\LabelMessage.ascx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\App_LocalResources\ConsultationRequest.ascx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\App_LocalResources\ConsultationRequest.ascx.en-US.resx">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\ContactUs\App_LocalResources\ContactRequest.ascx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\ContactUs\App_LocalResources\ContactRequest.ascx.en-US.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\Violations\App_LocalResources\ReportAViolation.ascx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\Violations\App_LocalResources\ReportAViolation.ascx.en-US.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.en-US.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\SharePointTools\Microsoft.VisualStudio.SharePoint.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

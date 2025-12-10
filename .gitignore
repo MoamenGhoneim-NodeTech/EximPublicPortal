@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Common/EXIM.Common.Lib/bin/Debug
+/EXIM.Portal.Web/bin
+/EXIM.Portal.Web/obj/Debug
+/EXIM.Portal.WebParts/bin/Debug
+/Common/EXIM.Common.Lib/obj/Debug
+/.vs
+/EXIM.Portal.WebParts/.vs
+/EXIM.Portal.WebParts/obj/Debug
+/packages

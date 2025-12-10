@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="e66af7dc-1570-4f8f-bd24-135576b1c0b7" solutionId="e66af7dc-1570-4f8f-bd24-135576b1c0b7" resetWebServer="false" sharePointProductVersion="19.0" name="EXIM.Portal.WebParts" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
+  <assemblies>
+    <projectOutputAssembly location="EXIM.Portal.Web.dll" deploymentTarget="WebApplication" projectPath="..\EXIM.Portal.Web\EXIM.Portal.Web.csproj" />
+    <projectOutputAssembly location="EXIM.Common.Lib.dll" deploymentTarget="WebApplication" projectPath="..\Common\EXIM.Common.Lib\EXIM.Common.Lib.csproj" />
+    <customAssembly location="NLog.dll" deploymentTarget="WebApplication" sourcePath="..\packages\NLog.6.0.4\lib\net46\NLog.dll" />
+    <customAssembly location="Newtonsoft.Json.dll" deploymentTarget="WebApplication" sourcePath="..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll" />
+  </assemblies>
+  <features>
+    <featureReference itemId="efb532ac-d15d-42a4-881b-e1fa2451bc60" />
+  </features>
+  <projectItems>
+    <projectItemReference itemId="fbb7974d-54f9-439b-9344-d208180e70f6" />
+    <projectItemReference itemId="62e17fd2-499d-4b9d-818a-bc5871dec502" />
+  </projectItems>
+</package>
