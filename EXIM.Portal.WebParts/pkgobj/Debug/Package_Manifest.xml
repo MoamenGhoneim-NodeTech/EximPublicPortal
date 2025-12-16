@@ -18,6 +18,7 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
@@ -35,6 +36,8 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\App_LocalResources\ReportAViolation.ascx.en-US.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.en-US.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.resx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.en-US.resx" />
   </TemplateFiles>
   <FeatureManifests>
     <FeatureManifest Location="EXIM.Portal.WebParts_Exim Webparts feature\Feature.xml" />

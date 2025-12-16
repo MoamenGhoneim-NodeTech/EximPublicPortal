@@ -49,6 +49,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.SharePoint" />
@@ -76,6 +77,23 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
       <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FindMyProduct.ascx.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx.cs">
+      <DependentUpon>FindMyProduct.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx.designer.cs">
+      <DependentUpon>FindMyProduct.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FindMyProduct.ascx.resx</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx.cs">
       <DependentUpon>DownloadRequest.ascx</DependentUpon>
@@ -142,6 +160,7 @@
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
@@ -196,6 +215,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\App_LocalResources\DownloadRequest.ascx.en-US.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FindMyProduct.ascx.Designer.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FindMyProduct.ascx.en-US.Designer.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
