@@ -120,8 +120,8 @@
                                 </p>
                                 <div class="product-panel-selected-action">
                                     <%--  <a href="" class="btn btn-secondary"></a>--%>
-                                    <asp:HyperLink ID="hypr_RequestService" runat="server" class="btn btn-secondary" meta:resourcekey="hypr_RequestService"></asp:HyperLink>
-                                    <asp:HyperLink ID="hypr_ServiceDetails" runat="server" class="btn btn-secondary" meta:resourcekey="hypr_ServiceDetails"></asp:HyperLink>
+                                    <asp:HyperLink ID="hypr_RequestService" runat="server" class="btn btn-secondary" Target="_blank" meta:resourcekey="hypr_RequestService"></asp:HyperLink>
+                                    <asp:HyperLink ID="hypr_ServiceDetails" runat="server" class="btn btn-secondary" Target="_blank"  meta:resourcekey="hypr_ServiceDetails"></asp:HyperLink>
                                     <%--<a href="service-1.html" class="btn btn-outline-light"  meta:resourcekey="hypr_RequestService"></a>--%>
                                 </div>
 

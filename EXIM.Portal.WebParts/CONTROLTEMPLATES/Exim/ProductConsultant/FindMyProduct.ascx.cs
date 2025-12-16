@@ -115,7 +115,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FindMyProduct
         private void InitializeVariables()
         {
             Guid siteId = SPContext.Current.Site.ID;
-            _isArabic = SPContext.Current.Web.Language == ARABIC_LCID;
+            _isArabic = IsArabicSite(SPContext.Current.Site); 
             _beneficiaryFieldName = _isArabic ? BENEFICIARY_FIELD_AR : BENEFICIARY_FIELD_EN;
 
             string siteUrl = GetResourceString("Product-ConsultantArSiteURL");
@@ -143,6 +143,41 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FindMyProduct
             BindBeneficiaryDropDown();
             BindUsageDropDown();
             HideResultPanel();
+        }
+
+        private bool IsArabicSite(SPSite site)
+        {
+            try
+            {
+                // Method 1: Check web language directly
+                using (SPWeb web = site.RootWeb)
+                {
+                    if (web.Language == ARABIC_LCID) // Arabic LCID
+                        return true;
+                }
+
+                // Method 2: Check current UI culture
+                int currentLCID = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
+                if (currentLCID == ARABIC_LCID)
+                    return true;
+
+                // Method 3: Check URL for language indicator
+                string url = site.Url.ToLower();
+                if (url.Contains("/ar/") || url.Contains("/ar-") || url.Contains("-ar"))
+                    return true;
+
+                // Method 4: Check query string parameter
+                string langParam = System.Web.HttpContext.Current.Request.QueryString["lang"];
+                if (!string.IsNullOrEmpty(langParam) && langParam.ToLower() == "ar")
+                    return true;
+
+                // Default to English
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         #endregion

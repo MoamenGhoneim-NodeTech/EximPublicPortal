@@ -109,6 +109,13 @@
     <Compile Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx.designer.cs">
       <DependentUpon>LabelMessage.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.cs">
+      <DependentUpon>SiteMapWPUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.designer.cs">
+      <DependentUpon>SiteMapWPUserControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.cs">
       <DependentUpon>ReportAViolation.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -163,6 +170,7 @@
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
     <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />
   </ItemGroup>
@@ -228,6 +236,7 @@
       <LastGenOutput>FindMyProduct.ascx.en-US.Designer.cs</LastGenOutput>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
