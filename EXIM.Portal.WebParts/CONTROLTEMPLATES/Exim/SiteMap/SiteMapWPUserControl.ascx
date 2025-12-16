@@ -10,7 +10,7 @@
 <asp:Literal ID="litError" runat="server" Visible="false"></asp:Literal>
 
 <div class="MainContent">
-    <section class="single-page-details">
+    <section class="single-page-details" style="display:none;">
         <div class="container">
             <div class="single-page-header">
                 <div class="single-page-header-right">
