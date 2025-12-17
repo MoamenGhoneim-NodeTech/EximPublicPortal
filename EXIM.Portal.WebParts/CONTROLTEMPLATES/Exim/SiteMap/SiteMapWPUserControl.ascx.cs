@@ -12,7 +12,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
     public partial class SiteMapWPUserControl : UserControl
     {
         // Taxonomy configuration
-        private const string GROUP_NAME = "Exim";
+        private const string GROUP_NAME = "EXIM";
         private const string ENGLISH_TERMSET = "SiteMap";
         private const string ARABIC_TERMSET = "خريطة الموقع";
 
@@ -160,7 +160,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
                     {
                         Id = term.Id,
                         Name = term.Name,
-                        SortOrder = GetTermCustomPropertyInt(term, "SortOrder", 1000),
+                        SortOrder =!string.IsNullOrEmpty(termSet.CustomSortOrder) ? GetTermPosition(termSet.CustomSortOrder, term.Id) : 0,// GetTermCustomPropertyInt(term, "SortOrder", 1000),
                         HasSubTerms = term.TermsCount > 0
                     });
                 }
@@ -196,7 +196,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
 
                         PlaceHolder phWithSub = (PlaceHolder)e.Item.FindControl("phWithSub");
                         PlaceHolder phWithoutSub = (PlaceHolder)e.Item.FindControl("phWithoutSub");
-
+                        bool isLinksLevel = true;
                         if (category.HasSubTerms)
                         {
                             // Load subcategories
@@ -208,11 +208,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
 
                             if (rptSub != null && subCategories.Any())
                             {
+                                isLinksLevel = false;
                                 rptSub.DataSource = subCategories;
                                 rptSub.DataBind();
                             }
-                            else
-                            {
+                            
+                            if(isLinksLevel)
+                            { 
                                 // No subcategories found, show direct links instead
                                 phWithSub.Visible = false;
                                 phWithoutSub.Visible = true;
@@ -320,14 +322,17 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
                 {
                     bool isActive = GetTermCustomPropertyBool(subTerm, "IsActive", true);
                     if (!isActive) continue;
-
-                    subCategories.Add(new CategoryInfo
+                    if (subTerm.TermsCount > 0)
                     {
-                        Id = subTerm.Id,
-                        Name = subTerm.Name,
-                        SortOrder = GetTermCustomPropertyInt(subTerm, "SortOrder", 1000),
-                        HasSubTerms = false // Assuming only 2 levels deep
-                    });
+                        subCategories.Add(new CategoryInfo
+                        {
+                            Id = subTerm.Id,
+                            Name = subTerm.Name,
+                            SortOrder  = !string.IsNullOrEmpty(parentTerm.CustomSortOrder) ? GetTermPosition(parentTerm.CustomSortOrder, parentTerm.Id) : 0,
+                            //!string.IsNullOrEmpty(subTerm.CustomSortOrder) ? int.Parse(subTerm.CustomSortOrder) : 0,//GetTermCustomPropertyInt(subTerm, "SortOrder", 1000),
+                            HasSubTerms = false // Assuming only 2 levels deep
+                        });
+                    }
                 }
 
                 return subCategories;
@@ -342,41 +347,36 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
         private List<LinkInfo> GetLinksFromTerm(Term term)
         {
             var links = new List<LinkInfo>();
-
             try
             {
-                if (term.CustomProperties.ContainsKey("LinksData"))
+                using (SPSite site = new SPSite(SPContext.Current.Site.ID))
                 {
-                    string jsonData = term.CustomProperties["LinksData"];
+                    TaxonomySession taxonomySession = new TaxonomySession(site);
+                    TermStore termStore = taxonomySession.TermStores[0];
 
-                    if (!string.IsNullOrEmpty(jsonData))
+                   
+                    // Get all sub-terms and sort by SortOrder
+                    var subTerms = new List<Term>();
+                    foreach (Term subTerm in term.Terms)
                     {
-                        var serializer = new JavaScriptSerializer();
-                        var rawLinks = serializer.Deserialize<List<RawLinkData>>(jsonData);
+                        Term linkterm = termStore.GetTerm(subTerm.Id);
 
-                        if (rawLinks != null)
+                        bool isActive = GetTermCustomPropertyBool(subTerm, "IsActive", true);
+                        if (!isActive) continue;
+
+                        links.Add(new LinkInfo
                         {
-                            // Sort links by SortOrder
-                            foreach (var rawLink in rawLinks.OrderBy(rl => rl.SortOrder))
-                            {
-                                if (!rawLink.IsActive) continue;
+                            Title = linkterm.Name,
+                            Url = linkterm.CustomProperties != null && linkterm.CustomProperties.ContainsKey("LinksData") ? linkterm.CustomProperties["LinksData"].ToString() : "#",
+                            SortOrder = !string.IsNullOrEmpty(linkterm.CustomSortOrder) ? int.Parse(linkterm.CustomSortOrder) : 0
+                        });
+                        //subTerms.Add(subTerm);
 
-                                links.Add(new LinkInfo
-                                {
-                                    Title = rawLink.Title,
-                                    Url = FormatUrl(rawLink.Url),
-                                    SortOrder = rawLink.SortOrder
-                                });
-                            }
-                        }
                     }
                 }
-                else
-                {
-                    // If no LinksData, check if term has any custom properties that might contain links
-                    litError.Text += $"<div class='alert alert-info'>الفئة '{term.Name}' لا تحتوي على بيانات روابط (LinksData).</div>";
-                }
+
             }
+           
             catch (Exception ex)
             {
                 litError.Text += $"<div class='alert alert-warning'>خطأ في تحليل الروابط للفئة '{term.Name}': {ex.Message}</div>";
@@ -437,6 +437,22 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
             return defaultValue;
         }
 
+        public static int GetTermPosition(string customSortOrder, Guid termId)
+        {
+            var orderList = ParseCustomSortOrder(customSortOrder);
+            return orderList.IndexOf(termId);
+        }
+
+        public static List<Guid> ParseCustomSortOrder(string customSortOrder)
+        {
+            if (string.IsNullOrWhiteSpace(customSortOrder))
+                return new List<Guid>();
+
+            return customSortOrder
+                .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(g => Guid.Parse(g))
+                .ToList();
+        }
         #endregion
 
         #region Helper Classes
