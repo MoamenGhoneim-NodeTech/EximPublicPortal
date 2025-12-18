@@ -367,7 +367,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
                         links.Add(new LinkInfo
                         {
                             Title = linkterm.Name,
-                            Url = linkterm.CustomProperties != null && linkterm.CustomProperties.ContainsKey("LinksData") ? linkterm.CustomProperties["LinksData"].ToString() : "#",
+                            Url = linkterm.CustomProperties != null && linkterm.CustomProperties.ContainsKey("URL") ? linkterm.CustomProperties["URL"].ToString() : "#",
                             SortOrder = !string.IsNullOrEmpty(linkterm.CustomSortOrder) ? int.Parse(linkterm.CustomSortOrder) : 0
                         });
                         //subTerms.Add(subTerm);
