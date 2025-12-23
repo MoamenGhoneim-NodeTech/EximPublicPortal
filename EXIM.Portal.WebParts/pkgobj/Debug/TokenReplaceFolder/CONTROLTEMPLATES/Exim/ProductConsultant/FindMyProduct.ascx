@@ -86,7 +86,7 @@
                                                 <asp:Label ID="lbl_Usage" runat="server" meta:resourcekey="lbl_Usage"></asp:Label>
 
                                             </label>
-                                            <asp:DropDownList ID="ddl_Usage" runat="server"  CssClass="form-control"></asp:DropDownList>
+                                            <asp:DropDownList ID="ddl_Usage" runat="server"  CssClass="form-control" OnSelectedIndexChanged="ddl_Usage_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
 
                                         </div>
                                     </div>

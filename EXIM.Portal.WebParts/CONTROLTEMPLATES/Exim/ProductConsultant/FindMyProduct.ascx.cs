@@ -82,14 +82,21 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FindMyProduct
         {
             try
             {
-                    BindUsageDropDown();
+                BindUsageDropDown();
+                HideResultPanel();
             }
             catch (Exception ex)
             {
                 LogService.LogException(ex);
             }
+
         }
 
+        protected void ddl_Usage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HideResultPanel();
+
+        }
         /// <summary>
         /// Submit Button Click Event Handler
         /// </summary>
@@ -466,5 +473,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FindMyProduct
 
         #endregion
 
+      
     }
 }
