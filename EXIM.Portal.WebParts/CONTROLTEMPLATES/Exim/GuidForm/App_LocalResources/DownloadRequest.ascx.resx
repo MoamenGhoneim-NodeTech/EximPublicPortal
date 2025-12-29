@@ -181,9 +181,9 @@
     <value>تم إرسال النموذج بنجاح</value>
   </data>
   <data name="guideArSiteURL" xml:space="preserve">
-    <value>/ar/CreditFinancingInsurance</value>
+    <value>/ar/NonFinServices/CreditFinancingInsurance</value>
   </data>
   <data name="guideListRelativeURL" xml:space="preserve">
-    <value>/ar/CreditFinancingInsurance/Lists/GuideRequests</value>
+    <value>/ar/NonFinServices/CreditFinancingInsurance/Lists/GuideRequests</value>
   </data>
 </root>
