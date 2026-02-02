@@ -216,22 +216,22 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
                             if(isLinksLevel)
                             { 
                                 // No subcategories found, show direct links instead
-                                phWithSub.Visible = false;
+                                phWithSub.Visible = true;
                                 phWithoutSub.Visible = true;
-                                var directLinks = GetLinksFromTerm(term);
-                                Repeater rptDirectLinks = (Repeater)e.Item.FindControl("rptDirectLinks");
+                                var subDirectLinks = GetLinksFromTerm(term);
+                                Repeater rptSubDirectLinks = (Repeater)e.Item.FindControl("rptLinks");
 
-                                if (rptDirectLinks != null)
+                                if (rptSubDirectLinks != null)
                                 {
-                                    rptDirectLinks.DataSource = directLinks;
-                                    rptDirectLinks.DataBind();
+                                    rptSubDirectLinks.DataSource = subDirectLinks;
+                                    rptSubDirectLinks.DataBind();
                                 }
                             }
                         }
-                        else
-                        {
+                        //else
+                        //{
                             // Load direct links
-                            phWithSub.Visible = false;
+                           // phWithSub.Visible = false;
                             phWithoutSub.Visible = true;
 
                             var directLinks = GetLinksFromTerm(term);
@@ -242,7 +242,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SiteMap
                                 rptDirectLinks.DataSource = directLinks;
                                 rptDirectLinks.DataBind();
                             }
-                        }
+                       // }
                     }
                 }
                 catch (Exception ex)

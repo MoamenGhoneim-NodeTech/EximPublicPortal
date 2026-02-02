@@ -57,10 +57,22 @@
                             <div class="sitemap-tree">
                                 <!-- Main Category Title -->
                                 <h2><%# Eval("Name") %></h2>
-                                
+                                 <!-- Placeholder for categories WITHOUT subcategories (direct links) -->
+                                <asp:PlaceHolder ID="phWithoutSub" runat="server" Visible="false">
+                                    <ul>
+                                        <asp:Repeater ID="rptDirectLinks" runat="server">
+                                            <ItemTemplate>
+                                                <li>
+                                                    <a href="<%# Eval("Url") %>"><%# Eval("Title") %></a>
+                                                </li>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
+                                    </ul>
+                                </asp:PlaceHolder>
                                 <!-- Placeholder for categories WITH subcategories -->
                                 <asp:PlaceHolder ID="phWithSub" runat="server" Visible="false">
                                     <div class="row">
+                                  
                                         <asp:Repeater ID="rptSub" runat="server" OnItemDataBound="rptSub_ItemDataBound">
                                             <ItemTemplate>
                                                 <div class="col-md-4">
@@ -82,18 +94,7 @@
                                     </div>
                                 </asp:PlaceHolder>
                                 
-                                <!-- Placeholder for categories WITHOUT subcategories (direct links) -->
-                                <asp:PlaceHolder ID="phWithoutSub" runat="server" Visible="false">
-                                    <ul>
-                                        <asp:Repeater ID="rptDirectLinks" runat="server">
-                                            <ItemTemplate>
-                                                <li>
-                                                    <a href="<%# Eval("Url") %>"><%# Eval("Title") %></a>
-                                                </li>
-                                            </ItemTemplate>
-                                        </asp:Repeater>
-                                    </ul>
-                                </asp:PlaceHolder>
+                               
                             </div>
                         </div>
                     </ItemTemplate>
