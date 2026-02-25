@@ -90,7 +90,7 @@
             <div class="col-md-12" data-aos="fade-up" data-aos-delay="100">
                 <div class="form-group">
                     <i class="fas fa-spinner fa-spin d-none"></i>
-                    <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-secondary" meta:resourcekey="btnSubmit" ValidationGroup="submit" OnClick="btnSubmit_Click" />
+                    <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-secondary" meta:resourcekey="btnSubmit" ValidationGroup="submit" OnClick="btnSubmit_Click"  TabIndex="1"/>
                 </div>
             </div>
 

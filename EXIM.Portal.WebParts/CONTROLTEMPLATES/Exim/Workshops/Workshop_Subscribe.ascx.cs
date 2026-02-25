@@ -124,7 +124,7 @@ namespace EXIM.Portal.WebParts
                 if (rawDate != null)
                 {
                     DateTime startDate = (DateTime)rawDate;
-                    if (startDate.Date <= DateTime.Today)
+                    if (startDate.Date < DateTime.Today)
                     {
                         HideControl();
                         return;

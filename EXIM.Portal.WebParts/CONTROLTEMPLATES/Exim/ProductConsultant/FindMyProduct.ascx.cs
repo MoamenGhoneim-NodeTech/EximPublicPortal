@@ -121,7 +121,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FindMyProduct
         /// </summary>
         private void InitializeVariables()
         {
-            Guid siteId = SPContext.Current.Site.ID;
+            SPSecurity.RunWithElevatedPrivileges(() =>
+            {
+                Guid siteId = SPContext.Current.Site.ID;
             _isArabic = IsArabicSite(SPContext.Current.Site); 
             _beneficiaryFieldName = _isArabic ? BENEFICIARY_FIELD_AR : BENEFICIARY_FIELD_EN;
 
@@ -140,6 +142,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FindMyProduct
             {
                 throw new InvalidOperationException($"List '{LIST_NAME}' not found");
             }
+            });
         }
 
         /// <summary>

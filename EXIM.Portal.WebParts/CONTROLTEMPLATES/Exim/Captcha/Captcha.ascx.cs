@@ -13,6 +13,7 @@ namespace Exim.Portal.WebParts
                 RequiredFieldValidator1.ValidationGroup = ValidationGroup;
                 captchaCustomValidator.ValidationGroup = ValidationGroup;
             }
+          
         }
 
         protected void captchaCustomValidator_ServerValidate(object source, ServerValidateEventArgs args)
