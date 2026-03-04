@@ -152,6 +152,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="ControlLoaderWebPart\ControlLoaderWebPart.webpart" />
     <None Include="ControlLoaderWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{4f2fbf12-fb54-4b3f-95b9-ab618fff8419}</SharePointProjectItemId>

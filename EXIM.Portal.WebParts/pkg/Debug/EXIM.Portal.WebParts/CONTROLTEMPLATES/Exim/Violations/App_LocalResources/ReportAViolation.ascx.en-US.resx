@@ -216,4 +216,58 @@
   <data name="InvalidInput" xml:space="preserve">
     <value>Please check your input</value>
   </data>
+  <data name="btnAdd.Text" xml:space="preserve">
+    <value>Add to List</value>
+  </data>
+  <data name="ConcernedPartiesListRelativeURL" xml:space="preserve">
+    <value>/ar/ContactUs/Lists/ViolationConcernedParties</value>
+  </data>
+  <data name="ddlCountryCode.Text" xml:space="preserve">
+    <value>Country Code</value>
+  </data>
+  <data name="HowDoYouKnow-Other" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="lblEmail.Text" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="lblMobileNumber.Text" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="lblOtherType.Text" xml:space="preserve">
+    <value>Please specify</value>
+  </data>
+  <data name="NoItemsAddedMsg" xml:space="preserve">
+    <value>No Items Added Yet.</value>
+  </data>
+  <data name="OtherViolationType" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="Parties-Company" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="Parties-Job" xml:space="preserve">
+    <value>Job</value>
+  </data>
+  <data name="Parties-Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Parties-Relation" xml:space="preserve">
+    <value>Relation</value>
+  </data>
+  <data name="RelationTypesListRelativeURL" xml:space="preserve">
+    <value>/ar/ContactUs/Lists/RelationTypes</value>
+  </data>
+  <data name="SavedSuccessfully" xml:space="preserve">
+    <value>Added Successfully</value>
+  </data>
+  <data name="txtEmail.Placeholder" xml:space="preserve">
+    <value>Enter email address</value>
+  </data>
+  <data name="txtMobileNumber.Placeholder" xml:space="preserve">
+    <value>00 000 0000</value>
+  </data>
+  <data name="txtOtherType.Placeholder" xml:space="preserve">
+    <value>Enter Violation Type</value>
+  </data>
 </root>

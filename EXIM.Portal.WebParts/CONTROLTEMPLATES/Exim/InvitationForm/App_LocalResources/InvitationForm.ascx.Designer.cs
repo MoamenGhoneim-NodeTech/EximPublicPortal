@@ -143,7 +143,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm.App_LocalRes
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Success, Thank you for subscribing to the forum.
+        ///   Looks up a localized string similar to تم التسجيل, شكرا لتسجيلكم في المنتدى.
         /// </summary>
         internal static string MessageSentSuccessfully {
             get {

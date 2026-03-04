@@ -145,7 +145,7 @@
     <value>الاسم</value>
   </data>
   <data name="MessageSentSuccessfully" xml:space="preserve">
-    <value>Success, Thank you for subscribing to the forum</value>
+    <value>تم التسجيل, شكرا لتسجيلكم في المنتدى</value>
   </data>
   <data name="RequiredField.text" xml:space="preserve">
     <value>حقل مطلوب </value>

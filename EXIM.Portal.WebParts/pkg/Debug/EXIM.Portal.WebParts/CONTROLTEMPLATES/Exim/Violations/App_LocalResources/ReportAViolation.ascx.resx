@@ -216,4 +216,58 @@
   <data name="InvalidInput" xml:space="preserve">
     <value>يرجى التأكد من البانات المدخلة</value>
   </data>
+  <data name="btnAdd.Text" xml:space="preserve">
+    <value>إضافة إلى القائمة</value>
+  </data>
+  <data name="ConcernedPartiesListRelativeURL" xml:space="preserve">
+    <value>/ar/ContactUs/Lists/ViolationConcernedParties</value>
+  </data>
+  <data name="ddlCountryCode.Text" xml:space="preserve">
+    <value>رمز الدولة</value>
+  </data>
+  <data name="HowDoYouKnow-Other" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="lblEmail.Text" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="lblMobileNumber.Text" xml:space="preserve">
+    <value>رقم الجوال</value>
+  </data>
+  <data name="lblOtherType.Text" xml:space="preserve">
+    <value>يرجى التحديد</value>
+  </data>
+  <data name="NoItemsAddedMsg" xml:space="preserve">
+    <value>لم تتم إضافة أي بيانات بعد</value>
+  </data>
+  <data name="OtherViolationType" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="Parties-Company" xml:space="preserve">
+    <value>الشركة</value>
+  </data>
+  <data name="Parties-Job" xml:space="preserve">
+    <value>الوظيفة</value>
+  </data>
+  <data name="Parties-Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Parties-Relation" xml:space="preserve">
+    <value>العلاقة</value>
+  </data>
+  <data name="RelationTypesListRelativeURL" xml:space="preserve">
+    <value>/ar/ContactUs/Lists/RelationTypes</value>
+  </data>
+  <data name="SavedSuccessfully" xml:space="preserve">
+    <value>تمت الإضافة بنجاح</value>
+  </data>
+  <data name="txtEmail.Placeholder" xml:space="preserve">
+    <value>ادخل البريد الإلكتروني</value>
+  </data>
+  <data name="txtMobileNumber.Placeholder" xml:space="preserve">
+    <value>00 000 0000</value>
+  </data>
+  <data name="txtOtherType.Placeholder" xml:space="preserve">
+    <value>ادخل نوع المخالفة</value>
+  </data>
 </root>

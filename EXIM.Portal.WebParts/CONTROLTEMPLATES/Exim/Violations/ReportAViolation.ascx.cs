@@ -1,9 +1,15 @@
 ﻿using EXIM.Common.Lib.Utils;
 using Microsoft.SharePoint;
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
+using System.Xml;
+using System.Web.UI.HtmlControls;
+using System.Text.RegularExpressions;
+using System.Web.Script.Serialization;
+using System.Drawing;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
 {
@@ -75,10 +81,11 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
 
                                 newItem["CanIdentify"] = rblCanIdentifyParties.SelectedItem != null && !string.IsNullOrEmpty(CanIdentifyParties) ? CanIdentifyParties : string.Empty;
                                 newItem["ViolationDetails"] = txtViolationDetails.Text;
-                                newItem["Relation"] = txtRelation.Text;
-                                newItem["Name"] = txtName.Text;
-                                newItem["Job"] = txtJobTitle.Text;
-                                newItem["Company"] = txtCompany.Text;
+                                newItem["CountryCode"] = ddlCountryCode.SelectedValue;
+                                newItem["Name"] = txt_Name.Text;
+                                newItem["MobileNumber"] = txtMobileNumber.Text;
+                                newItem["Email"] = txtEmail.Text;
+                                newItem["OtherType"]= txtOtherType.Text;
                                 if (!dtViolationDate.IsDateEmpty)
                                     newItem["Date"] = dtViolationDate.SelectedDate;
                                 else
@@ -91,8 +98,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                                     ucMessage.ShowError(GetLocalResourceObject("InvalidInput").ToString());
                                     return;
                                 }
-                                newItem["AwarenessMethod"] = ddlHowYouKnow.SelectedValue;
-
+                                newItem["AwarenessMethod"] = ddlHowYouKnow.SelectedValue; 
+                                newItem["OtherAwareness"] = txt_Other.Text;
                                 bool isAnonymous = false;
                                 if (!string.IsNullOrEmpty(rblAnonymous.SelectedValue))
                                     isAnonymous = Convert.ToBoolean(rblAnonymous.SelectedValue);
@@ -112,6 +119,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                                         newItem.Update();
                                     }
                                 }
+                                SaveViolationParties(newItem.ID);
+
                             }
                             finally
                             {
@@ -130,7 +139,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 ucMessage.ShowUnexpectedError();
             }
         }
-
         #endregion
 
         #region Private Methods
@@ -147,6 +155,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                     bindCanIdentifyParties(web);
                     bindViolationOngoing(web);
                     initAnonymousRadio();
+                    BindCountryCode(web);
+                    BindRelations(web);
                 }
             }
         }
@@ -196,6 +206,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
             rblCanIdentifyParties.Items.Add(new ListItem(GetLocalResourceObject("Yes").ToString(), "1"));
             rblCanIdentifyParties.Items.Add(new ListItem(GetLocalResourceObject("No").ToString(), "2"));
             rblCanIdentifyParties.Items.Add(new ListItem(GetLocalResourceObject("DontKnow").ToString(), "3"));
+            rblCanIdentifyParties.SelectedIndex = 0;
         }
 
         private void bindViolationOngoing(SPWeb web)
@@ -206,6 +217,37 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
             rblViolationOngoing.Items.Add(new ListItem(GetLocalResourceObject("DontKnow").ToString(), "3"));
         }
 
+        private void BindCountryCode(SPWeb web)
+        {
+            SPList violations = web.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
+            if (violations == null || violations == null) return;
+
+            SPField field = violations.Fields["CountryCode"];
+
+            var choiceField = field as SPFieldChoice;
+            if (choiceField == null)
+                return;
+
+            foreach (string choice in choiceField.Choices)
+            {
+                ddlCountryCode.Items.Add(new ListItem(choice, choice));
+            }
+        }
+        private void BindRelations(SPWeb web)
+        {
+            rblRelation.Items.Clear();
+
+            SPList list = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
+            if (list == null) return;
+
+            rblRelation.DataSource = list.Items.GetDataTable();
+            rblRelation.DataTextField = isArabic() ? "Title" : "TitleEn";
+            rblRelation.DataValueField = "ID";
+            rblRelation.DataBind();
+
+          
+        }
+
         private void initAnonymousRadio()
         {
             rblAnonymous.Items.Clear();
@@ -214,7 +256,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         }
 
         private string NumberToValue(string number)
-        { 
+        {
             switch (number)
             {
                 case "1":
@@ -289,5 +331,122 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 args.IsValid = false;
             }
         }
+
+        #region ViolationConcernedParties
+
+        private bool IsArabicSite(SPSite site)
+        {
+            try
+            {
+                // Method 1: Check web language directly
+                using (SPWeb web = site.RootWeb)
+                {
+                    if (web.Language == 1025) // Arabic LCID
+                        return true;
+                }
+
+                // Method 2: Check current UI culture
+                int currentLCID = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
+                if (currentLCID == 1025)
+                    return true;
+
+                // Method 3: Check URL for language indicator
+                string url = site.Url.ToLower();
+                if (url.Contains("/ar/") || url.Contains("/ar-") || url.Contains("-ar"))
+                    return true;
+
+                // Method 4: Check query string parameter
+                string langParam = System.Web.HttpContext.Current.Request.QueryString["lang"];
+                if (!string.IsNullOrEmpty(langParam) && langParam.ToLower() == "ar")
+                    return true;
+
+                // Default to English
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private List<ViolationParty> ParsePartiesFromHiddenField()
+        {
+            string json = hfPartiesJson.Value;
+
+            if (string.IsNullOrWhiteSpace(json) || json == "[]")
+                return new List<ViolationParty>();
+
+            var serializer = new JavaScriptSerializer();
+            return serializer.Deserialize<List<ViolationParty>>(json);
+        }
+
+        // ────────────────────────────────────────────────────────────────────
+        // STEP 2 — Map Arabic relation → English for RelationEn column
+        // ────────────────────────────────────────────────────────────────────
+
+        private void SaveViolationParties(int violationItemId)
+        {
+            List<ViolationParty> parties = ParsePartiesFromHiddenField();
+
+            if (parties.Count == 0) return;
+            
+                SPWeb web = SPContext.Current.Site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()) ;
+
+            SPList partiesList;
+            try
+            {
+                partiesList = web.GetList(GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString());  
+            }
+            catch
+            {
+                throw new Exception($"SharePoint list '{GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString()}' was not found.");
+            }
+
+            // Get the violation lookup item to set the Violation field
+            SPList violationsList = web.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
+            // change if your violations list has a different name
+            SPListItem violationItem = violationsList.GetItemById(violationItemId);
+
+            SPList relationTypesList = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
+
+            web.AllowUnsafeUpdates = true;
+
+            try
+            {
+                foreach (ViolationParty party in parties)
+                {
+                    SPListItem newItem = partiesList.Items.Add();
+                    SPListItem RelationTypeItem = relationTypesList.GetItemById(int.Parse(party.Relation));
+
+                    newItem["Title"] = party.Name;
+                    newItem["JobTitle"] = party.JobTitle;
+                    newItem["Company"] = party.Company;
+
+                    // Set the Violation lookup field
+                    newItem["Violation"] = new SPFieldLookupValue(violationItem.ID, violationItem.Title);
+                    newItem["Relation"] = new SPFieldLookupValue(RelationTypeItem.ID, RelationTypeItem.Title);
+
+                    newItem.Update();
+                }
+
+                partiesList.Update();
+            }
+            finally
+            {
+                web.AllowUnsafeUpdates = false;
+            }
+        }
+        #endregion
+
+
     }
+    public class ViolationParty
+    {
+        public string Relation { get; set; }  // Arabic value  e.g. "طرف خارجي"
+        public string RelationEn { get; set; }  // English value e.g. "External"
+        public string Name { get; set; }
+        public string JobTitle { get; set; }
+        public string Company { get; set; }
+    }
+
 }
