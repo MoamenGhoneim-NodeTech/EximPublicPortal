@@ -132,9 +132,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
                                 newItem.Update();
 
                                 string fileUrl = GetGuideFileUrl(web);
-                                if (!string.IsNullOrEmpty(fileUrl))
+                                Session.Add("GuideFileURL", fileUrl);
+                                if (Session["GuideFileURL"] != null)//!string.IsNullOrEmpty(fileUrl))
                                 {
-                                    lnkDownloadGuide.NavigateUrl = fileUrl;
+                                    lnkDownloadGuide.NavigateUrl = Session["GuideFileURL"].ToString();
                                     lnkDownloadGuide.Visible = true;
                                 }
                                 else

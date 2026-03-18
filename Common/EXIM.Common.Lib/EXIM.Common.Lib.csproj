@@ -66,6 +66,7 @@
     <Compile Include="Utils\Enums.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\LogService.cs" />
+    <Compile Include="Utils\NotificationHelper.cs" />
     <Compile Include="Utils\QueryString.cs" />
     <Compile Include="Utils\UserData.cs" />
   </ItemGroup>

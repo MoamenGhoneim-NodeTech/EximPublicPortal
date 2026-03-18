@@ -10,6 +10,9 @@ using System.Web.UI.HtmlControls;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 using System.Drawing;
+using Microsoft.SharePoint.Administration;
+using System.Linq;
+using System.Text;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
 {
@@ -85,7 +88,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                                 newItem["Name"] = txt_Name.Text;
                                 newItem["MobileNumber"] = txtMobileNumber.Text;
                                 newItem["Email"] = txtEmail.Text;
-                                newItem["OtherType"]= txtOtherType.Text;
+                                newItem["OtherViolationType"] = txtOtherType.Text;
                                 if (!dtViolationDate.IsDateEmpty)
                                     newItem["Date"] = dtViolationDate.SelectedDate;
                                 else
@@ -120,7 +123,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                                     }
                                 }
                                 SaveViolationParties(newItem.ID);
-
+                                SendEmail(newItem);
                             }
                             finally
                             {
@@ -139,6 +142,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 ucMessage.ShowUnexpectedError();
             }
         }
+
         #endregion
 
         #region Private Methods
@@ -235,15 +239,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         }
         private void BindRelations(SPWeb web)
         {
-            rblRelation.Items.Clear();
+            ddlRelation.Items.Clear();
 
             SPList list = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
             if (list == null) return;
 
-            rblRelation.DataSource = list.Items.GetDataTable();
-            rblRelation.DataTextField = isArabic() ? "Title" : "TitleEn";
-            rblRelation.DataValueField = "ID";
-            rblRelation.DataBind();
+            ddlRelation.DataSource = list.Items.GetDataTable();
+            ddlRelation.DataTextField = isArabic() ? "Title" : "TitleEn";
+            ddlRelation.DataValueField = "ID";
+            ddlRelation.DataBind();
 
           
         }
@@ -438,6 +442,61 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         }
         #endregion
 
+        protected void SendEmail(SPListItem item)
+        {
+            var isArabic = SPContext.Current.Web.Language == 1025;
+            EXIM.Common.Lib.Utils.NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
+            Dictionary<string, string> values = EXIM.Common.Lib.Utils.NotificationHelper.BuildTokenDictionary(item);
+            values.Add("Parties", hfPartiesHTML.Value);
+            values = AddConditionalContentKeys(values, item);
+            string toEmail = "NA";//item["RequestType:ToEmail"]?.ToString();
+
+            if (toEmail != null)
+            {
+                if (toEmail.Contains("#"))
+                    toEmail = toEmail.Split('#')[1];
+                TemplateLanguage lang = isArabic ? TemplateLanguage.Ar : TemplateLanguage.En;
+                notification.SendEmail("NewViolationReportEmailTemplate", toEmail, values, lang);
+            }
+        }
+        public Dictionary<string, string> AddConditionalContentKeys(Dictionary<string, string> values, SPListItem item)
+        {
+            if (values == null)
+                values = new Dictionary<string, string>();
+
+            var updatedValues = new Dictionary<string, string>(values);
+
+            string otherViolationText = Convert.ToString(GetLocalResourceObject("OtherViolationType"));
+            string howDoYouKnowOther = Convert.ToString(GetLocalResourceObject("HowDoYouKnow-Other"));
+
+            // Violation Type
+            updatedValues["ShowOtherViolationTypeStyle"] =
+                ddlViolationType.SelectedValue == otherViolationText ? "display:block;" : "display:none;";
+
+            // Parties
+            updatedValues["ShowPartiesStyle"] =
+                !string.IsNullOrEmpty(hfPartiesJson.Value) ? "display:block;" : "display:none;";
+
+            // Other Awareness
+            updatedValues["ShowOtherAwarenessStyle"] =
+                ddlHowYouKnow.SelectedValue == howDoYouKnowOther ? "display:block;" : "display:none;";
+
+            // Non Anonymous
+            updatedValues["ShowNonAnonymousStyle"] =
+                rblAnonymous.SelectedValue == "false" ? "display:block;" : "display:none;";
+
+            updatedValues["StayAnonymousValue"] =
+                rblAnonymous.SelectedValue == "false" ? Convert.ToString(GetLocalResourceObject("No")) : Convert.ToString(GetLocalResourceObject("Yes"));
+
+            updatedValues["CanIdentifyPartiesValue"] =
+              Convert.ToString(rblCanIdentifyParties.SelectedItem.Text);
+
+            updatedValues["IsViolationOngoingValue"] =
+                Convert.ToString(rblViolationOngoing.SelectedItem.Text);
+            //rblViolationOngoing.SelectedItem.SelectedValue == "false" ? Convert.ToString(GetLocalResourceObject("No")) : Convert.ToString(GetLocalResourceObject("Yes"));
+
+            return updatedValues;
+        }
 
     }
     public class ViolationParty

@@ -13,7 +13,7 @@
     </div>
 </div>
 
-<asp:Panel runat="server" ID="pnlFormBody">
+<asp:Panel runat="server" ID="pnlFormBody" DefaultButton="btnSubmit">
 
     <h2>
         <asp:Literal runat="server" ID="litFormTitle" meta:resourcekey="litFormTitle" />
@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" ID="lblCompanyName" CssClass="" meta:resourcekey="lblCompanyName" AssociatedControlID="txtCompanyName" />
-                    <asp:TextBox runat="server" ID="txtCompanyName" CssClass="form-control" meta:resourcekey="txtCompanyName" />
+                    <asp:TextBox runat="server" ID="txtCompanyName" CssClass="form-control" meta:resourcekey="txtCompanyName" TabIndex="1"/>
                     <asp:RequiredFieldValidator runat="server" ID="rfvCompanyName" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtCompanyName" Display="Dynamic" />
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" ID="lblBeneficiaryName" CssClass="" meta:resourcekey="lblBeneficiaryName" AssociatedControlID="txtBeneficiaryName" />
-                    <asp:TextBox runat="server" ID="txtBeneficiaryName" CssClass="form-control" meta:resourcekey="txtBeneficiaryName" />
+                    <asp:TextBox runat="server" ID="txtBeneficiaryName" CssClass="form-control" meta:resourcekey="txtBeneficiaryName" TabIndex="2"/>
                     <asp:RequiredFieldValidator runat="server" ID="rfvBeneficiaryName" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtBeneficiaryName" Display="Dynamic" />
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" ID="lblCity" CssClass="" meta:resourcekey="lblCity" AssociatedControlID="txtCity" />
-                    <asp:TextBox runat="server" ID="txtCity" CssClass="form-control" meta:resourcekey="txtCity" />
+                    <asp:TextBox runat="server" ID="txtCity" CssClass="form-control" meta:resourcekey="txtCity" TabIndex="3" />
                     <asp:RequiredFieldValidator runat="server" ID="rfvCity" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtCity" Display="Dynamic" />
                 </div>
             </div>
@@ -58,7 +58,7 @@
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" ID="lblMobileNumber" CssClass="" meta:resourcekey="lblMobileNumber" AssociatedControlID="txtMobileNumber" />
                     <div class="input-group">
-                        <asp:DropDownList runat="server" ID="ddlCountryCode" CssClass="country-code" meta:resourcekey="ddlCountryCode">
+                        <asp:DropDownList runat="server" ID="ddlCountryCode" CssClass="country-code" meta:resourcekey="ddlCountryCode" TabIndex="4">
                         </asp:DropDownList>
                         <asp:TextBox runat="server" ID="txtMobileNumber" CssClass="form-control digits" meta:resourcekey="txtMobileNumber" MaxLength="14" />
                     </div>
@@ -72,7 +72,7 @@
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" ID="lblEmail" CssClass="" meta:resourcekey="lblEmail" AssociatedControlID="txtEmail" />
-                    <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" meta:resourcekey="txtEmail" TextMode="Email" />
+                    <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" meta:resourcekey="txtEmail" TextMode="Email" TabIndex="5"/>
                     <asp:RequiredFieldValidator runat="server" ID="rfvEmail" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtEmail" Display="Dynamic" />
                     <asp:RegularExpressionValidator runat="server" ID="revEmail" CssClass="text-danger" meta:resourcekey="InvalidEmail" ValidationGroup="submit" ControlToValidate="txtEmail" ValidationExpression="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$" Display="Dynamic" />
                 </div>
@@ -90,7 +90,7 @@
             <div class="col-md-12" data-aos="fade-up" data-aos-delay="100">
                 <div class="form-group">
                     <i class="fas fa-spinner fa-spin d-none"></i>
-                    <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-secondary" meta:resourcekey="btnSubmit" ValidationGroup="submit" OnClick="btnSubmit_Click"  TabIndex="1"/>
+                    <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-secondary" meta:resourcekey="btnSubmit" ValidationGroup="submit" OnClick="btnSubmit_Click"  TabIndex="6"/>
                 </div>
             </div>
 

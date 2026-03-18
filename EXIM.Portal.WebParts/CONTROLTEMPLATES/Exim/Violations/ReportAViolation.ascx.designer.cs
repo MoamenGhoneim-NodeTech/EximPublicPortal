@@ -159,13 +159,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         protected global::System.Web.UI.WebControls.Label lblRelation;
 
         /// <summary>
-        /// rblRelation control.
+        /// ddlRelation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblRelation;
+        protected global::System.Web.UI.WebControls.DropDownList ddlRelation;
 
         /// <summary>
         /// RequiredFieldValidator1 control.
@@ -267,6 +267,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         protected global::System.Web.UI.WebControls.Button btnAdd;
 
         /// <summary>
+        /// PartiesDiv control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PartiesDiv;
+
+        /// <summary>
         /// vrTableBody control.
         /// </summary>
         /// <remarks>
@@ -283,6 +292,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfPartiesJson;
+
+        /// <summary>
+        /// hfPartiesHTML control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfPartiesHTML;
 
         /// <summary>
         /// Label1 control.

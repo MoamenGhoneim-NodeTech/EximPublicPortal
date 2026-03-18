@@ -10,6 +10,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
     public partial class ContactRequest : UserControl
     {
         #region Design controls 
+
         protected global::Exim.Portal.WebParts.LabelMessage ucMessage;
         #endregion
 
@@ -108,6 +109,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
                                 newItem["RequestType"] = ddlRequestType.SelectedValue;
 
                                 newItem.Update();
+
+                                SendEmail(newItem);
                             }
                             finally
                             {
@@ -124,6 +127,22 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
             {
                 LogService.LogException(ex);
                 ucMessage.ShowUnexpectedError();
+            }
+        }
+
+        protected void SendEmail(SPListItem item)
+        {
+            var isArabic = SPContext.Current.Web.Language == 1025;
+            EXIM.Common.Lib.Utils.NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
+
+            string toEmail = item["RequestType:ToEmail"]?.ToString();
+
+            if (toEmail != null)
+            {
+                if (toEmail.Contains("#"))
+                    toEmail=toEmail.Split('#')[1];
+                TemplateLanguage lang = isArabic ? TemplateLanguage.Ar : TemplateLanguage.En;
+                notification.SendEmail("ContactUsEmailTemplate", toEmail, item, lang);
             }
         }
     }

@@ -121,7 +121,7 @@
     <value>You can download the guide (PDF) after filling out the form</value>
   </data>
   <data name="lblCompanyName.Text" xml:space="preserve">
-    <value>Company name:</value>
+    <value>Company/Entity Name:</value>
   </data>
   <data name="txtCompanyName.Placeholder" xml:space="preserve">
     <value>Enter company name</value>
@@ -139,7 +139,7 @@
     <value>Enter city</value>
   </data>
   <data name="lblMobileNumber.Text" xml:space="preserve">
-    <value>Mobile number:</value>
+    <value>Contact number:</value>
   </data>
   <data name="txtMobileNumber.Placeholder" xml:space="preserve">
     <value>00 000 0000</value>

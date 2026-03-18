@@ -121,7 +121,7 @@
     <value>يمكن تحميل الدليل بصيغة (PDF) بعد تعبئة النموذج</value>
   </data>
   <data name="lblCompanyName.Text" xml:space="preserve">
-    <value>اسم الشركة:</value>
+    <value>اسم الشركة/الجهة:</value>
   </data>
   <data name="txtCompanyName.Placeholder" xml:space="preserve">
     <value>ادخل اسم الشركة</value>
@@ -139,7 +139,7 @@
     <value>ادخل المدينة</value>
   </data>
   <data name="lblMobileNumber.Text" xml:space="preserve">
-    <value>رقم الجوال:</value>
+    <value>رقم التواصل:</value>
   </data>
   <data name="txtMobileNumber.Placeholder" xml:space="preserve">
     <value>00 000 0000</value>

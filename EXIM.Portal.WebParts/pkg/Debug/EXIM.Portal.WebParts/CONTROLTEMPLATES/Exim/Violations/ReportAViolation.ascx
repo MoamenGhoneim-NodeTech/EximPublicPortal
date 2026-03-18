@@ -68,10 +68,10 @@
                     <div class="col-md-6" data-aos="fade-up" data-aos-delay="120">
                         <div class="form-group">
                             <span class="text-danger">*</span>
-                            <asp:Label runat="server" ID="lblRelation" CssClass="" meta:resourcekey="lblRelation" AssociatedControlID="rblRelation" />
-                            <asp:RadioButtonList runat="server" ID="rblRelation" CssClass="form-radios-group" RepeatDirection="Horizontal" ClientIDMode="Static">
-                            </asp:RadioButtonList>
-                            <asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator1" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="AddGroup" ControlToValidate="rblRelation" Display="Dynamic" />
+                            <asp:Label runat="server" ID="lblRelation" CssClass="" meta:resourcekey="lblRelation" AssociatedControlID="ddlRelation" />
+                            <asp:DropDownList runat="server" ID="ddlRelation" CssClass="form-control" RepeatDirection="Horizontal" ClientIDMode="Static">
+                            </asp:DropDownList>
+                            <asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator1" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="AddGroup" ControlToValidate="ddlRelation" Display="Dynamic" />
 
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                     </div>
 
 
-                    <div class="vr-form-actions" style="padding-top:5px;">
+                    <div class="vr-form-actions" style="padding-top: 5px;">
                         <asp:Button
                             ID="btnAdd"
                             runat="server"
@@ -118,7 +118,7 @@
                             OnClientClick="return vrAddEntry();" />
                     </div>
 
-                    <div class="vr-table-wrapper col-md-12">
+                    <div class="vr-table-wrapper col-md-12" id="PartiesDiv" runat="server">
                         <table class="vr-table" id="PartiesTable" style="display: none">
                             <thead>
                                 <tr>
@@ -149,7 +149,7 @@
 
             <!-- Hidden field to pass parties data to server on postback -->
             <asp:HiddenField runat="server" ID="hfPartiesJson" />
-
+            <asp:HiddenField runat="server" ID="hfPartiesHTML" />
             <!-- Violation Date (Approximate) -->
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
                 <div class="form-group">
@@ -197,19 +197,21 @@
                 <div class="form-group">
                     <asp:Label runat="server" ID="lblSupportingDocuments" CssClass="" meta:resourcekey="lblSupportingDocuments" />
                     <div class="file-upload">
-                        <div class="ic-upload"></div>
-                        <h5>
-                            <asp:Literal runat="server" meta:resourcekey="fileUploadTitle"></asp:Literal>
-                        </h5>
-                        <p>
-                            <asp:Literal runat="server" meta:resourcekey="fileUploadDescription"></asp:Literal>
-                        </p>
-                        <div>
-                            <strong>
-                                <asp:Literal runat="server" meta:resourcekey="fileUploadBrowseText"></asp:Literal>
-                            </strong>
-                        </div>
+                        <%-- Keep the real input always in DOM so ASP.NET can read it on postback --%>
                         <asp:FileUpload runat="server" ID="fuSupportingDocuments" CssClass="" />
+
+                        <%-- Wrap default UI so we can show/hide it without touching the input --%>
+                        <div class="file-upload-default-ui">
+                            <div class="ic-upload"></div>
+                            <h5>
+                                <asp:Literal runat="server" meta:resourcekey="fileUploadTitle"></asp:Literal></h5>
+                            <p>
+                                <asp:Literal runat="server" meta:resourcekey="fileUploadDescription"></asp:Literal></p>
+                            <div>
+                                <strong>
+                               <asp:Literal runat="server" meta:resourcekey="fileUploadBrowseText"></asp:Literal></strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -284,9 +286,9 @@
         $(document).ready(function () {
 
             var dragDropText = '<%= GetLocalResourceObject("fileUploadTitle.Text") %>';
-            var descText     = '<%= GetLocalResourceObject("fileUploadDescription.Text") %>';
-            var browseText   = '<%= GetLocalResourceObject("fileUploadBrowseText.Text") %>';
-            var deleteText   = '<%= GetLocalResourceObject("fileUploadDeleteText.Text") %>';
+            var descText = '<%= GetLocalResourceObject("fileUploadDescription.Text") %>';
+            var browseText = '<%= GetLocalResourceObject("fileUploadBrowseText.Text") %>';
+            var deleteText = '<%= GetLocalResourceObject("fileUploadDeleteText.Text") %>';
 
             var fileInputSelector = "#<%= fuSupportingDocuments.ClientID %>";
 
@@ -295,33 +297,39 @@
                 if (!file) return;
 
                 var fileName = file.name;
-                var wrapper  = $(this).closest(".file-upload");
-
-                wrapper.html(
+                var wrapper = $(this).closest(".file-upload");
+                wrapper.find(".file-upload-default-ui").hide();
+                wrapper.find(".uploaded-file-preview").remove();
+                wrapper.append(
                     '<div class="uploaded-file-preview d-flex align-items-center">' +
-                        '<span class="file-name">' + fileName + '</span>' +
-                        '<button type="button" class="btn btn-sm btn-danger remove-file ms-3">' + deleteText + '</button>' +
+                    '<span class="file-name">' + fileName + '</span>' +
+                    '<button type="button" class="btn btn-sm btn-danger remove-file ms-3">' + deleteText + '</button>' +
                     '</div>'
                 );
+
             });
 
             $(document).on("click", ".remove-file", function () {
                 var wrapper = $(this).closest(".file-upload");
-                wrapper.html(
-                    '<div class="ic-upload"></div>' +
-                    '<h5>' + dragDropText + '</h5>' +
-                    '<p>' + descText + '</p>' +
-                    '<div><strong>' + browseText + '</strong></div>' +
-                    '<input type="file" id="<%= fuSupportingDocuments.ClientID %>" name="<%= fuSupportingDocuments.UniqueID %>" />'
+
+                // Hide the default UI, show preview — but keep the actual input!
+                wrapper.find(".file-upload-default-ui").hide();
+                wrapper.find(".uploaded-file-preview").remove();
+                wrapper.append(
+                    '<div class="uploaded-file-preview d-flex align-items-center">' +
+                    '<span class="file-name">' + fileName + '</span>' +
+                    '<button type="button" class="btn btn-sm btn-danger remove-file ms-3">' + deleteText + '</button>' +
+                    '</div>'
                 );
+
             });
 
 
-             // Show/hide PartiesSection on change
-            var NoValue      = "2";
-            var rblSelector  = "input[name='<%= rblCanIdentifyParties.UniqueID %>']";
+            // Show/hide PartiesSection on change
+            var NoValue = "2";
+            var rblSelector = "input[name='<%= rblCanIdentifyParties.UniqueID %>']";
 
-           
+
             $(document).on("change", rblSelector, function () {
                 if ($(this).val() !== NoValue) {
                     $("#<%= PartiesSection.ClientID %>").show();
@@ -345,25 +353,25 @@
                                         '<%= revMobileNumber.ClientID %>',
                                         '<%= rfvEmail.ClientID %>',
                                         '<%= revEmail.ClientID %>'
-                                      ];
-            
-           
+            ];
+
+
             function toggleNotAnonValidators(enable) {
                 notAnonValidatorIds.forEach(function (id) {
                     var val = document.getElementById(id);
                     if (val) ValidatorEnable(val, enable);
                 });
             }
-                           
-           // Show Hide NotAnonymous section /On change
+
+            // Show Hide NotAnonymous section /On change
             $(document).on("change", rblAnonymousSelector, function () {
 
                 if ($(this).val() === Anonymous) {
                     $("#<%= NotAnonymous.ClientID %>").show();
-                     toggleNotAnonValidators(true);
+                    toggleNotAnonValidators(true);
                 } else {
                     $("#<%= NotAnonymous.ClientID %>").hide();
-                     toggleNotAnonValidators(false);
+                    toggleNotAnonValidators(false);
                 }
             });
 
@@ -372,14 +380,14 @@
 
             if (selectedAnonymous === Anonymous) {
                 $("#<%= NotAnonymous.ClientID %>").show();
-                 toggleNotAnonValidators(true);
+                toggleNotAnonValidators(true);
             } else {
                 $("#<%= NotAnonymous.ClientID %>").hide();
-                 toggleNotAnonValidators(false);
+                toggleNotAnonValidators(false);
             }
 
-          var otherValue = "<%= GetLocalResourceObject("OtherViolationType") %>";
-            
+            var otherValue = "<%= GetLocalResourceObject("OtherViolationType") %>";
+
             var ddlViolationTypeSelector = "#<%= ddlViolationType.ClientID %>";
             var rfvOtherType = document.getElementById('<%= rfvOtherType.ClientID %>');
 
@@ -403,28 +411,28 @@
             toggleOtherType();
 
             var HowDoYouKnowotherValue = "<%= GetLocalResourceObject("HowDoYouKnow-Other") %>";
-  
-          var ddlHowDoYouKnowSelector = "#<%= ddlHowYouKnow.ClientID %>";
-          var rfvOther = document.getElementById('<%= rfvOther.ClientID %>');
 
-          function toggleOther() {
-              var selected = $(ddlHowDoYouKnowSelector).val();
-              if (selected === HowDoYouKnowotherValue) {
-                  $("#<%= pnlOther.ClientID %>").show();
+            var ddlHowDoYouKnowSelector = "#<%= ddlHowYouKnow.ClientID %>";
+            var rfvOther = document.getElementById('<%= rfvOther.ClientID %>');
+
+            function toggleOther() {
+                var selected = $(ddlHowDoYouKnowSelector).val();
+                if (selected === HowDoYouKnowotherValue) {
+                    $("#<%= pnlOther.ClientID %>").show();
                   if (rfvOther) ValidatorEnable(rfvOther, true);
               } else {
                   $("#<%= pnlOther.ClientID %>").hide();
-                  if (rfvOther) ValidatorEnable(rfvOther, false);
-              }
-          }
+                    if (rfvOther) ValidatorEnable(rfvOther, false);
+                }
+            }
 
-          // On change
-          $(document).on("change", ddlHowDoYouKnowSelector, function () {
-              toggleOther();
-          });
+            // On change
+            $(document).on("change", ddlHowDoYouKnowSelector, function () {
+                toggleOther();
+            });
 
-          // On page load / postback
-          toggleOther();
+            // On page load / postback
+            toggleOther();
 
 
         });
@@ -435,27 +443,27 @@
     </script>
 
     <script type="text/javascript">
-    (function () {
+        (function () {
 
-        var vrEntries = [];
+            var vrEntries = [];
 
-        // ── Sync entries to hidden field ─────────────────────────
-        function vrSyncHiddenField() {
-            var hf = document.getElementById('<%= hfPartiesJson.ClientID %>');
+            // ── Sync entries to hidden field ─────────────────────────
+            function vrSyncHiddenField() {
+                var hf = document.getElementById('<%= hfPartiesJson.ClientID %>');
             if (hf) hf.value = JSON.stringify(vrEntries);
         }
 
         // ── Clear form ───────────────────────────────────────────
         window.vrClearForm = function () {
-            // Uncheck all radios in rblRelation
-            document.querySelectorAll('#rblRelation input[type="radio"]').forEach(function (r) {
+            // Uncheck all radios in ddlRelation
+            document.querySelectorAll('#ddlRelation input[type="radio"]').forEach(function (r) {
                 r.checked = false;
             });
-            document.getElementById('rblRelation').style.outline = "";
+            document.getElementById('ddlRelation').style.outline = "";
 
-            document.getElementById('<%= txtName.ClientID %>').value    = "";
+            document.getElementById('<%= txtName.ClientID %>').value = "";
             document.getElementById('<%= txtJobTitle.ClientID %>').value = "";
-            document.getElementById('<%= txtCompany.ClientID %>').value  = "";
+            document.getElementById('<%= txtCompany.ClientID %>').value = "";
 
             document.querySelectorAll('.vr-input.error').forEach(function (el) {
                 el.classList.remove('error');
@@ -466,35 +474,38 @@
         window.vrAddEntry = function () {
             var hasError = false;
 
-            // Read selected relation from rblRelation RadioButtonList
-            var selectedRelationInput = document.querySelector('#rblRelation input[type="radio"]:checked');
-            var vrSelectedRelation    = selectedRelationInput ? selectedRelationInput.value : "";
+            // Read selected relation from ddlRelation RadioButtonList
+            var selectedRelationInput = "#<%= ddlRelation.ClientID %>";
+            //document.querySelector('#ddlRelation input[type="radio"]:checked');
+            var vrSelectedRelationID = $(selectedRelationInput).val(); //selectedRelationInput ? selectedRelationInput.value : "";
+            var vrSelectedRelation = $(selectedRelationInput + " option:selected").text(); //selectedRelationInput ? selectedRelationInput.value : "";
 
-            var name    = document.getElementById('<%= txtName.ClientID %>').value.trim();
-            var job     = document.getElementById('<%= txtJobTitle.ClientID %>').value.trim();
+            var name = document.getElementById('<%= txtName.ClientID %>').value.trim();
+            var job = document.getElementById('<%= txtJobTitle.ClientID %>').value.trim();
             var company = document.getElementById('<%= txtCompany.ClientID %>').value.trim();
 
-           
-            if (!Page_ClientValidate('AddGroup'))
-            {  hasError = true;
+
+            if (!Page_ClientValidate('AddGroup')) {
+                hasError = true;
             }
 
             if (hasError) {
-                vrShowToast('<%= GetLocalResourceObject("InvalidInput") %>', "error"); 
+                vrShowToast('<%= GetLocalResourceObject("InvalidInput") %>', "error");
                 return;
             }
 
             vrEntries.push({
-                relation: vrSelectedRelation,
-                name:     name,
-                job:      job,
-                company:  company
+                relation: vrSelectedRelationID,
+                relationName: vrSelectedRelation,
+                name: name,
+                job: job,
+                company: company
             });
 
             vrRenderTable();
             vrClearForm();
             vrSyncHiddenField();
-            vrShowToast('<%= GetLocalResourceObject("SavedSuccessfully") %>', "success"); 
+            vrShowToast('<%= GetLocalResourceObject("SavedSuccessfully") %>', "success");
         };
 
         // ── Remove entry ─────────────────────────────────────────
@@ -506,7 +517,7 @@
 
         // ── Render table ─────────────────────────────────────────
         var vrTableBodyId = '<%= vrTableBody.ClientID %>';
-        var table = document.getElementById('PartiesTable'); 
+        var table = document.getElementById('PartiesTable');
 
         function vrRenderTable() {
             var tbody = document.getElementById(vrTableBodyId);
@@ -514,7 +525,7 @@
 
             if (vrEntries.length === 0) {
 
-                 if (table) table.style.display = 'none'
+                if (table) table.style.display = 'none'
                 tbody.innerHTML =
                     '<tr><td colspan="6">' +
                     '<div class="vr-empty-state">' +
@@ -522,28 +533,31 @@
                     '<p>' + '<%= GetLocalResourceObject("NoItemsAddedMsg") %>' + '</p>' +
                     '</div></td></tr>';
             } else {
-                    if (table) table.style.display = '';  
+                if (table) table.style.display = '';
                 vrEntries.forEach(function (e, i) {
                     var bc = "vr-badge-unknown";
                     tbody.innerHTML +=
                         '<tr>' +
                         '<td>' + (i + 1) + '</td>' +
-                        '<td><span class="vr-badge ' + bc + '">' + e.relation + '</span></td>' +
-                        '<td>' + (e.name    || '—') + '</td>' +
-                        '<td>' + (e.job     || '—') + '</td>' +
+                        '<td><span class="vr-badge ' + bc + '">' + e.relationName + '</span></td>' +
+                        '<td>' + (e.name || '—') + '</td>' +
+                        '<td>' + (e.job || '—') + '</td>' +
                         '<td>' + (e.company || '—') + '</td>' +
                         '<td>' +
-                            '<button type="button" class="vr-btn-delete" onclick="vrRemoveEntry(' + i + ')">' +
-                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">' +
-                            '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/>' +
-                            '</svg></button>' +
+                        '<button type="button" class="vr-btn-delete" onclick="vrRemoveEntry(' + i + ')">' +
+                        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">' +
+                        '<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"/>' +
+                        '</svg></button>' +
                         '</td></tr>';
+
+                    document.getElementById('<%= hfPartiesHTML.ClientID %>').value = tbody.innerHTML;
+                    
                 });
+                }
+
             }
 
-        }
-
-    })();
+        })();
     </script>
 
 </asp:Panel>
