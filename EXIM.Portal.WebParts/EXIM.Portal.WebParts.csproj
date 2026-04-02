@@ -78,6 +78,13 @@
     <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
       <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx.cs">
+      <DependentUpon>HomePageControls.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx.designer.cs">
+      <DependentUpon>HomePageControls.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\InvitationForm\App_LocalResources\InvitationForm.ascx.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -180,6 +187,7 @@
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
