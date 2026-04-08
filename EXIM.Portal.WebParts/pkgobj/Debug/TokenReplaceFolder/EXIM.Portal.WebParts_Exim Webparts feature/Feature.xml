@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Feature xmlns="http://schemas.microsoft.com/sharepoint/" AlwaysForceInstall="TRUE" Id="c66a7ca0-9588-4c13-9b18-0ae9870e4d37" Scope="Site" Title="EXIM Webparts">
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Title="EXIM Webparts" AlwaysForceInstall="TRUE" Id="c66a7ca0-9588-4c13-9b18-0ae9870e4d37" Scope="Site">
   <ElementManifests>
     <ElementManifest Location="ControlLoaderWebPart\Elements.xml" />
     <ElementFile Location="ControlLoaderWebPart\ControlLoaderWebPart.webpart" />

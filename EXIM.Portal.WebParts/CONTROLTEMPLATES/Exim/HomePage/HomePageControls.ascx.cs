@@ -22,6 +22,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
             try
             {
+
                 var web = SPContext.Current.Site.RootWeb;
                 var isArabic = ResolveIsArabic(web);
                 var lang = isArabic ? "ar" : "en";
@@ -262,13 +263,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 {
                     ID = GetInt(i, "ID"),
                     EXIM_ItemOrder = GetInt(i, "EXIM_ItemOrder"),
-                    Title = GetStr(i, "Title"),
-                    TitleAr = GetStr(i, "TitleAr"),
+                    Title = GetStr(i, "TitleEn"),
+                    TitleAr = GetStr(i, "Title"),
                     Description = GetStr(i, "Description"),
                     DescriptionEn = GetStr(i, "DescriptionEn"),
                     PublishingRollupImage = GetStr(i, "PublishingRollupImage"),
-                    Url = GetStr(i, "Url"),
-                    UrlAr = GetStr(i, "UrlAr"),
+                    Url = GetStr(i, "EXIM_URL_En"),
+                    UrlAr = GetStr(i, "EXIM_URL"),
                     OpenInNewTab = GetBool(i, "EXIM_OpenInNewTab"),
                 }).ToList();
         }
@@ -282,8 +283,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 {
                     ID = GetInt(i, "ID"),
                     EXIM_ItemOrder = GetInt(i, "EXIM_ItemOrder"),
-                    Title = GetStr(i, "Title"),
-                    TitleAr = GetStr(i, "TitleAr"),
+                    Title = GetStr(i, "TitleEN"),
+                    TitleAr = GetStr(i, "Title"),
                     SubTitle = GetStr(i, "SubTitle"),
                     SubTitleEn = GetStr(i, "SubTitleEn"),
                     Description = GetStr(i, "Description"),

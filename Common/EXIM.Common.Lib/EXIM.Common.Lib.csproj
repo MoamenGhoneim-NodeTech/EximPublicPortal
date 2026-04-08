@@ -60,6 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPHelpers\ListService.cs" />
     <Compile Include="Utils\Caching.cs" />
+    <Compile Include="Utils\LandingPageHelper.cs" />
     <Compile Include="Utils\CommonProperties.cs" />
     <Compile Include="Utils\Cryptography.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />

@@ -57,6 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlLoaderWebPart\ControlLoaderWebPart.cs" />
+    <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.cs">
+      <DependentUpon>ArticlesArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.designer.cs">
+      <DependentUpon>ArticlesArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx.cs">
       <DependentUpon>ConsultationRequest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -96,6 +103,20 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx.designer.cs">
       <DependentUpon>InvitationForm.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx.cs">
+      <DependentUpon>LandingPageControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx.designer.cs">
+      <DependentUpon>LandingPageControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx.cs">
+      <DependentUpon>NewsArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx.designer.cs">
+      <DependentUpon>NewsArchiveControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -183,12 +204,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
@@ -267,6 +291,7 @@
   <ItemGroup>
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\App_LocalResources\InvitationForm.ascx.en-US.resx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
