@@ -14,6 +14,7 @@
   <TemplateFiles>
     <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
@@ -27,7 +28,10 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\Captcha.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Workshops\App_LocalResources\Workshop_Subscribe.ascx.resx" />

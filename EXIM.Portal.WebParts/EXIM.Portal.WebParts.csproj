@@ -57,6 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlLoaderWebPart\ControlLoaderWebPart.cs" />
+    <Compile Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx.cs">
+      <DependentUpon>AnnouncementsArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx.designer.cs">
+      <DependentUpon>AnnouncementsArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.cs">
       <DependentUpon>ArticlesArchiveControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -156,6 +163,13 @@
     <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.designer.cs">
       <DependentUpon>SiteMapWPUserControl.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx.cs">
+      <DependentUpon>StoryArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx.designer.cs">
+      <DependentUpon>StoryArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.cs">
       <DependentUpon>ReportAViolation.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -163,12 +177,26 @@
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.designer.cs">
       <DependentUpon>ReportAViolation.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx.cs">
+      <DependentUpon>WorkshopArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx.designer.cs">
+      <DependentUpon>WorkshopArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.cs">
       <DependentUpon>Workshop_Subscribe.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.designer.cs">
       <DependentUpon>Workshop_Subscribe.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx.cs">
+      <DependentUpon>YearlyReportsControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx.designer.cs">
+      <DependentUpon>YearlyReportsControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Layouts\EXIM.Portal\Captcha.aspx.cs">
       <DependentUpon>Captcha.aspx</DependentUpon>
@@ -204,6 +232,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
@@ -217,7 +246,10 @@
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx" />
     <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />
   </ItemGroup>
   <ItemGroup>
