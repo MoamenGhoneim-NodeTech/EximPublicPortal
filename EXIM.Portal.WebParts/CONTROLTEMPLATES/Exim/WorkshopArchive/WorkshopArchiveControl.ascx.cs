@@ -4,72 +4,66 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
-using EXIM.Common.Lib.Utils;
+using EXIM.Common.Lib.SPHelpers;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.WorkshopArchive
 {
     public partial class WorkshopArchiveControl : UserControl
     {
-        private const string DefaultImage = "/PublishingImages/DefaultImages/WorkShopDefaultImg.png";
+        private const string DefaultImage =
+     "/PublishingImages/DefaultImages/WorkShopDefaultImg.png";
+
+        // Workshop pages are filtered on EXIM_ShowInArchive.
         private const string WhereClause =
             "<Where><Eq><FieldRef Name='EXIM_ShowInArchive'/><Value Type='Boolean'>1</Value></Eq></Where>";
-        private const string OrderbyClause = "<OrderBy> <FieldRef Name='ArticleStartDate' Ascending='False' /> </OrderBy>";
 
+        private const string OrderByClause =
+            "<OrderBy><FieldRef Name='ArticleStartDate' Ascending='False'/></OrderBy>";
+
+        // ── Lifecycle ────────────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-                BindItems();
+            if (IsPostBack) return;
+
+            BindItems();
         }
-        
+
+        // ── Data binding ─────────────────────────────────────────────────────────
         private void BindItems()
         {
             SPWeb web = SPContext.Current.Web;
             SPList list = ResolveTargetList(web);
 
-            if (list == null) return;
-
-            var data = new List<EventItemModel>();
+            if (list == null)
+            {
+                LandingPageHelper.LogError("WorkshopArchiveControl: target list not found.");
+                return;
+            }
 
             try
             {
-                SPQuery query = new SPQuery
-                {
-                    RowLimit = (uint)LandingPageHelper.PageSize,
-                    ViewFields =
-                        "<FieldRef Name='Title'/>" +
-                        "<FieldRef Name='FileRef'/>" +
-                        "<FieldRef Name='PublishingRollupImage'/>" +
-                        "<FieldRef Name='Exim_WorkshopType'/>" +
-                        "<FieldRef Name='Exim_WorkshopLocation'/>" +
-                        "<FieldRef Name='ArticleStartDate'/>",
-                         Query = WhereClause + OrderbyClause
+                int currentPage = LandingPageHelper.GetCurrentPage(Request);
+                SPQuery query = BuildPagedQuery(list, currentPage);
 
-                };
-
+                var dataSource = new List<EventItemModel>();
                 foreach (SPListItem item in list.GetItems(query))
-                {
-                    data.Add(MapItem(item));
-                }
+                    dataSource.Add(MapItem(item));
 
-                rptItems.DataSource = data;
+                rptItems.DataSource = dataSource;
                 rptItems.DataBind();
+
+                RenderPagination(list, currentPage);
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError("EventControl.BindItems: " + ex.Message);
+                LandingPageHelper.LogError(
+                    $"WorkshopArchiveControl.BindItems failed: {ex.Message}");
             }
         }
 
-        private SPList ResolveTargetList(SPWeb web) =>
-              LandingPageHelper.TryGetList(web, "Pages")
-              ?? LandingPageHelper.TryGetList(web, "الصفحات");
-
-
-
-        private EventItemModel MapItem(SPListItem item)
+        private static EventItemModel MapItem(SPListItem item)
         {
             DateTime? eventDate = null;
-
             if (DateTime.TryParse(item["ArticleStartDate"]?.ToString(), out DateTime parsed))
                 eventDate = parsed;
 
@@ -77,50 +71,88 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.WorkshopArchive
 
             return new EventItemModel
             {
-                Title = item["Title"]?.ToString() ?? "",
-                EventType = item["Exim_WorkshopType"]?.ToString() ?? "",
-                EventLocation = item["Exim_WorkshopLocation"]?.ToString() ?? "",
+                Title = item["Title"]?.ToString() ?? string.Empty,
+                EventType = item["Exim_WorkshopType"]?.ToString() ?? string.Empty,
+                EventLocation = item["Exim_WorkshopLocation"]?.ToString() ?? string.Empty,
                 EventUrl = item["FileRef"]?.ToString() ?? "#",
                 ImgPath = LandingPageHelper.ExtractImageSrc(
-                    item["PublishingRollupImage"]?.ToString(), DefaultImage),
-
+                                    item["PublishingRollupImage"]?.ToString(), DefaultImage),
                 EventDate = eventDate.HasValue
-                    ? eventDate.Value.ToString("dd MMM yyyy")
-                    : "",
-
+                                    ? eventDate.Value.ToString("dd MMM yyyy")
+                                    : string.Empty,
                 StatusText = LandingPageHelper.IsEnglish() ? status.En : status.Ar,
                 StatusClass = status.CssClass,
-
                 ButtonText = LandingPageHelper.IsEnglish() ? "Register now" : "سجل الان",
                 DisableButton = status.CssClass == "status-inactive"
             };
         }
 
-        private (string Ar, string En, string CssClass) CalculateEventStatus(DateTime? eventDate)
+        // ── CAML helpers ─────────────────────────────────────────────────────────
+        private static SPQuery BuildPagedQuery(SPList list, int page)
         {
-            if (!eventDate.HasValue)
+            var query = new SPQuery
             {
-                return ("غير محدد", "Not specified", "status-active");
-            }
+                RowLimit = (uint)LandingPageHelper.PageSize,
+                ViewFields =
+                    "<FieldRef Name='Title'/>" +
+                    "<FieldRef Name='FileRef'/>" +
+                    "<FieldRef Name='PublishingRollupImage'/>" +
+                    "<FieldRef Name='Exim_WorkshopType'/>" +
+                    "<FieldRef Name='Exim_WorkshopLocation'/>" +
+                    "<FieldRef Name='ArticleStartDate'/>",
+                Query = WhereClause + OrderByClause,
+                QueryThrottleMode = SPQueryThrottleOption.Override
+            };
 
-            DateTime today = DateTime.Today;
-            DateTime date = eventDate.Value.Date;
+            if (page > 1)
+                query.ListItemCollectionPosition =
+                    LandingPageHelper.GetPagePosition(list, WhereClause, page, OrderByClause);
 
-            if (date < today)
+            return query;
+        }
+
+        // ── Pagination ───────────────────────────────────────────────────────────
+        private void RenderPagination(SPList list, int currentPage)
+        {
+            int totalItems = LandingPageHelper.GetFilteredItemCount(list, WhereClause);
+            string paginationHtml = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
+
+            bool hasMultiplePages = !string.IsNullOrEmpty(paginationHtml);
+
+            litPagination.Text = paginationHtml;
+            litPagination.Visible = hasMultiplePages;
+            lblPrevText.Visible = hasMultiplePages;
+            lblNextText.Visible = hasMultiplePages;
+
+            if (hasMultiplePages)
             {
-                return ("انتهت", "Ended", "status-inactive");
-            }
-            else if (date > today)
-            {
-                return ("قادمة", "Upcoming", "status-active");
-            }
-            else
-            {
-                return ("حالية", "Current", "status-active");
+                lblPrevText.Text = LandingPageHelper.PrevText;
+                lblNextText.Text = LandingPageHelper.NextText;
             }
         }
+
+        // ── Event status ─────────────────────────────────────────────────────────
+        private static (string Ar, string En, string CssClass) CalculateEventStatus(
+            DateTime? eventDate)
+        {
+            if (!eventDate.HasValue)
+                return ("غير محدد", "Not specified", "status-active");
+
+            DateTime date = eventDate.Value.Date;
+            DateTime today = DateTime.Today;
+
+            if (date < today) return ("انتهت", "Ended", "status-inactive");
+            if (date > today) return ("قادمة", "Upcoming", "status-active");
+            return ("حالية", "Current", "status-active");
+        }
+
+        // ── List resolution ──────────────────────────────────────────────────────
+        private SPList ResolveTargetList(SPWeb web) =>
+            LandingPageHelper.TryGetList(web, "Pages")
+            ?? LandingPageHelper.TryGetList(web, "الصفحات");
     }
 
+    // ── View model ───────────────────────────────────────────────────────────────
     public class EventItemModel
     {
         public string Title { get; set; }
@@ -129,10 +161,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.WorkshopArchive
         public string EventDate { get; set; }
         public string EventUrl { get; set; }
         public string ImgPath { get; set; }
-
         public string StatusText { get; set; }
         public string StatusClass { get; set; }
-
         public string ButtonText { get; set; }
         public bool DisableButton { get; set; }
     }

@@ -4,93 +4,137 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
-using EXIM.Common.Lib.Utils;
+using EXIM.Common.Lib.SPHelpers;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.StoryArchive
 {
     public partial class StoryArchiveControl : UserControl
     {
+        private const string DefaultImage =
+    "/PublishingImages/DefaultImages/SuccessStoryDefaultImg.png";
 
-
+        // Success-story pages are filtered on EXIM_ShowInArchive.
         private const string WhereClause =
             "<Where><Eq><FieldRef Name='EXIM_ShowInArchive'/><Value Type='Boolean'>1</Value></Eq></Where>";
-        private const string OrderbyClause = "<OrderBy> <FieldRef Name='EXIM_ItemOrder' Ascending='true' /> <FieldRef Name ='Created' Ascending='False' /> </OrderBy>";
 
+        private const string OrderByClause =
+            "<OrderBy>" +
+                "<FieldRef Name='EXIM_ItemOrder' Ascending='False'/>" +
+                "<FieldRef Name='Created'        Ascending='False'/>" +
+            "</OrderBy>";
+
+        // ── Lifecycle ────────────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-                BindItems();
+            if (IsPostBack) return;
+
+            BindItems();
         }
 
-        private const string DefaultImage = "/PublishingImages/DefaultImages/SuccessStoryDefaultImg.png";
-
+        // ── Data binding ─────────────────────────────────────────────────────────
         private void BindItems()
         {
             SPWeb web = SPContext.Current.Web;
-            SPList list = ResolveTargetList(web);// web.Lists.TryGetList("Pages");
+            SPList list = ResolveTargetList(web);
 
-            if (list == null) return;
-
-            var data = new List<StoryItemModel>();
+            if (list == null)
+            {
+                LandingPageHelper.LogError("StoryArchiveControl: target list not found.");
+                return;
+            }
 
             try
             {
-                SPQuery query = new SPQuery
-                {
-                    RowLimit = (uint)LandingPageHelper.PageSize,
-                    ViewFields =
-                        "<FieldRef Name='Title'/>" +
-                        "<FieldRef Name='Comments'/>" +
-                        "<FieldRef Name='FileRef'/>" +
-                        "<FieldRef Name='PublishingRollupImage'/>" +
-                        "<FieldRef Name='Exim_SecondaryImage'/>" +
-                        "<FieldRef Name='Exim_Story_PersonOfInterest'/>" +
-                        "<FieldRef Name='Exim_Story_PersonWord'/>",
-                    Query= WhereClause+OrderbyClause
-                        
-                };
+                int currentPage = LandingPageHelper.GetCurrentPage(Request);
+                SPQuery query = BuildPagedQuery(list, currentPage);
 
+                string buttonText = LandingPageHelper.ButtonText;
+
+                var dataSource = new List<StoryItemModel>();
                 foreach (SPListItem item in list.GetItems(query))
-                {
-                    data.Add(MapItem(item));
-                }
+                    dataSource.Add(MapItem(item, buttonText));
 
-                rptItems.DataSource = data;
+                rptItems.DataSource = dataSource;
                 rptItems.DataBind();
+
+                RenderPagination(list, currentPage);
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError("StoryControl.BindItems: " + ex.Message);
+                LandingPageHelper.LogError(
+                    $"StoryArchiveControl.BindItems failed: {ex.Message}");
             }
         }
 
-        private StoryItemModel MapItem(SPListItem item)
+        private static StoryItemModel MapItem(SPListItem item, string buttonText)
         {
-            string img = LandingPageHelper.ExtractImageSrc(
-                item["PublishingRollupImage"]?.ToString(), DefaultImage);
-
-            string logo = LandingPageHelper.ExtractImageSrc(
-                item["Exim_SecondaryImage"]?.ToString(), DefaultImage);
-
             return new StoryItemModel
             {
-                Title = item["Title"]?.ToString() ?? "",
-                Description = item["Comments"]?.ToString() ?? "",
+                Title = item["Title"]?.ToString() ?? string.Empty,
+                Description = item["Comments"]?.ToString() ?? string.Empty,
                 ItemUrl = item["FileRef"]?.ToString() ?? "#",
-                ImgPath = img,
-                LogoPath = logo,
-                PersonName = item["Exim_Story_PersonOfInterest"]?.ToString() ?? "",
-                PersonWord = item["Exim_Story_PersonWord"]?.ToString() ?? "",
-                ButtonText = LandingPageHelper.IsEnglish() ? "Learn more" : "معرفة المزيد"
+                ImgPath = LandingPageHelper.ExtractImageSrc(
+                                 item["PublishingRollupImage"]?.ToString(), DefaultImage),
+                LogoPath = LandingPageHelper.ExtractImageSrc(
+                                 item["Exim_SecondaryImage"]?.ToString(), DefaultImage),
+                PersonName = item["Exim_Story_PersonOfInterest"]?.ToString() ?? string.Empty,
+                PersonWord = item["Exim_Story_PersonWord"]?.ToString() ?? string.Empty,
+                ButtonText = buttonText
             };
         }
+
+        // ── CAML helpers ─────────────────────────────────────────────────────────
+        private static SPQuery BuildPagedQuery(SPList list, int page)
+        {
+            var query = new SPQuery
+            {
+                RowLimit = (uint)LandingPageHelper.PageSize,
+                ViewFields =
+                    "<FieldRef Name='Title'/>" +
+                    "<FieldRef Name='Comments'/>" +
+                    "<FieldRef Name='FileRef'/>" +
+                    "<FieldRef Name='PublishingRollupImage'/>" +
+                    "<FieldRef Name='Exim_SecondaryImage'/>" +
+                    "<FieldRef Name='Exim_Story_PersonOfInterest'/>" +
+                    "<FieldRef Name='Exim_Story_PersonWord'/>",
+                Query = WhereClause + OrderByClause,
+                QueryThrottleMode = SPQueryThrottleOption.Override
+            };
+
+            if (page > 1)
+                query.ListItemCollectionPosition =
+                    LandingPageHelper.GetPagePosition(list, WhereClause, page, OrderByClause);
+
+            return query;
+        }
+
+        // ── Pagination ───────────────────────────────────────────────────────────
+        private void RenderPagination(SPList list, int currentPage)
+        {
+            int totalItems = LandingPageHelper.GetFilteredItemCount(list, WhereClause);
+            string paginationHtml = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
+
+            bool hasMultiplePages = !string.IsNullOrEmpty(paginationHtml);
+
+            litPagination.Text = paginationHtml;
+            litPagination.Visible = hasMultiplePages;
+            lblPrevText.Visible = hasMultiplePages;
+            lblNextText.Visible = hasMultiplePages;
+
+            if (hasMultiplePages)
+            {
+                lblPrevText.Text = LandingPageHelper.PrevText;
+                lblNextText.Text = LandingPageHelper.NextText;
+            }
+        }
+
+        // ── List resolution ──────────────────────────────────────────────────────
         private SPList ResolveTargetList(SPWeb web) =>
-               LandingPageHelper.TryGetList(web, "Pages")
-               ?? LandingPageHelper.TryGetList(web, "الصفحات");
-
-
+            LandingPageHelper.TryGetList(web, "Pages")
+            ?? LandingPageHelper.TryGetList(web, "الصفحات");
     }
 
+    // ── View model ───────────────────────────────────────────────────────────────
     public class StoryItemModel
     {
         public string Title { get; set; }

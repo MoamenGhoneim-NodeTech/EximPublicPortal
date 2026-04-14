@@ -2,7 +2,7 @@
 using System.Web;
 using Microsoft.SharePoint;
 
-namespace EXIM.Common.Lib.Utils
+namespace EXIM.Common.Lib.SPHelpers
 {
     /// <summary>
     /// Shared utility class for landing-page and archive web-part controls.
@@ -171,4 +171,5 @@ namespace EXIM.Common.Lib.Utils
         public static void LogError(string message) =>
             System.Diagnostics.Trace.TraceError($"[EXIM.Portal] {message}");
     }
+
 }

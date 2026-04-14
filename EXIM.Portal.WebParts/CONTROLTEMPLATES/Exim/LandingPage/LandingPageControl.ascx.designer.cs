@@ -24,6 +24,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         protected global::System.Web.UI.WebControls.Repeater rptItems;
 
         /// <summary>
+        /// lblPrevText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPrevText;
+
+        /// <summary>
         /// litPagination control.
         /// </summary>
         /// <remarks>
@@ -31,5 +40,14 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litPagination;
+
+        /// <summary>
+        /// lblNextText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNextText;
     }
 }

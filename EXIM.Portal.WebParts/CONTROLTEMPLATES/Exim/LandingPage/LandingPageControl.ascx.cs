@@ -4,14 +4,15 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.SharePoint;
 using System.Web.UI.WebControls.WebParts;
-using EXIM.Common.Lib.Utils;
+using EXIM.Common.Lib.SPHelpers;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
 {
+
     public partial class LandingPageControl : UserControl
     {
         private const string DefaultImage =
-    "/PublishingImages/DefaultImages/LandingDefaultImg.png";
+            "/PublishingImages/DefaultImages/LandingDefaultImg.png";
 
         // Resolved once per request in Page_Load; reused by all helpers.
         private SPList _list;
@@ -22,6 +23,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
             if (IsPostBack) return;
 
             _list = ResolveTargetList(SPContext.Current.Web);
+
+            if (_list == null)
+            {
+                LandingPageHelper.LogError("LandingPageControl: target list not found.");
+                return;
+            }
+
             BindItems();
             RenderPagination();
         }
@@ -46,8 +54,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
                 var query = new SPQuery
                 {
                     RowLimit = (uint)LandingPageHelper.PageSize,
-                    Query = whereClause
-                             + "<OrderBy><FieldRef Name='EXIM_ItemOrder' Ascending='true'/></OrderBy>"
+                    Query = whereClause +
+                               "<OrderBy><FieldRef Name='EXIM_ItemOrder' Ascending='true'/></OrderBy>",
+                    QueryThrottleMode = SPQueryThrottleOption.Override
                 };
 
                 if (currentPage > 1)
@@ -97,7 +106,20 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         {
             int totalItems = LandingPageHelper.GetFilteredItemCount(_list, WhereClause);
             int currentPage = LandingPageHelper.GetCurrentPage(Request);
-            litPagination.Text = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
+            string paginationHtml = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
+
+            bool hasMultiplePages = !string.IsNullOrEmpty(paginationHtml);
+
+            litPagination.Text = paginationHtml;
+            litPagination.Visible = hasMultiplePages;
+            lblPrevText.Visible = hasMultiplePages;
+            lblNextText.Visible = hasMultiplePages;
+
+            if (hasMultiplePages)
+            {
+                lblPrevText.Text = LandingPageHelper.PrevText;
+                lblNextText.Text = LandingPageHelper.NextText;
+            }
         }
 
         // ── CAML helpers ─────────────────────────────────────────────────────────
@@ -139,4 +161,5 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         public string ImgPath { get; set; }
         public string ButtonText { get; set; }
     }
+
 }

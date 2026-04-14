@@ -7,6 +7,7 @@
 <%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="StoryArchiveControl.ascx.cs" Inherits="EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.StoryArchive.StoryArchiveControl" %>
 
+<%-- Items grid --%>
 <div class="row study-items-item g-4">
 
     <asp:Repeater ID="rptItems" runat="server">
@@ -15,14 +16,14 @@
             <div class="story-item pagingItem">
 
                 <div class="story-item--img">
-                    <a href="<%# Eval("ItemUrl") %>" class="story-item--img-container">
-                        <img src="<%# Eval("ImgPath") %>" alt="<%# Eval("Title") %>" />
+                    <a href='<%# Eval("ItemUrl") %>' class="story-item--img-container">
+                        <img src='<%# Eval("ImgPath") %>' alt='<%# Eval("Title") %>' />
                     </a>
                 </div>
 
                 <div class="story-logo">
-                    <a href="<%# Eval("ItemUrl") %>">
-                        <img src="<%# Eval("LogoPath") %>" alt="<%# Eval("Title") %>" />
+                    <a href='<%# Eval("ItemUrl") %>'>
+                        <img src='<%# Eval("LogoPath") %>' alt='<%# Eval("Title") %>' />
                     </a>
                 </div>
 
@@ -39,7 +40,7 @@
                     </div>
 
                     <div class="story-action">
-                        <a href="<%# Eval("ItemUrl") %>" class="btn btn-primary">
+                        <a href='<%# Eval("ItemUrl") %>' class="btn btn-primary">
                             <%# Eval("ButtonText") %>
                         </a>
                     </div>
@@ -51,4 +52,11 @@
         </ItemTemplate>
     </asp:Repeater>
 
+</div>
+
+<%-- Pagination — rendered entirely by BuildPaginationHtml in the code-behind --%>
+<div class="pagination-wrapper">
+    <asp:Label   ID="lblPrevText"   runat="server" CssClass="prev-text" Visible="false" />
+    <asp:Literal ID="litPagination" runat="server" />
+    <asp:Label   ID="lblNextText"   runat="server" CssClass="next-text" Visible="false" />
 </div>

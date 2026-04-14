@@ -92,6 +92,34 @@
     <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
       <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx.cs">
+      <DependentUpon>DocumentsControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx.designer.cs">
+      <DependentUpon>DocumentsControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx.cs">
+      <DependentUpon>EligibilityCheckControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx.designer.cs">
+      <DependentUpon>EligibilityCheckControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.cs">
+      <DependentUpon>FAQControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.designer.cs">
+      <DependentUpon>FAQControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.cs">
+      <DependentUpon>FundingControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.designer.cs">
+      <DependentUpon>FundingControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx.cs">
       <DependentUpon>HomePageControls.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -155,6 +183,13 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx.designer.cs">
       <DependentUpon>LabelMessage.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx.cs">
+      <DependentUpon>SectorsArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx.designer.cs">
+      <DependentUpon>SectorsArchiveControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.cs">
       <DependentUpon>SiteMapWPUserControl.ascx</DependentUpon>
@@ -238,6 +273,10 @@
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx" />
@@ -245,6 +284,7 @@
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />

@@ -20,6 +20,10 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx" />
@@ -27,6 +31,7 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />

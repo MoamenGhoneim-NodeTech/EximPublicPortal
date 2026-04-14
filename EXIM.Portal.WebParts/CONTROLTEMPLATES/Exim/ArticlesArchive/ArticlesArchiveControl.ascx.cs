@@ -5,16 +5,18 @@ using System.Web.UI.WebControls.WebParts;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.WebControls;
 using System.Collections.Generic;
-using EXIM.Common.Lib.Utils;
+using EXIM.Common.Lib.SPHelpers;
+
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
 {
     public partial class ArticlesArchiveControl : UserControl
     {
-        
         // Pages lists always filter on EXIM_ShowInArchive.
         private const string WhereClause =
             "<Where><Eq><FieldRef Name='EXIM_ShowInArchive'/><Value Type='Boolean'>1</Value></Eq></Where>";
-        private const string OrderbyClause = "<OrderBy> <FieldRef Name='ArticleStartDate' Ascending='False' /> </OrderBy>";
+
+        private const string OrderByClause =
+            "<OrderBy><FieldRef Name='ArticleStartDate' Ascending='False'/></OrderBy>";
 
         // ── Lifecycle ────────────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
@@ -42,14 +44,17 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
                 int currentPage = LandingPageHelper.GetCurrentPage(Request);
                 SPQuery query = BuildPagedQuery(list, currentPage);
 
-                var dataSource = new List<object>();
+                string buttonText = LandingPageHelper.ButtonText;
+
+                var dataSource = new List<ArticleItemModel>();
                 foreach (SPListItem item in list.GetItems(query))
                 {
-                    dataSource.Add(new
+                    dataSource.Add(new ArticleItemModel
                     {
-                        Title = item["Title"] as string ?? string.Empty,
-                        Comments = item["Comments"] as string ?? string.Empty,
-                        FileRef = item["FileRef"] as string ?? "#"
+                        Title = item["Title"]?.ToString() ?? string.Empty,
+                        Comments = item["Comments"]?.ToString() ?? string.Empty,
+                        FileRef = item["FileRef"]?.ToString() ?? "#",
+                        ButtonText = buttonText
                     });
                 }
 
@@ -75,15 +80,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
                     "<FieldRef Name='Title'/>" +
                     "<FieldRef Name='Comments'/>" +
                     "<FieldRef Name='FileRef'/>",
-                Query =
-                    WhereClause +
-                  OrderbyClause,
+                Query = WhereClause + OrderByClause,
                 QueryThrottleMode = SPQueryThrottleOption.Override
             };
 
             if (page > 1)
                 query.ListItemCollectionPosition =
-                    LandingPageHelper.GetPagePosition(list, WhereClause, page ,OrderbyClause);
+                    LandingPageHelper.GetPagePosition(list, WhereClause, page, OrderByClause);
 
             return query;
         }
@@ -91,7 +94,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
         // ── Pagination ───────────────────────────────────────────────────────────
         private void RenderPagination(SPList list, int currentPage)
         {
-            // Use filtered count (not list.ItemCount) for an accurate page total.
             int totalItems = LandingPageHelper.GetFilteredItemCount(list, WhereClause);
             string paginationHtml = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
 
@@ -113,6 +115,14 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
         private SPList ResolveTargetList(SPWeb web) =>
             LandingPageHelper.TryGetList(web, "Pages")
             ?? LandingPageHelper.TryGetList(web, "الصفحات");
-    
-}
+    }
+
+    // ── View model ───────────────────────────────────────────────────────────────
+    public class ArticleItemModel
+    {
+        public string Title { get; set; }
+        public string Comments { get; set; }
+        public string FileRef { get; set; }
+        public string ButtonText { get; set; }
+    }
 }

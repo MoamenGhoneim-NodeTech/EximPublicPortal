@@ -7,6 +7,7 @@
 <%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ArticlesArchiveControl.ascx.cs" Inherits="EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive.ArticlesArchiveControl" %>
 
+
 <%-- Items grid --%>
 <div class="row study-items-item g-4">
     <asp:Repeater ID="rptStudyItems" runat="server">
@@ -19,7 +20,7 @@
                     <p><%# Eval("Comments") %></p>
                     <div class="study-action">
                         <a href='<%# Eval("FileRef") %>' class="btn btn-primary">
-                            <%# EXIM.Common.Lib.Utils.LandingPageHelper.ButtonText %>
+                            <%# Eval("ButtonText") %>
                             <i class="ic-more-link"></i>
                         </a>
                     </div>
@@ -35,4 +36,3 @@
     <asp:Literal ID="litPagination" runat="server" />
     <asp:Label   ID="lblNextText"   runat="server" CssClass="next-text" Visible="false" />
 </div>
-
