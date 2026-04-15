@@ -62,7 +62,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.YearlyReports
             string encoded = HttpUtility.UrlEncode(itemUrl);
 
             // Build the report-details URL relative to the current page location.
-            string currentPath = HttpContext.Current.Request.Url.AbsolutePath.ToLower();
+            string currentPath = HttpContext.Current.Request.RawUrl.ToLower();
             string reportDetailsUrl = currentPath.Contains("/pages/")
                 ? "reportDetails.aspx?src=" + encoded
                 : "Reports/Pages/reportDetails.aspx?src=" + encoded;

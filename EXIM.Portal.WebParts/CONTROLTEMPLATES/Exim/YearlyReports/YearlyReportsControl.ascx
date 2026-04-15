@@ -50,7 +50,7 @@
 
 </div>
 
-<%-- Pagination — rendered entirely by BuildPaginationHtml in the code-behind --%>
+<%-- Pagination --%>
 <div class="pagination-wrapper">
     <asp:Label   ID="lblPrevText"   runat="server" CssClass="prev-text" Visible="false" />
     <asp:Literal ID="litPagination" runat="server" />

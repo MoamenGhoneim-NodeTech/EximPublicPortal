@@ -8,14 +8,17 @@
     <Assembly Location="EXIM.Portal.WebParts.dll" DeploymentTarget="WebApplication">
       <SafeControls>
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts" TypeName="*" />
+        <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.LandingPageWebpart" TypeName="*" />
       </SafeControls>
     </Assembly>
   </Assemblies>
   <TemplateFiles>
+    <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\LandingPageWebpart\LandingPageWebpartUserControl.ascx" />
     <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
@@ -26,7 +29,6 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
-    <TemplateFile Location="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />

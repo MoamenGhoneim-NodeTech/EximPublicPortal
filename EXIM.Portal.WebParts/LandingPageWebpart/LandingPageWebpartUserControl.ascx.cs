@@ -6,20 +6,19 @@ using Microsoft.SharePoint;
 using System.Web.UI.WebControls.WebParts;
 using EXIM.Common.Lib.SPHelpers;
 
-namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
+namespace EXIM.Portal.WebParts.LandingPageWebpart
 {
-
-    public partial class LandingPageControl : UserControl
+    public partial class LandingPageWebpartUserControl : UserControl
     {
-        private const string DefaultImage =
-            "/PublishingImages/DefaultImages/LandingDefaultImg.png";
-
-        // Resolved once per request in Page_Load; reused by all helpers.
+       private const string DefaultImage =
+             "/PublishingImages/DefaultImages/LandingDefaultImg.png";
+        public LandingPageWebpart WebPartRef { get; set; }
         private SPList _list;
 
         // ── Lifecycle ────────────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (IsPostBack) return;
 
             _list = ResolveTargetList(SPContext.Current.Web);
@@ -139,12 +138,20 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         }
 
         // ── List resolution ──────────────────────────────────────────────────────
-        private SPList ResolveTargetList(SPWeb web) =>
-            LandingPageHelper.TryGetList(web, "SubSites")
-            ?? LandingPageHelper.TryGetList(web, "Services")
-            ?? LandingPageHelper.TryGetList(web, "Pages")
-            ?? LandingPageHelper.TryGetList(web, "الصفحات");
+        private SPList ResolveTargetList(SPWeb web)
+        {
+            // If TargetListTitle property is set, try it first
+            if (!string.IsNullOrEmpty(WebPartRef.TargetlistTitle))
+            {
+                var explicitList = LandingPageHelper.TryGetList(web, WebPartRef.TargetlistTitle);
+                if (explicitList != null)
+                    return explicitList;
+            }
 
+            // Fall back to default list names
+            return LandingPageHelper.TryGetList(web, "Pages")
+                ?? LandingPageHelper.TryGetList(web, "الصفحات");
+        }
         // ── Repeater hook ────────────────────────────────────────────────────────
         protected void rptItems_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
@@ -161,5 +168,4 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         public string ImgPath { get; set; }
         public string ButtonText { get; set; }
     }
-
 }

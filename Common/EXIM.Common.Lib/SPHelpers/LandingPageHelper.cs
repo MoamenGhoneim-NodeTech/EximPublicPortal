@@ -5,9 +5,7 @@ using Microsoft.SharePoint;
 namespace EXIM.Common.Lib.SPHelpers
 {
     /// <summary>
-    /// Shared utility class for landing-page and archive web-part controls.
-    /// Centralises language detection, SharePoint list resolution,
-    /// server-side paging, and pagination HTML generation.
+    /// Shared utility class for landing-pages 
     /// </summary>
     public static class LandingPageHelper
     {
@@ -26,10 +24,6 @@ namespace EXIM.Common.Lib.SPHelpers
         public static string NextText => IsEnglish() ? "Next" : "التالي";
 
         // ── Paging ───────────────────────────────────────────────────────────────
-        /// <summary>
-        /// Reads the current 1-based page number from the supplied query-string.
-        /// Returns 1 when the parameter is absent or invalid.
-        /// </summary>
         public static int GetCurrentPage(HttpRequest request)
         {
             int page;
@@ -40,12 +34,6 @@ namespace EXIM.Common.Lib.SPHelpers
         public const string DefaultOrderByClause =
             "<OrderBy><FieldRef Name='EXIM_ItemOrder' Ascending='true'/></OrderBy>";
 
-        /// <summary>
-        /// Walks through pages to locate the correct
-        /// <see cref="SPListItemCollectionPosition"/> for <paramref name="targetPage"/>.
-        /// When <paramref name="orderByClause"/> is null or empty the default
-        /// EXIM_ItemOrder ascending clause is used.
-        /// </summary>
         public static SPListItemCollectionPosition GetPagePosition(
             SPList list, string whereClause, int targetPage,
             string orderByClause = null)
@@ -74,10 +62,6 @@ namespace EXIM.Common.Lib.SPHelpers
             return position;
         }
 
-        /// <summary>
-        /// Returns the filtered item count using a minimal (ID-only) CAML query
-        /// so no content fields are transferred over the wire.
-        /// </summary>
         public static int GetFilteredItemCount(SPList list, string whereClause)
         {
             try
@@ -96,10 +80,7 @@ namespace EXIM.Common.Lib.SPHelpers
             catch { return 0; }
         }
 
-        /// <summary>
-        /// Builds the HTML pagination strip and returns it as a string.
-        /// Returns <see cref="string.Empty"/> when the total fits on one page.
-        /// </summary>
+        
         public static string BuildPaginationHtml(int totalItems, int currentPage)
         {
             int totalPages = (int)Math.Ceiling((double)totalItems / PageSize);
@@ -128,11 +109,6 @@ namespace EXIM.Common.Lib.SPHelpers
             return html.ToString();
         }
 
-        // ── Image helpers ────────────────────────────────────────────────────────
-        /// <summary>
-        /// Parses the src attribute out of a SharePoint PublishingRollupImage HTML string.
-        /// Returns <paramref name="defaultImage"/> when the field is empty or unparseable.
-        /// </summary>
         public static string ExtractImageSrc(string rollupImageHtml, string defaultImage)
         {
             if (string.IsNullOrEmpty(rollupImageHtml)) return defaultImage;
@@ -150,10 +126,7 @@ namespace EXIM.Common.Lib.SPHelpers
         }
 
         // ── List resolution ──────────────────────────────────────────────────────
-        /// <summary>
-        /// Attempts to retrieve a SharePoint list by name.
-        /// Returns <c>null</c> and traces an error if the list is not found.
-        /// </summary>
+     
         public static SPList TryGetList(SPWeb web, string listName)
         {
             try
@@ -171,5 +144,7 @@ namespace EXIM.Common.Lib.SPHelpers
         public static void LogError(string message) =>
             System.Diagnostics.Trace.TraceError($"[EXIM.Portal] {message}");
     }
+
+
 
 }

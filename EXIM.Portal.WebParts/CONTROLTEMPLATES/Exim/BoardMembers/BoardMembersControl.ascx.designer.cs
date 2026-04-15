@@ -7,47 +7,38 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
+namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.BoardMembers
 {
 
 
-    public partial class LandingPageControl
+    public partial class BoardMembersControl
     {
 
         /// <summary>
-        /// rptItems control.
+        /// litAboutText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptItems;
+        protected global::System.Web.UI.WebControls.Literal litAboutText;
 
         /// <summary>
-        /// lblPrevText control.
+        /// litBoardText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPrevText;
+        protected global::System.Web.UI.WebControls.Literal litBoardText;
 
         /// <summary>
-        /// litPagination control.
+        /// rptBoardMembers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litPagination;
-
-        /// <summary>
-        /// lblNextText control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNextText;
+        protected global::System.Web.UI.WebControls.Repeater rptBoardMembers;
     }
 }

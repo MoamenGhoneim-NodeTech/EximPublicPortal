@@ -31,13 +31,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var svc = new HomeDataService(web, isArabic);
                 var model = svc.BuildViewModel();
 
-                // ── 2. Populate Literal controls (mirrors JS Bind* functions) ─
+                // ── 2. Populate Literal controls (=) ─
 
                 litBanners.Text = HomeHtmlRenderer.RenderBanners(model.Banners, isArabic);
                 litFinancialSolutions.Text = HomeHtmlRenderer.RenderFinancialSolutions(model.FinancialSolutions, isArabic);
                 litHomeNumbers.Text = HomeHtmlRenderer.RenderHomeNumbers(model.HomeNumbers, isArabic);
 
-                // Stories: hide the whole panel when fewer than 3 items (mirrors JS)
+                // Stories: hide the whole panel when fewer than 3 items 
                 if (model.Stories != null && model.Stories.Count >= 3)
                 {
                     var (firstStory, otherStories) = HomeHtmlRenderer.RenderStories(model.Stories, isArabic, lang);
@@ -85,9 +85,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             navsLiteral.Text = navs;
         }
 
-        /// <summary>
-        /// Mirrors JS currLang: 1033 = EN, 1025 = AR (set by SharePoint MUI pipeline).
-        /// </summary>
+       
         private static bool ResolveIsArabic(SPWeb web)
         {
             var lcid = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
@@ -456,7 +454,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
         private static int GetInt(SPListItem i, string f) { try { return Convert.ToInt32(i[f] ?? 0); } catch { return 0; } }
         private static bool GetBool(SPListItem i, string f) { try { return Convert.ToBoolean(i[f] ?? false); } catch { return false; } }
 
-        // Mirrors JS isVisible(): treat missing field as visible
+        // treat missing field as visible
         private static bool IsVisible(SPListItem i)
         {
             try { var v = i["EXIM_IsVisible"]; return v == null || Convert.ToBoolean(v); }
@@ -692,7 +690,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
         // ── Shared utilities ─────────────────────────────────────────────────
 
-        // Mirrors JS extractImgSrc(): pulls src="..." from a PublishingRollupImage HTML blob
         private static string ImgSrc(string raw)
         {
             if (string.IsNullOrWhiteSpace(raw)) return "";
@@ -700,11 +697,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return m.Success ? m.Groups[1].Value : raw.Trim();
         }
 
-        // Mirrors JS getTitle/getUrl localisation: prefer AR field when isArabic
+       
         private static string L(string en, string ar, bool isArabic) =>
             isArabic ? (ar.HasVal() ? ar : en) : en ?? "";
 
-        // Mirrors JS date formatting: "DD/MM/YYYY" → "1 January 2024" / "1 يناير 2024"
         private static string FormatDate(string raw, CultureInfo culture)
         {
             if (string.IsNullOrWhiteSpace(raw)) return "";
@@ -724,7 +720,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
     //  STRING EXTENSIONS
     // ═════════════════════════════════════════════════════════════════════════
 
-    internal static class Sx
+    internal static class StringExtensions
     {
         public static bool HasVal(this string s) => !string.IsNullOrWhiteSpace(s);
         public static string Or(this string s, string fallback) => s.HasVal() ? s : fallback;
