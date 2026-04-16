@@ -4,6 +4,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
+using EXIM.Common.Lib.SPHelpers;
 using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.NewsArchive
@@ -16,7 +17,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.NewsArchive
         // News pages are always filtered on EXIM_ShowInArchive.
         private const string WhereClause =
             "<Where><Eq><FieldRef Name='EXIM_ShowInArchive'/><Value Type='Boolean'>1</Value></Eq></Where>";
-        private const string OrderbyClause = "<OrderBy> <FieldRef Name='ArticleStartDate' Ascending='False' /> </OrderBy>";
+
+        private const string OrderByClause =
+            "<OrderBy><FieldRef Name='ArticleStartDate' Ascending='False'/></OrderBy>";
 
         // ── Lifecycle ────────────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
@@ -34,7 +37,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.NewsArchive
 
             if (list == null)
             {
-                LandingPageHelper.LogError("NewsArchiveControl: target list not found.");
+                LogService.LogException("NewsArchiveControl: target list not found.");
                 return;
             }
 
@@ -54,14 +57,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.NewsArchive
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"NewsArchiveControl.BindItems failed: {ex.Message}");
             }
         }
 
-        private NewsItemModel MapItem(SPListItem item)
+        private static NewsItemModel MapItem(SPListItem item)
         {
-            // ArticleStartDate is a DateTime field — format it as a plain date string.
             string rawDate = item["ArticleStartDate"]?.ToString() ?? string.Empty;
             string articleDate = string.Empty;
             if (!string.IsNullOrEmpty(rawDate) &&
@@ -78,7 +80,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.NewsArchive
                 ArticleDate = articleDate,
                 ImgPath = LandingPageHelper.ExtractImageSrc(
                                   item["PublishingRollupImage"]?.ToString(), DefaultImage),
-                ButtonText = LandingPageHelper.IsEnglish() ? "News" : "أخبار"
+                // Use the centralised helper instead of a hardcoded string.
+                ButtonText = LandingPageHelper.NewsCategoryText
             };
         }
 
@@ -94,14 +97,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.NewsArchive
                     "<FieldRef Name='FileRef'/>" +
                     "<FieldRef Name='ArticleStartDate'/>" +
                     "<FieldRef Name='PublishingRollupImage'/>",
-                Query =
-                    WhereClause + OrderbyClause,
+                Query = WhereClause + OrderByClause,
                 QueryThrottleMode = SPQueryThrottleOption.Override
             };
 
             if (page > 1)
                 query.ListItemCollectionPosition =
-                    LandingPageHelper.GetPagePosition(list, WhereClause, page, OrderbyClause);
+                    LandingPageHelper.GetPagePosition(list, WhereClause, page, OrderByClause);
 
             return query;
         }

@@ -3,5 +3,7 @@
   <ElementManifests>
     <ElementManifest Location="ControlLoaderWebPart\Elements.xml" />
     <ElementFile Location="ControlLoaderWebPart\ControlLoaderWebPart.webpart" />
+    <ElementManifest Location="LandingPageWebpart\Elements.xml" />
+    <ElementFile Location="LandingPageWebpart\LandingPageWebpart.webpart" />
   </ElementManifests>
 </Feature>

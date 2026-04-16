@@ -57,12 +57,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlLoaderWebPart\ControlLoaderWebPart.cs" />
+    <Compile Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx.cs">
+      <DependentUpon>AnnouncementsArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx.designer.cs">
+      <DependentUpon>AnnouncementsArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.cs">
       <DependentUpon>ArticlesArchiveControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.designer.cs">
       <DependentUpon>ArticlesArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx.cs">
+      <DependentUpon>BoardMembersControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx.designer.cs">
+      <DependentUpon>BoardMembersControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx.cs">
       <DependentUpon>ConsultationRequest.ascx</DependentUpon>
@@ -85,6 +99,34 @@
     <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
       <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx.cs">
+      <DependentUpon>DocumentsControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx.designer.cs">
+      <DependentUpon>DocumentsControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx.cs">
+      <DependentUpon>EligibilityCheckControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx.designer.cs">
+      <DependentUpon>EligibilityCheckControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.cs">
+      <DependentUpon>FAQControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.designer.cs">
+      <DependentUpon>FAQControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.cs">
+      <DependentUpon>FundingControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.designer.cs">
+      <DependentUpon>FundingControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx.cs">
       <DependentUpon>HomePageControls.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -103,13 +145,6 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx.designer.cs">
       <DependentUpon>InvitationForm.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx.cs">
-      <DependentUpon>LandingPageControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx.designer.cs">
-      <DependentUpon>LandingPageControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx.cs">
       <DependentUpon>NewsArchiveControl.ascx</DependentUpon>
@@ -149,12 +184,26 @@
     <Compile Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx.designer.cs">
       <DependentUpon>LabelMessage.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx.cs">
+      <DependentUpon>SectorsArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx.designer.cs">
+      <DependentUpon>SectorsArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.cs">
       <DependentUpon>SiteMapWPUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.designer.cs">
       <DependentUpon>SiteMapWPUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx.cs">
+      <DependentUpon>StoryArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx.designer.cs">
+      <DependentUpon>StoryArchiveControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.cs">
       <DependentUpon>ReportAViolation.ascx</DependentUpon>
@@ -163,12 +212,34 @@
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.designer.cs">
       <DependentUpon>ReportAViolation.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx.cs">
+      <DependentUpon>WorkshopArchiveControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx.designer.cs">
+      <DependentUpon>WorkshopArchiveControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.cs">
       <DependentUpon>Workshop_Subscribe.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.designer.cs">
       <DependentUpon>Workshop_Subscribe.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx.cs">
+      <DependentUpon>YearlyReportsControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx.designer.cs">
+      <DependentUpon>YearlyReportsControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LandingPageWebpart\LandingPageWebpart.cs" />
+    <Compile Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx.cs">
+      <DependentUpon>LandingPageWebpartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx.designer.cs">
+      <DependentUpon>LandingPageWebpartUserControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Layouts\EXIM.Portal\Captcha.aspx.cs">
       <DependentUpon>Captcha.aspx</DependentUpon>
@@ -192,6 +263,10 @@
       <FeatureId>{efb532ac-d15d-42a4-881b-e1fa2451bc60}</FeatureId>
     </None>
     <None Include="key.snk" />
+    <None Include="LandingPageWebpart\LandingPageWebpart.webpart" />
+    <None Include="LandingPageWebpart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{40d30d54-22d5-48b0-9883-ca365a763fd2}</SharePointProjectItemId>
+    </None>
     <None Include="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <None Include="Layouts\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{fbb7974d-54f9-439b-9344-d208180e70f6}</SharePointProjectItemId>
@@ -204,20 +279,33 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\LandingPage\LandingPageControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx" />
+    <Content Include="LandingPageWebpart\Elements.xml" />
+    <Content Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx" />
     <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />
   </ItemGroup>
   <ItemGroup>

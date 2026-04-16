@@ -14,13 +14,6 @@
 	<script defer src="/Style%20Library/exim/js/homeV2.js"></script>
 	<script defer src="/Style%20Library/exim/chatbot/chatbot.js"></script>
 
-<%-- ═══════════════════════════════════════════════════════════════════════════
-     HOME PAGE USER CONTROL
-     Static structure mirrors the page layout exactly.
-     asp:Literal controls are the only injection points for dynamic data.
-     ═══════════════════════════════════════════════════════════════════════════ --%>
-
-
 <%-- ══════════════════════════════════════════════════════
      HERO / BANNERS SLIDER
      ══════════════════════════════════════════════════════ --%>

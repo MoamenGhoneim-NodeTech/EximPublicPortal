@@ -4,24 +4,32 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.SharePoint;
 using System.Web.UI.WebControls.WebParts;
+using EXIM.Common.Lib.SPHelpers;
 using EXIM.Common.Lib.Utils;
 
-namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
+namespace EXIM.Portal.WebParts.LandingPageWebpart
 {
-    public partial class LandingPageControl : UserControl
+    public partial class LandingPageWebpartUserControl : UserControl
     {
-        private const string DefaultImage =
-    "/PublishingImages/DefaultImages/LandingDefaultImg.png";
-
-        // Resolved once per request in Page_Load; reused by all helpers.
+       private const string DefaultImage =
+             "/PublishingImages/DefaultImages/LandingDefaultImg.png";
+        public LandingPageWebpart WebPartRef { get; set; }
         private SPList _list;
 
         // ── Lifecycle ────────────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (IsPostBack) return;
 
             _list = ResolveTargetList(SPContext.Current.Web);
+
+            if (_list == null)
+            {
+                LogService.LogException("LandingPageControl: target list not found.");
+                return;
+            }
+
             BindItems();
             RenderPagination();
         }
@@ -46,8 +54,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
                 var query = new SPQuery
                 {
                     RowLimit = (uint)LandingPageHelper.PageSize,
-                    Query = whereClause
-                             + "<OrderBy><FieldRef Name='EXIM_ItemOrder' Ascending='true'/></OrderBy>"
+                    Query = whereClause +
+                               "<OrderBy><FieldRef Name='EXIM_ItemOrder' Ascending='true'/></OrderBy>",
+                    QueryThrottleMode = SPQueryThrottleOption.Override
                 };
 
                 if (currentPage > 1)
@@ -59,7 +68,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"LandingPageControl.GetItems failed: {ex.Message}");
             }
 
@@ -97,7 +106,20 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         {
             int totalItems = LandingPageHelper.GetFilteredItemCount(_list, WhereClause);
             int currentPage = LandingPageHelper.GetCurrentPage(Request);
-            litPagination.Text = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
+            string paginationHtml = LandingPageHelper.BuildPaginationHtml(totalItems, currentPage);
+
+            bool hasMultiplePages = !string.IsNullOrEmpty(paginationHtml);
+
+            litPagination.Text = paginationHtml;
+            litPagination.Visible = hasMultiplePages;
+            lblPrevText.Visible = hasMultiplePages;
+            lblNextText.Visible = hasMultiplePages;
+
+            if (hasMultiplePages)
+            {
+                lblPrevText.Text = LandingPageHelper.PrevText;
+                lblNextText.Text = LandingPageHelper.NextText;
+            }
         }
 
         // ── CAML helpers ─────────────────────────────────────────────────────────
@@ -117,12 +139,20 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.LandingPage
         }
 
         // ── List resolution ──────────────────────────────────────────────────────
-        private SPList ResolveTargetList(SPWeb web) =>
-            LandingPageHelper.TryGetList(web, "SubSites")
-            ?? LandingPageHelper.TryGetList(web, "Services")
-            ?? LandingPageHelper.TryGetList(web, "Pages")
-            ?? LandingPageHelper.TryGetList(web, "الصفحات");
+        private SPList ResolveTargetList(SPWeb web)
+        {
+            // If TargetListTitle property is set, try it first
+            if (!string.IsNullOrEmpty(WebPartRef.TargetlistTitle))
+            {
+                var explicitList = LandingPageHelper.TryGetList(web, WebPartRef.TargetlistTitle);
+                if (explicitList != null)
+                    return explicitList;
+            }
 
+            // Fall back to default list names
+            return LandingPageHelper.TryGetList(web, "Pages")
+                ?? LandingPageHelper.TryGetList(web, "الصفحات");
+        }
         // ── Repeater hook ────────────────────────────────────────────────────────
         protected void rptItems_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
