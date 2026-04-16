@@ -12,6 +12,10 @@ namespace EXIM.Common.Lib.Utils
             log.Fatal("Unexpected Exception: " + ex.ToString());
         }
 
+        public static void LogException(string  exceptionMessge)
+        {
+            log.Fatal(exceptionMessge);
+        }
         public static void LogInfo(string text)
         {
             log.Info(text);

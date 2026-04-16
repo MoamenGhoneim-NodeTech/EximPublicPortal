@@ -5,6 +5,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.AnnouncementsArchive
 {
@@ -33,7 +34,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.AnnouncementsArchive
 
             if (list == null)
             {
-                LandingPageHelper.LogError("AnnouncementsArchiveControl: target list not found.");
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.AnnouncementsArchive
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"AnnouncementsArchiveControl.BindItems failed: {ex.Message}");
             }
         }

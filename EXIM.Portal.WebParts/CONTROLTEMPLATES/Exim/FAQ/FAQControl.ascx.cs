@@ -6,6 +6,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FAQ
 {
@@ -30,7 +31,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FAQ
 
             if (list == null)
             {
-                LandingPageHelper.LogError("FAQControl: target list not found.");
+                LogService.LogException("FAQControl: target list not found.");
                 return;
             }
 
@@ -57,7 +58,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.FAQ
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"FAQControl.BindItems failed: {ex.Message}");
             }
         }

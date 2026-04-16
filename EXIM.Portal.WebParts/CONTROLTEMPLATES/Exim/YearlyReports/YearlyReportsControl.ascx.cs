@@ -6,6 +6,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.YearlyReports
 {
@@ -31,7 +32,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.YearlyReports
 
             if (list == null)
             {
-                LandingPageHelper.LogError("YearlyReportsControl: target list not found.");
+                LogService.LogException("YearlyReportsControl: target list not found.");
                 return;
             }
 
@@ -51,7 +52,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.YearlyReports
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"YearlyReportsControl.BindItems failed: {ex.Message}");
             }
         }

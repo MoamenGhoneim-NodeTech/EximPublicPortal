@@ -6,6 +6,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Funding
 {
     public partial class FundingControl : UserControl
@@ -50,7 +51,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Funding
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError("FundingControl.BindItems: " + ex.Message);
+                LogService.LogException("FundingControl.BindItems: " + ex.Message);
             }
         }
         private FundingItemModel MapItem(SPListItem item)

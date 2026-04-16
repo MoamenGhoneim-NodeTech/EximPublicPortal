@@ -5,6 +5,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SectorsArchive
 {
@@ -33,7 +34,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SectorsArchive
 
             if (list == null)
             {
-                LandingPageHelper.LogError("SectorsArchiveControl: target list not found.");
+                LogService.LogException("SectorsArchiveControl: target list not found.");
                 return;
             }
 
@@ -60,7 +61,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.SectorsArchive
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"SectorsArchiveControl.BindItems failed: {ex.Message}");
             }
         }

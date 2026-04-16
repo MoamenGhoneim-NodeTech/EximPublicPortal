@@ -5,6 +5,7 @@ using System.Web.UI.WebControls;
 using Microsoft.SharePoint;
 using System.Web.UI.WebControls.WebParts;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.LandingPageWebpart
 {
@@ -25,7 +26,7 @@ namespace EXIM.Portal.WebParts.LandingPageWebpart
 
             if (_list == null)
             {
-                LandingPageHelper.LogError("LandingPageControl: target list not found.");
+                LogService.LogException("LandingPageControl: target list not found.");
                 return;
             }
 
@@ -67,7 +68,7 @@ namespace EXIM.Portal.WebParts.LandingPageWebpart
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"LandingPageControl.GetItems failed: {ex.Message}");
             }
 

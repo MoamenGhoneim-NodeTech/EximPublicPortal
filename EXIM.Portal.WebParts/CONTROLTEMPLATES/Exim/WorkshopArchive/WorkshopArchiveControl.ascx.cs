@@ -5,6 +5,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.WorkshopArchive
 {
@@ -36,7 +37,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.WorkshopArchive
 
             if (list == null)
             {
-                LandingPageHelper.LogError("WorkshopArchiveControl: target list not found.");
+                LogService.LogException("WorkshopArchiveControl: target list not found.");
                 return;
             }
 
@@ -56,7 +57,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.WorkshopArchive
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"WorkshopArchiveControl.BindItems failed: {ex.Message}");
             }
         }

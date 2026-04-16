@@ -6,6 +6,7 @@ using Microsoft.SharePoint;
 using Microsoft.SharePoint.WebControls;
 using System.Collections.Generic;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
 {
@@ -34,7 +35,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
 
             if (list == null)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     "ArticlesArchiveControl: target list not found.");
                 return;
             }
@@ -65,7 +66,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ArticlesArchive
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"ArticlesArchiveControl.BindItems failed: {ex.Message}");
             }
         }

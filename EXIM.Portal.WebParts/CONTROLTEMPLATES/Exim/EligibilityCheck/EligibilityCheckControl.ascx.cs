@@ -6,6 +6,8 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
+using EXIM.Common.Lib.Utils;
+
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.EligibilityCheck
 {
@@ -31,7 +33,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.EligibilityCheck
 
             if (list == null)
             {
-                LandingPageHelper.LogError("PreAppControl: target list not found.");
+                LogService.LogException("PreAppControl: target list not found.");
                 return;
             }
 
@@ -54,7 +56,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.EligibilityCheck
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"PreAppControl.BindItems failed: {ex.Message}");
             }
         }

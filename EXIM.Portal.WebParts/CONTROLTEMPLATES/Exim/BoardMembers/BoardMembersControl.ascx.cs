@@ -5,7 +5,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
-
+using EXIM.Common.Lib.Utils;
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.BoardMembers
 {
     public partial class BoardMembersControl : UserControl
@@ -51,7 +51,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.BoardMembers
 
             if (list == null)
             {
-                LandingPageHelper.LogError("BoardMembersControl: target list not found.");
+                LogService.LogException("BoardMembersControl: target list not found.");
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.BoardMembers
             }
             catch (Exception ex)
             {
-                LandingPageHelper.LogError(
+                LogService.LogException(
                     $"BoardMembersControl.BindItems failed: {ex.Message}");
             }
         }
