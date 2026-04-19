@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using Microsoft.SharePoint;
@@ -22,6 +23,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
             try
             {
+                EnsureViewportMeta();
 
                 var web = SPContext.Current.Site.RootWeb;
                 var isArabic = ResolveIsArabic(web);
@@ -85,7 +87,26 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             navsLiteral.Text = navs;
         }
 
-       
+        /// <summary>
+        /// Ensures a responsive viewport meta tag exists (mobile SEO, correct scale, touch).
+        /// Safe if the master page already defines viewport — duplicate tags are skipped.
+        /// </summary>
+        private void EnsureViewportMeta()
+        {
+            if (Page?.Header == null) return;
+            foreach (Control c in Page.Header.Controls)
+            {
+                if (c is HtmlMeta hm &&
+                    string.Equals(hm.Name, "viewport", StringComparison.OrdinalIgnoreCase))
+                    return;
+            }
+            var meta = new HtmlMeta { Name = "viewport", Content = "width=device-width, initial-scale=1" };
+            Page.Header.Controls.Add(meta);
+        }
+
+        /// <summary>
+        /// Mirrors JS currLang: 1033 = EN, 1025 = AR (set by SharePoint MUI pipeline).
+        /// </summary>
         private static bool ResolveIsArabic(SPWeb web)
         {
             var lcid = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
@@ -472,6 +493,12 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
     internal static class HomeHtmlRenderer
     {
         // ── BindHomeBanners ──────────────────────────────────────────────────
+        // Reserve layout space for LCP/CLS — adjust if your publishing image dimensions differ.
+        private const int HeroBannerImgWidth = 1920;
+        private const int HeroBannerImgHeight = 800;
+        private const int CardImageWidth = 640;
+        private const int CardImageHeight = 400;
+
         public static string RenderBanners(IList<BannerItem> data, bool ar)
         {
             if (data == null || data.Count == 0) return "";
@@ -479,8 +506,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             var videoNoSupport = ar ? "متصفحك لا يدعم تشغيل الفيديو." : "Your browser does not support video playback.";
             var sb = new StringBuilder();
 
-            foreach (var x in data)
+            for (var slideIndex = 0; slideIndex < data.Count; slideIndex++)
             {
+                var x = data[slideIndex];
                 var title = L(x.Title, x.TitleAr, ar);
                 var url = L(x.Url, x.UrlAr, ar);
                 var target = x.OpenInNewTab ? " target=\"_blank\" rel=\"noopener\"" : "";
@@ -489,17 +517,25 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
                 if (video.HasVal())
                 {
+                    // Defer network-heavy MP4: no src until slide is near viewport (see inline script on home control).
                     sb.Append("<div class=\"item hero-video-slide\">");
                     sb.Append("<div class=\"video-background\">");
-                    sb.AppendFormat("<video autoplay loop muted playsinline poster=\"{0}\">", A(img));
-                    sb.AppendFormat("<source src=\"{0}\" type=\"video/mp4\">", A(video));
+                    sb.AppendFormat(
+                        "<video class=\"exim-deferred-hero-video\" preload=\"none\" muted playsinline loop poster=\"{0}\" width=\"{1}\" height=\"{2}\">",
+                        A(img), HeroBannerImgWidth, HeroBannerImgHeight);
+                    sb.AppendFormat("<source data-exim-src=\"{0}\" type=\"video/mp4\">", A(video));
                     sb.Append(T(videoNoSupport));
                     sb.Append("</video></div>");
                 }
                 else
                 {
                     sb.Append("<div class=\"item\">");
-                    sb.AppendFormat("<img src=\"{0}\" alt=\"{1}\">", A(img), A(title));
+                    var isFirstSlide = slideIndex == 0;
+                    var lazyAttr = isFirstSlide ? "" : " loading=\"lazy\"";
+                    var fetchAttr = isFirstSlide ? " fetchpriority=\"high\"" : "";
+                    sb.AppendFormat(
+                        "<img src=\"{0}\" alt=\"{1}\" width=\"{2}\" height=\"{3}\" decoding=\"async\"{4}{5}>",
+                        A(img), A(title), HeroBannerImgWidth, HeroBannerImgHeight, lazyAttr, fetchAttr);
                 }
 
                 sb.Append("<div class=\"slider-data\">");
@@ -533,7 +569,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var img = ImgSrc(x.PublishingRollupImage);
 
                 sb.AppendFormat("<div class=\"col-lg-3 col-6\"><div class=\"card-item\" data-aos=\"fade-up\" data-aos-delay=\"{0}\">", delay);
-                if (img.HasVal()) sb.AppendFormat("<img src=\"{0}\" alt=\"{1}\">", A(img), A(title));
+                if (img.HasVal())
+                    sb.AppendFormat(
+                        "<img src=\"{0}\" alt=\"{1}\" loading=\"lazy\" decoding=\"async\" width=\"{2}\" height=\"{3}\">",
+                        A(img), A(title), CardImageWidth, CardImageHeight);
                 sb.AppendFormat("<div class=\"item-text\"><h2>{0}</h2>", T(title));
                 if (desc.HasVal()) sb.AppendFormat("<p>{0}</p>", T(desc));
                 sb.AppendFormat("<a href=\"{0}\"{1}>{2} <i class=\"ic-left-angle\"></i></a></div>", A(url), target, T(moreTxt));
@@ -591,7 +630,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
                 if (i == 0)
                 {
-                    firstSb.AppendFormat("<a href=\"{0}\" class=\"img\"><img src=\"{1}\" alt=\"{2}\"></a>", A(url), A(img), A(name));
+                    firstSb.AppendFormat(
+                        "<a href=\"{0}\" class=\"img\"><img src=\"{1}\" alt=\"{2}\" loading=\"lazy\" decoding=\"async\" width=\"{3}\" height=\"{4}\"></a>",
+                        A(url), A(img), A(name), CardImageWidth, CardImageHeight);
                     firstSb.Append("<div class=\"first-story-item-texts\">");
                     firstSb.AppendFormat("<h3><a href=\"{0}\">{1}</a></h3><p>{2}</p>", A(url), T(name), T(desc));
                     firstSb.AppendFormat("<div class=\"first-story-item-action d-flex\"><a href=\"{0}\">{1}<i class=\"fas fa-angle-left\"></i></a></div>", A(url), T(moreText));
@@ -600,7 +641,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 else
                 {
                     otherSb.Append("<div class=\"home-story-item\" data-aos=\"fade-up\" data-aos-delay=\"150\">");
-                    otherSb.AppendFormat("<div class=\"img\"><a href=\"{0}\"><img src=\"{1}\" alt=\"{2}\"></a></div>", A(url), A(img), A(name));
+                    otherSb.AppendFormat(
+                        "<div class=\"img\"><a href=\"{0}\"><img src=\"{1}\" alt=\"{2}\" loading=\"lazy\" decoding=\"async\" width=\"{3}\" height=\"{4}\"></a></div>",
+                        A(url), A(img), A(name), CardImageWidth, CardImageHeight);
                     otherSb.Append("<div class=\"home-story-item-txt\">");
                     otherSb.AppendFormat("<h3><a href=\"{0}\">{1}</a></h3><p>{2}</p>", A(url), T(name), T(desc));
                     otherSb.AppendFormat("<div class=\"home-story-item-action\"><a href=\"{0}\">{1}<i class=\"fas fa-angle-left\"></i></a></div>", A(url), T(moreText));
@@ -628,7 +671,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var desc = x.Comments ?? "";
 
                 sb.Append("<div class=\"item\"><div class=\"img\">");
-                sb.AppendFormat("<a href=\"{0}\" class=\"img-hover\"><img src=\"{1}\" alt=\"{2}\"></a>", A(url), A(img), A(name));
+                sb.AppendFormat(
+                    "<a href=\"{0}\" class=\"img-hover\"><img src=\"{1}\" alt=\"{2}\" loading=\"lazy\" decoding=\"async\" width=\"{3}\" height=\"{4}\"></a>",
+                    A(url), A(img), A(name), CardImageWidth, CardImageHeight);
                 sb.Append("</div><div class=\"blog-data\">");
                 sb.AppendFormat("<div class=\"blog-date\">{0}</div>", T(date));
                 sb.AppendFormat("<h3>{0}</h3><p>{1}</p>", T(name), T(desc));
@@ -657,10 +702,14 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                     : listUrl.TrimEnd('/') + "/" + Uri.EscapeDataString(x.LinkFilename ?? "");
 
                 sliderSb.Append("<div class=\"item\"><div class=\"img\">");
-                sliderSb.AppendFormat("<img src=\"{0}\" alt=\"{1}\">", A(img), A(name));
+                sliderSb.AppendFormat(
+                    "<img src=\"{0}\" alt=\"{1}\" loading=\"lazy\" decoding=\"async\" width=\"{2}\" height=\"{3}\">",
+                    A(img), A(name), CardImageWidth, CardImageHeight);
                 sliderSb.Append("</div></div>");
 
-                navsSb.AppendFormat("<div class=\"item\"><div class=\"img\"><img src=\"{0}\" alt=\"{1}\"></div>", A(img), A(name));
+                navsSb.AppendFormat(
+                    "<div class=\"item\"><div class=\"img\"><img src=\"{0}\" alt=\"{1}\" loading=\"lazy\" decoding=\"async\" width=\"{2}\" height=\"{3}\"></div>",
+                    A(img), A(name), CardImageWidth, CardImageHeight);
                 navsSb.AppendFormat("<h3>{0}</h3><p>{1}</p>", T(name), T(desc));
                 navsSb.AppendFormat("<a href=\"{0}\">{1} <i class=\"ic-left-angle\"></i></a>", A(url), T(moreTxt));
                 navsSb.Append("</div>");
@@ -682,7 +731,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var img = ImgSrc(x.PublishingRollupImage);
 
                 sb.AppendFormat("<div class=\"item\"><a href=\"{0}\" title=\"{1}\"{2}>", A(url), A(title), target);
-                if (img.HasVal()) sb.AppendFormat("<img src=\"{0}\" alt=\"{1}\">", A(img), A(title));
+                if (img.HasVal())
+                    sb.AppendFormat(
+                        "<img src=\"{0}\" alt=\"{1}\" loading=\"lazy\" decoding=\"async\" width=\"{2}\" height=\"{3}\">",
+                        A(img), A(title), CardImageWidth, CardImageHeight);
                 sb.Append("</a></div>");
             }
             return sb.ToString();
