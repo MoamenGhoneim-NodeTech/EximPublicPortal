@@ -11,8 +11,11 @@
 
 
     <link rel="stylesheet" href="/Style%20Library/exim/chatbot/chatbot.css" />
-	<script src="/Style Library/exim/js/homeV2.js"></script>
-	 <script src="/Style%20Library/exim/chatbot/chatbot.js"></script>
+	<%--<script defer src="/Style Library/exim/js/homeV2.js"></script>
+	<script defer src="/Style%20Library/exim/chatbot/chatbot.js"></script>--%>
+
+<script src="/Style Library/exim/js/homeV2.js"></script>
+<script src="/Style Library/exim/chatbot/chatbot.js"></script>
 
 <%-- ══════════════════════════════════════════════════════
      HERO / BANNERS SLIDER
@@ -398,7 +401,7 @@
     <ContentTemplate>
         <div id="float-btn"></div>
         <div id="chat-container" style="display: none;">
-            <iframe src="https://digital.saudiexim.gov.sa/ExAIAssistant/"></iframe>
+            <iframe src="https://digital.saudiexim.gov.sa/ExAIAssistant/" loading="lazy" title="مساعد ExAI"></iframe>
         </div>
     </ContentTemplate>
 </SharePoint:LanguageSpecificContent>
@@ -407,7 +410,42 @@
     <ContentTemplate>
         <div id="float-btn"></div>
         <div id="chat-container" style="display: none;">
-            <iframe src="https://digital.saudiexim.gov.sa/ExAIAssistant/"></iframe>
+            <iframe src="https://digital.saudiexim.gov.sa/ExAIAssistant/" loading="lazy" title="ExAI Assistant"></iframe>
         </div>
     </ContentTemplate>
 </SharePoint:LanguageSpecificContent>
+
+<%-- Hero slider videos: MP4 sources use data-exim-src; exim-deferred-hero-video loads when near viewport (mobile LCP). --%>
+<script type="text/javascript">
+(function () {
+    function wireDeferredHeroVideos() {
+        var vids = document.querySelectorAll('video.exim-deferred-hero-video');
+        if (!vids.length) return;
+        function activateVideo(v) {
+            var s = v.querySelector('source[data-exim-src]');
+            if (!s) return;
+            var url = s.getAttribute('data-exim-src');
+            if (!url || s.getAttribute('src')) return;
+            s.setAttribute('src', url);
+            try { v.load(); v.play().catch(function () { }); } catch (e) { }
+        }
+        if (!('IntersectionObserver' in window)) {
+            for (var i = 0; i < vids.length; i++) activateVideo(vids[i]);
+            return;
+        }
+        var io = new IntersectionObserver(function (entries) {
+            for (var j = 0; j < entries.length; j++) {
+                if (!entries[j].isIntersecting) continue;
+                var v = entries[j].target;
+                activateVideo(v);
+                io.unobserve(v);
+            }
+        }, { rootMargin: '120px', threshold: 0.01 });
+        for (var k = 0; k < vids.length; k++) io.observe(vids[k]);
+    }
+    if (document.readyState === 'loading')
+        document.addEventListener('DOMContentLoaded', wireDeferredHeroVideos);
+    else
+        wireDeferredHeroVideos();
+})();
+</script>

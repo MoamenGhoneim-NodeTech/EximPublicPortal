@@ -11,8 +11,11 @@
 
 
     <link rel="stylesheet" href="/Style%20Library/exim/chatbot/chatbot.css" />
-	<script defer src="/Style%20Library/exim/js/homeV2.js"></script>
-	<script defer src="/Style%20Library/exim/chatbot/chatbot.js"></script>
+	<%--<script defer src="/Style Library/exim/js/homeV2.js"></script>
+	<script defer src="/Style%20Library/exim/chatbot/chatbot.js"></script>--%>
+
+<script src="/Style Library/exim/js/homeV2.js"></script>
+<script src="/Style Library/exim/chatbot/chatbot.js"></script>
 
 <%-- ══════════════════════════════════════════════════════
      HERO / BANNERS SLIDER

@@ -45,10 +45,12 @@
   <ItemGroup>
     <Reference Include="Microsoft.SharePoint.Taxonomy, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -119,6 +121,13 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.designer.cs">
       <DependentUpon>FAQControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx.cs">
+      <DependentUpon>FinancialServiceControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx.designer.cs">
+      <DependentUpon>FinancialServiceControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.cs">
       <DependentUpon>FundingControl.ascx</DependentUpon>
@@ -249,6 +258,14 @@
       <DependentUpon>Captcha.aspx.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelatedServicesWebPart\RelatedServicesWebPart.cs" />
+    <Compile Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx.cs">
+      <DependentUpon>RelatedServicesWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>RelatedServicesWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -277,6 +294,10 @@
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
     </None>
+    <None Include="RelatedServicesWebPart\RelatedServicesWebPart.webpart" />
+    <None Include="RelatedServicesWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{f0477273-4a14-4182-a092-ac7965593cf7}</SharePointProjectItemId>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
@@ -291,6 +312,7 @@
     <Content Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx" />
+    <Content Include="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
@@ -307,6 +329,8 @@
     <Content Include="LandingPageWebpart\Elements.xml" />
     <Content Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx" />
     <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />
+    <Content Include="RelatedServicesWebPart\Elements.xml" />
+    <Content Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ControlLoaderWebPart\Elements.xml" />

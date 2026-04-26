@@ -9,11 +9,13 @@
       <SafeControls>
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts" TypeName="*" />
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.LandingPageWebpart" TypeName="*" />
+        <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.RelatedServicesWebPart" TypeName="*" />
       </SafeControls>
     </Assembly>
   </Assemblies>
   <TemplateFiles>
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\LandingPageWebpart\LandingPageWebpartUserControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx" />
     <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
@@ -26,6 +28,7 @@
     <TemplateFile Location="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />

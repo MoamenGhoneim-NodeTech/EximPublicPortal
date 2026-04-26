@@ -17,55 +17,71 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 {
     public partial class HomePageControls : UserControl
     {
-       protected void Page_Load(object sender, EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack) return;
 
+            System.IO.File.AppendAllText(
+          @"C:\Temp\sp-debug.txt",
+          DateTime.Now + " - Page_Load hit\n");
             try
             {
                 EnsureViewportMeta();
 
-                var web = SPContext.Current.Site.RootWeb;
-                var isArabic = ResolveIsArabic(web);
-                var lang = isArabic ? "ar" : "en";
-
-                // ── 1. Fetch all data from SharePoint lists ───────────────────
-                var svc = new HomeDataService(web, isArabic);
-                var model = svc.BuildViewModel();
-
-                // ── 2. Populate Literal controls (=) ─
-
-                litBanners.Text = HomeHtmlRenderer.RenderBanners(model.Banners, isArabic);
-                litFinancialSolutions.Text = HomeHtmlRenderer.RenderFinancialSolutions(model.FinancialSolutions, isArabic);
-                litHomeNumbers.Text = HomeHtmlRenderer.RenderHomeNumbers(model.HomeNumbers, isArabic);
-
-                // Stories: hide the whole panel when fewer than 3 items 
-                if (model.Stories != null && model.Stories.Count >= 3)
+                // ── Wrap everything in elevated privileges so anonymous users
+                //    can read SharePoint list data just like authenticated users.
+                SPSecurity.RunWithElevatedPrivileges(delegate ()
                 {
-                    var (firstStory, otherStories) = HomeHtmlRenderer.RenderStories(model.Stories, isArabic, lang);
-                    litFirstStory.Text = firstStory;
-                    litOtherStories.Text = otherStories;
-                    pnlStories.Visible = true;
-                }
-                else
-                {
-                    pnlStories.Visible = false;
-                }
+                    // Open a fresh elevated SPSite / SPWeb — never reuse
+                    // SPContext objects inside elevated blocks (they still run
+                    // under the original (anonymous) token).
+                    var siteUrl = SPContext.Current != null
+    ? SPContext.Current.Site.Url
+    : HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+                    using (var site = new SPSite(siteUrl))
+                    using (var web = site.OpenWeb())
+                    {
+                        var isArabic = ResolveIsArabic(web);
+                        var lang = isArabic ? "ar" : "en";
 
-                litNews.Text = HomeHtmlRenderer.RenderNews(model.News, isArabic, lang);
+                        // ── 1. Fetch all data from SharePoint lists ──────────
+                        var svc = new HomeDataService(web, isArabic);
+                        var model = svc.BuildViewModel();
 
-                // Knowledge Center — 5 tabs
-                PopulateKnowledgeTab(model.KnowledgeResearch, lang, "Research", litKnowledgeSlider1, litKnowledgeNavs1);
-                PopulateKnowledgeTab(model.KnowledgeDevelopment, lang, "Development", litKnowledgeSlider2, litKnowledgeNavs2);
-                PopulateKnowledgeTab(model.KnowledgeManagement, lang, "Management", litKnowledgeSlider3, litKnowledgeNavs3);
-                PopulateKnowledgeTab(model.KnowledgeMarket, lang, "Market", litKnowledgeSlider4, litKnowledgeNavs4);
-                PopulateKnowledgeTab(model.KnowledgeProcedures, lang, "Procedures", litKnowledgeSlider5, litKnowledgeNavs5);
+                        // ── 2. Populate Literal controls ─────────────────────
+                        litBanners.Text = HomeHtmlRenderer.RenderBanners(model.Banners, isArabic);
+                        litFinancialSolutions.Text = HomeHtmlRenderer.RenderFinancialSolutions(model.FinancialSolutions, isArabic);
+                        litHomeNumbers.Text = HomeHtmlRenderer.RenderHomeNumbers(model.HomeNumbers, isArabic);
 
-                litPartners.Text = HomeHtmlRenderer.RenderPartners(model.Partners, isArabic);
+                        // Stories: hide the whole panel when fewer than 3 items
+                        if (model.Stories != null && model.Stories.Count >= 3)
+                        {
+                            var (firstStory, otherStories) = HomeHtmlRenderer.RenderStories(model.Stories, isArabic, lang);
+                            litFirstStory.Text = firstStory;
+                            litOtherStories.Text = otherStories;
+                            pnlStories.Visible = true;
+                        }
+                        else
+                        {
+                            pnlStories.Visible = false;
+                        }
+
+                        litNews.Text = HomeHtmlRenderer.RenderNews(model.News, isArabic, lang);
+
+                        // Knowledge Center — 5 tabs
+                        // Pass isArabic explicitly — never call SPContext inside elevated block
+                        PopulateKnowledgeTab(model.KnowledgeResearch, lang, "Research", litKnowledgeSlider1, litKnowledgeNavs1, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeDevelopment, lang, "Development", litKnowledgeSlider2, litKnowledgeNavs2, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeManagement, lang, "Management", litKnowledgeSlider3, litKnowledgeNavs3, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeMarket, lang, "Market", litKnowledgeSlider4, litKnowledgeNavs4, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeProcedures, lang, "Procedures", litKnowledgeSlider5, litKnowledgeNavs5, isArabic);
+
+                        litPartners.Text = HomeHtmlRenderer.RenderPartners(model.Partners, isArabic);
+                    }
+                });
             }
             catch (Exception ex)
             {
-                // Surface a safe error message; swap for a user-friendly one in production
                 litBanners.Text = string.Format(
                     "<div class='webpart-error'>{0}</div>",
                     HttpUtility.HtmlEncode("[HomePageControls] " + ex.Message));
@@ -76,12 +92,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
         //  HELPERS
         // ─────────────────────────────────────────────────────────────────────
 
+        /// <summary>
+        /// isArabic is passed in explicitly so we never touch SPContext.Current
+        /// from inside the elevated-privileges delegate.
+        /// </summary>
         private void PopulateKnowledgeTab(
             List<KnowledgeItem> items, string lang, string section,
-            Literal sliderLiteral, Literal navsLiteral)
+            Literal sliderLiteral, Literal navsLiteral, bool isArabic)
         {
             var listUrl = string.Format("/{0}/NonFinServices/KnowledgeCenter/{1}/Pages", lang, section);
-            var isArabic = ResolveIsArabic(SPContext.Current.Web);
             var (slider, navs) = HomeHtmlRenderer.RenderKnowledgeTab(items, isArabic, listUrl);
             sliderLiteral.Text = slider;
             navsLiteral.Text = navs;
@@ -106,14 +125,22 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
         /// <summary>
         /// Mirrors JS currLang: 1033 = EN, 1025 = AR (set by SharePoint MUI pipeline).
+        /// Works for both authenticated and anonymous users; falls back to web.Language.
         /// </summary>
         private static bool ResolveIsArabic(SPWeb web)
         {
-            var lcid = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
-            if (lcid == 1025) return true;
-            if (lcid == 1033) return false;
+            try
+            {
+                var lcid = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
+                if (lcid == 1025) return true;
+                if (lcid == 1033) return false;
+            }
+            catch { /* ignore — fall through to web.Language */ }
+
             return web.Language == 1025;
         }
+    
+    
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -215,7 +242,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
     }
 
     // ═════════════════════════════════════════════════════════════════════════
-    //  DATA SERVICE  (replaces all LoadData / AJAX calls)
+    //  DATA SERVICE
     // ═════════════════════════════════════════════════════════════════════════
 
     internal class HomeDataService
@@ -379,28 +406,31 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 if (list == null) return new List<SPListItem>();
                 return RunViewQuery(list, viewName);
             }
-            catch (Exception ex) { Log("QueryList(" + listName + ")", ex); return new List<SPListItem>(); }
+            catch (Exception ex)
+            {
+                Log("QueryList(" + listName + ")", ex);
+                return new List<SPListItem>();
+            }
         }
 
         private List<SPListItem> QueryListByUrl(string serverRelUrl, string viewName)
         {
             // serverRelUrl is like "/ar/MediaCenter/News/Pages"
             // Strategy:
-            //   1. The last segment is the list's root-folder name (e.g. "Pages").
-            //   2. Everything before it is the subsite server-relative URL.
-            //   3. Open the subsite, then find the list whose root folder matches.
-            // This avoids SPWeb.GetList() which throws 0x80070001 on Pages libraries.
+            //   1. Split into subsite URL and list-folder name.
+            //   2. Open the subsite (or reuse _web when it IS the subsite).
+            //   3. Use SPWeb.GetList() for a direct, efficient lookup that works
+            //      under anonymous access. Fall back to list enumeration only if
+            //      direct lookup fails (e.g. custom list URLs).
             SPWeb subWeb = null;
             var dispose = false;
             try
             {
-                // Split  "/ar/MediaCenter/News/Pages"  →  webUrl="/ar/MediaCenter/News"  listFolder="Pages"
                 var trimmed = serverRelUrl.TrimEnd('/');
                 var lastSlash = trimmed.LastIndexOf('/');
                 var listFolder = lastSlash >= 0 ? trimmed.Substring(lastSlash + 1) : trimmed;
                 var webRelUrl = lastSlash > 0 ? trimmed.Substring(0, lastSlash) : "/";
 
-                // Try to open the exact subsite; fall back to current web if it IS the current web
                 var siteRelUrl = _web.Site.ServerRelativeUrl.TrimEnd('/');
                 var webServerRelUrl = siteRelUrl + webRelUrl;
 
@@ -416,22 +446,49 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                     dispose = true;
                 }
 
-                // Find the list whose root folder server-relative URL ends with the list folder name
-                SPList list = null;
-                foreach (SPList candidate in subWeb.Lists)
+                if (subWeb == null || !subWeb.Exists)
                 {
-                    var rootFolder = candidate.RootFolder.ServerRelativeUrl.TrimEnd('/');
-                    if (rootFolder.EndsWith("/" + listFolder, StringComparison.OrdinalIgnoreCase) ||
-                        rootFolder.Equals(listFolder, StringComparison.OrdinalIgnoreCase))
+                    Log("QueryListByUrl(" + serverRelUrl + ")",
+                        new Exception("Subweb not found: " + webRelUrl));
+                    return new List<SPListItem>();
+                }
+
+                // ── PRIMARY: direct URL lookup — fast and anonymous-safe ────
+                SPList list = null;
+                try
+                {
+                    // Build the full server-relative URL of the list root folder
+                    var fullListUrl = subWeb.ServerRelativeUrl.TrimEnd('/') + "/" + listFolder;
+                    list = subWeb.GetList(fullListUrl);
+                }
+                catch
+                {
+                    // GetList() failed (wrong URL shape, custom path, etc.)
+                    // ── FALLBACK: enumerate lists by title / root-folder name ─
+                    // Wrapped in its own try so one bad list doesn't abort the page.
+                    try
                     {
-                        list = candidate;
-                        break;
+                        foreach (SPList candidate in subWeb.Lists)
+                        {
+                            if (string.Equals(candidate.Title, listFolder, StringComparison.OrdinalIgnoreCase) ||
+                                candidate.RootFolder.ServerRelativeUrl.TrimEnd('/')
+                                    .EndsWith("/" + listFolder, StringComparison.OrdinalIgnoreCase))
+                            {
+                                list = candidate;
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception fallbackEx)
+                    {
+                        Log("QueryListByUrl fallback enumeration (" + serverRelUrl + ")", fallbackEx);
                     }
                 }
 
                 if (list == null)
                 {
-                    Log("QueryListByUrl(" + serverRelUrl + ")", new Exception("List not found in web: " + subWeb.ServerRelativeUrl));
+                    Log("QueryListByUrl(" + serverRelUrl + ")",
+                        new Exception("List not found in web: " + subWeb.ServerRelativeUrl));
                     return new List<SPListItem>();
                 }
 
@@ -450,32 +507,59 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
         private List<SPListItem> RunViewQuery(SPList list, string viewName)
         {
-            var view = list.Views.Cast<SPView>()
-                           .FirstOrDefault(v => v.Title.Equals(viewName, StringComparison.OrdinalIgnoreCase));
-            var query = new SPQuery();
-            if (view != null)
+            var query = new SPQuery { RowLimit = 100 };
+
+            // list.Views can throw an access-denied for anonymous users when
+            // view-level permissions are restricted. Wrap in try/catch and fall
+            // back to a plain all-items query so the page still renders.
+            try
             {
-                query.Query = view.Query;
-                query.ViewFields = view.ViewFields.SchemaXml;
-                query.RowLimit = view.RowLimit > 0 ? view.RowLimit : 100;
+                var view = list.Views.Cast<SPView>()
+                               .FirstOrDefault(v => v.Title.Equals(viewName, StringComparison.OrdinalIgnoreCase));
+                if (view != null)
+                {
+                    query.Query = view.Query;
+                    query.ViewFields = view.ViewFields.SchemaXml;
+                    query.RowLimit = view.RowLimit > 0 ? view.RowLimit : 100;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                query.RowLimit = 100;
+                // Anonymous user cannot read views — continue with default (all-items) query.
+                Log("RunViewQuery — views inaccessible for " + list.Title, ex);
             }
 
             var results = new List<SPListItem>();
-            foreach (SPListItem item in list.GetItems(query)) results.Add(item);
+            try
+            {
+                foreach (SPListItem item in list.GetItems(query))
+                    results.Add(item);
+            }
+            catch (Exception ex)
+            {
+                Log("RunViewQuery — GetItems failed for " + list.Title, ex);
+            }
             return results;
         }
 
         // ── Field helpers ────────────────────────────────────────────────────
 
-        private static string GetStr(SPListItem i, string f) { try { return i[f] != null ? i[f].ToString() : ""; } catch { return ""; } }
-        private static int GetInt(SPListItem i, string f) { try { return Convert.ToInt32(i[f] ?? 0); } catch { return 0; } }
-        private static bool GetBool(SPListItem i, string f) { try { return Convert.ToBoolean(i[f] ?? false); } catch { return false; } }
+        private static string GetStr(SPListItem i, string f)
+        {
+            try { return i[f] != null ? i[f].ToString() : ""; } catch { return ""; }
+        }
 
-        // treat missing field as visible
+        private static int GetInt(SPListItem i, string f)
+        {
+            try { return Convert.ToInt32(i[f] ?? 0); } catch { return 0; }
+        }
+
+        private static bool GetBool(SPListItem i, string f)
+        {
+            try { return Convert.ToBoolean(i[f] ?? false); } catch { return false; }
+        }
+
+        // Treat missing/inaccessible EXIM_IsVisible field as visible (safe default).
         private static bool IsVisible(SPListItem i)
         {
             try { var v = i["EXIM_IsVisible"]; return v == null || Convert.ToBoolean(v); }
@@ -487,18 +571,18 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
     }
 
     // ═════════════════════════════════════════════════════════════════════════
-    //  HTML RENDERER  (replaces every Bind* function in home.js)
+    //  HTML RENDERER
     // ═════════════════════════════════════════════════════════════════════════
 
     internal static class HomeHtmlRenderer
     {
-        // ── BindHomeBanners ──────────────────────────────────────────────────
-        // Reserve layout space for LCP/CLS — adjust if your publishing image dimensions differ.
+        // Reserve layout space for LCP/CLS
         private const int HeroBannerImgWidth = 1920;
         private const int HeroBannerImgHeight = 800;
         private const int CardImageWidth = 640;
         private const int CardImageHeight = 400;
 
+        // ── RenderBanners ────────────────────────────────────────────────────
         public static string RenderBanners(IList<BannerItem> data, bool ar)
         {
             if (data == null || data.Count == 0) return "";
@@ -517,7 +601,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
                 if (video.HasVal())
                 {
-                    // Defer network-heavy MP4: no src until slide is near viewport (see inline script on home control).
                     sb.Append("<div class=\"item hero-video-slide\">");
                     sb.Append("<div class=\"video-background\">");
                     sb.AppendFormat(
@@ -550,7 +633,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return sb.ToString();
         }
 
-        // ── BindFinancialSolution ────────────────────────────────────────────
+        // ── RenderFinancialSolutions ─────────────────────────────────────────
         public static string RenderFinancialSolutions(IList<FinancialSolutionItem> data, bool ar)
         {
             if (data == null || data.Count == 0) return "";
@@ -582,7 +665,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return sb.ToString();
         }
 
-        // ── BindHomeNumbers ──────────────────────────────────────────────────
+        // ── RenderHomeNumbers ────────────────────────────────────────────────
         public static string RenderHomeNumbers(IList<HomeNumberItem> data, bool ar)
         {
             if (data == null || data.Count == 0) return "";
@@ -598,7 +681,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var desc = ar ? (x.Description.HasVal() ? x.Description : x.DescriptionEn)
                                : (x.DescriptionEn.HasVal() ? x.DescriptionEn : x.Description);
 
-                // Mirror JS: extract leading digits for the counter span
+                // Extract leading digits for the counter span
                 var numMatch = Regex.Match(title ?? "", @"^([\d\.,]+)");
                 var numPart = numMatch.Success ? numMatch.Value : "";
                 var titleRest = numPart.HasVal() ? title.Substring(numPart.Length) : title;
@@ -612,7 +695,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return sb.ToString();
         }
 
-        // ── BindHomeStories ──────────────────────────────────────────────────
+        // ── RenderStories ────────────────────────────────────────────────────
         public static (string First, string OtherItems) RenderStories(IList<StoryItem> data, bool ar, string lang)
         {
             if (data == null || data.Count < 3) return ("", "");
@@ -653,7 +736,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return (firstSb.ToString(), otherSb.ToString());
         }
 
-        // ── BindHomeNews ─────────────────────────────────────────────────────
+        // ── RenderNews ───────────────────────────────────────────────────────
         public static string RenderNews(IList<NewsItem> data, bool ar, string lang)
         {
             if (data == null || data.Count == 0) return "";
@@ -683,7 +766,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return sb.ToString();
         }
 
-        // ── BindSolutionsTab ─────────────────────────────────────────────────
+        // ── RenderKnowledgeTab ───────────────────────────────────────────────
         public static (string Slider, string Navs) RenderKnowledgeTab(IList<KnowledgeItem> data, bool ar, string listUrl)
         {
             if (data == null || data.Count == 0) return ("", "");
@@ -717,7 +800,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return (sliderSb.ToString(), navsSb.ToString());
         }
 
-        // ── BindPartners ─────────────────────────────────────────────────────
+        // ── RenderPartners ───────────────────────────────────────────────────
         public static string RenderPartners(IList<PartnerItem> data, bool ar)
         {
             if (data == null || data.Count == 0) return "";
@@ -749,7 +832,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             return m.Success ? m.Groups[1].Value : raw.Trim();
         }
 
-       
         private static string L(string en, string ar, bool isArabic) =>
             isArabic ? (ar.HasVal() ? ar : en) : en ?? "";
 
@@ -758,14 +840,17 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             if (string.IsNullOrWhiteSpace(raw)) return "";
             var p = raw.Split('/');
             if (p.Length != 3) return raw;
-            if (!int.TryParse(p[0], out int d) || !int.TryParse(p[1], out int mo) || !int.TryParse(p[2], out int y)) return raw;
+            if (!int.TryParse(p[0], out int d) ||
+                !int.TryParse(p[1], out int mo) ||
+                !int.TryParse(p[2], out int y)) return raw;
             try { return new DateTime(y, mo, d).ToString("d MMMM yyyy", culture); }
             catch { return raw; }
         }
 
-        // HTML-encode helpers
-        private static string A(string s) => HttpUtility.HtmlAttributeEncode(s ?? ""); // attribute values
-        private static string T(string s) => HttpUtility.HtmlEncode(s ?? "");          // text nodes
+        // Encode for HTML attribute values
+        private static string A(string s) => HttpUtility.HtmlAttributeEncode(s ?? "");
+        // Encode for HTML text nodes
+        private static string T(string s) => HttpUtility.HtmlEncode(s ?? "");
     }
 
     // ═════════════════════════════════════════════════════════════════════════

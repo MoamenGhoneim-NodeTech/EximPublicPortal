@@ -36,7 +36,7 @@ namespace EXIM.Common.Lib.SPHelpers
 
         public static SPListItemCollectionPosition GetPagePosition(
             SPList list, string whereClause, int targetPage,
-            string orderByClause = null)
+            string orderByClause = null, int itemsPerPage = 15)
         {
             if (targetPage <= 1) return null;
 
@@ -46,7 +46,7 @@ namespace EXIM.Common.Lib.SPHelpers
 
             var query = new SPQuery
             {
-                RowLimit = (uint)PageSize,
+                RowLimit = (uint)itemsPerPage,
                 Query = whereClause + resolvedOrderBy
             };
 
@@ -81,9 +81,9 @@ namespace EXIM.Common.Lib.SPHelpers
         }
 
         
-        public static string BuildPaginationHtml(int totalItems, int currentPage)
+        public static string BuildPaginationHtml(int totalItems, int currentPage ,int itemsPerPage = 15)
         {
-            int totalPages = (int)Math.Ceiling((double)totalItems / PageSize);
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
             if (totalPages <= 1) return string.Empty;
 
             var html = new System.Text.StringBuilder();
@@ -140,6 +140,18 @@ namespace EXIM.Common.Lib.SPHelpers
             }
         }
 
+        public static SPList TryGetListbyURL(SPWeb web, string listUrl)
+        {
+            try
+            {
+                return web.Site.OpenWeb().GetList(listUrl);
+            }
+            catch (Exception ex)
+            {
+                LogError($"Could not retrieve list '{listUrl}': {ex.Message}");
+                return null;
+            }
+        }
         // ── Logging ──────────────────────────────────────────────────────────────
         public static void LogError(string message) =>
             System.Diagnostics.Trace.TraceError($"[EXIM.Portal] {message}");
