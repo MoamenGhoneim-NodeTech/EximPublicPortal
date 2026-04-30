@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectItem Type="Microsoft.VisualStudio.SharePoint.VisualWebPart" DefaultFile="EligibilityCheckWebPartUserControl.ascx" SupportedTrustLevels="FullTrust" SupportedDeploymentScopes="Site" xmlns="http://schemas.microsoft.com/VisualStudio/2010/SharePointTools/SharePointProjectItemModel">
+  <Files>
+    <ProjectItemFile Source="Elements.xml" Target="EligibilityCheckWebPart\" Type="ElementManifest" />
+    <ProjectItemFile Source="EligibilityCheckWebPart.webpart" Target="EligibilityCheckWebPart\" Type="ElementFile" />
+    <ProjectItemFile Source="EligibilityCheckWebPartUserControl.ascx" Target="CONTROLTEMPLATES\EXIM.Portal.WebParts\EligibilityCheckWebPart\" Type="TemplateFile" />
+  </Files>
+  <SafeControls>
+    <SafeControl Name="SafeControlEntry1" Assembly="$SharePoint.Project.AssemblyFullName$" Namespace="EXIM.Portal.WebParts.EligibilityCheckWebPart" TypeName="*" IsSafe="true" IsSafeAgainstScript="false" />
+  </SafeControls>
+</ProjectItem>

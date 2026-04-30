@@ -58,28 +58,31 @@
     <Reference Include="Microsoft.SharePoint.Client.ServerRuntime" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnouncementsArchiveWebPart\AnnouncementsArchiveWebPart.cs" />
+    <Compile Include="AnnouncementsArchiveWebPart\AnnouncementsArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>AnnouncementsArchiveWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AnnouncementsArchiveWebPart\AnnouncementsArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>AnnouncementsArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ArticlesArchiveWebPart\ArticlesArchiveWebPart.cs" />
+    <Compile Include="ArticlesArchiveWebPart\ArticlesArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>ArticlesArchiveWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ArticlesArchiveWebPart\ArticlesArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>ArticlesArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BoardMembersWebPart\BoardMembersWebPart.cs" />
+    <Compile Include="BoardMembersWebPart\BoardMembersWebPartUserControl.ascx.cs">
+      <DependentUpon>BoardMembersWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BoardMembersWebPart\BoardMembersWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>BoardMembersWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlLoaderWebPart\ControlLoaderWebPart.cs" />
-    <Compile Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx.cs">
-      <DependentUpon>AnnouncementsArchiveControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx.designer.cs">
-      <DependentUpon>AnnouncementsArchiveControl.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.cs">
-      <DependentUpon>ArticlesArchiveControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx.designer.cs">
-      <DependentUpon>ArticlesArchiveControl.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx.cs">
-      <DependentUpon>BoardMembersControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx.designer.cs">
-      <DependentUpon>BoardMembersControl.ascx.cs</DependentUpon>
-    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx.cs">
       <DependentUpon>ConsultationRequest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -100,34 +103,6 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
       <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx.cs">
-      <DependentUpon>DocumentsControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx.designer.cs">
-      <DependentUpon>DocumentsControl.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx.cs">
-      <DependentUpon>EligibilityCheckControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx.designer.cs">
-      <DependentUpon>EligibilityCheckControl.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.cs">
-      <DependentUpon>FAQControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx.designer.cs">
-      <DependentUpon>FAQControl.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx.cs">
-      <DependentUpon>FinancialServiceControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx.designer.cs">
-      <DependentUpon>FinancialServiceControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.cs">
       <DependentUpon>FundingControl.ascx</DependentUpon>
@@ -154,13 +129,6 @@
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx.designer.cs">
       <DependentUpon>InvitationForm.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx.cs">
-      <DependentUpon>NewsArchiveControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx.designer.cs">
-      <DependentUpon>NewsArchiveControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\ProductConsultant\App_LocalResources\FindMyProduct.ascx.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -193,26 +161,12 @@
     <Compile Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx.designer.cs">
       <DependentUpon>LabelMessage.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx.cs">
-      <DependentUpon>SectorsArchiveControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx.designer.cs">
-      <DependentUpon>SectorsArchiveControl.ascx.cs</DependentUpon>
-    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.cs">
       <DependentUpon>SiteMapWPUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx.designer.cs">
       <DependentUpon>SiteMapWPUserControl.ascx.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx.cs">
-      <DependentUpon>StoryArchiveControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx.designer.cs">
-      <DependentUpon>StoryArchiveControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.cs">
       <DependentUpon>ReportAViolation.ascx</DependentUpon>
@@ -221,13 +175,6 @@
     <Compile Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx.designer.cs">
       <DependentUpon>ReportAViolation.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx.cs">
-      <DependentUpon>WorkshopArchiveControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx.designer.cs">
-      <DependentUpon>WorkshopArchiveControl.ascx.cs</DependentUpon>
-    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.cs">
       <DependentUpon>Workshop_Subscribe.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -235,12 +182,45 @@
     <Compile Include="CONTROLTEMPLATES\Exim\Workshops\Workshop_Subscribe.ascx.designer.cs">
       <DependentUpon>Workshop_Subscribe.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx.cs">
-      <DependentUpon>YearlyReportsControl.ascx</DependentUpon>
+    <Compile Include="DocumentsArchiveWebPart\DocumentsArchiveWebPart.cs" />
+    <Compile Include="DocumentsArchiveWebPart\DocumentsArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>DocumentsArchiveWebPartUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx.designer.cs">
-      <DependentUpon>YearlyReportsControl.ascx.cs</DependentUpon>
+    <Compile Include="DocumentsArchiveWebPart\DocumentsArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>DocumentsArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EligibilityCheckWebPart\EligibilityCheckWebPart.cs" />
+    <Compile Include="EligibilityCheckWebPart\EligibilityCheckWebPartUserControl.ascx.cs">
+      <DependentUpon>EligibilityCheckWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EligibilityCheckWebPart\EligibilityCheckWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>EligibilityCheckWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FAQWebPart\FAQWebPart.cs" />
+    <Compile Include="FAQWebPart\FAQWebPartUserControl.ascx.cs">
+      <DependentUpon>FAQWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FAQWebPart\FAQWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>FAQWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FinancialServicesWebPart\FinancialServicesWebPart.cs" />
+    <Compile Include="FinancialServicesWebPart\FinancialServicesWebPartUserControl.ascx.cs">
+      <DependentUpon>FinancialServicesWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FinancialServicesWebPart\FinancialServicesWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>FinancialServicesWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FundingWebPart\FundingWebPart.cs" />
+    <Compile Include="FundingWebPart\FundingWebPartUserControl.ascx.cs">
+      <DependentUpon>FundingWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FundingWebPart\FundingWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>FundingWebPartUserControl.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="LandingPageWebpart\LandingPageWebpart.cs" />
     <Compile Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx.cs">
@@ -257,6 +237,14 @@
     <Compile Include="Layouts\EXIM.Portal\Captcha.aspx.designer.cs">
       <DependentUpon>Captcha.aspx.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewsArchiveWebPart\NewsArchiveWebPart.cs" />
+    <Compile Include="NewsArchiveWebPart\NewsArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>NewsArchiveWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NewsArchiveWebPart\NewsArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>NewsArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelatedServicesWebPart\RelatedServicesWebPart.cs" />
     <Compile Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx.cs">
@@ -266,9 +254,53 @@
     <Compile Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx.designer.cs">
       <DependentUpon>RelatedServicesWebPartUserControl.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="SectorsArchiveWebPart\SectorsArchiveWebPart.cs" />
+    <Compile Include="SectorsArchiveWebPart\SectorsArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>SectorsArchiveWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SectorsArchiveWebPart\SectorsArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>SectorsArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StoryArchiveWebPart\StoryArchiveWebPart.cs" />
+    <Compile Include="StoryArchiveWebPart\StoryArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>StoryArchiveWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StoryArchiveWebPart\StoryArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>StoryArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkshopArchiveWebPart\WorkshopArchiveWebPart.cs" />
+    <Compile Include="WorkshopArchiveWebPart\WorkshopArchiveWebPartUserControl.ascx.cs">
+      <DependentUpon>WorkshopArchiveWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WorkshopArchiveWebPart\WorkshopArchiveWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>WorkshopArchiveWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="YearlyReportsWebPart\YearlyReportsWebPart.cs" />
+    <Compile Include="YearlyReportsWebPart\YearlyReportsWebPartUserControl.ascx.cs">
+      <DependentUpon>YearlyReportsWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="YearlyReportsWebPart\YearlyReportsWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>YearlyReportsWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="AnnouncementsArchiveWebPart\AnnouncementsArchiveWebPart.webpart" />
+    <None Include="AnnouncementsArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{804be24b-27cd-4366-af6b-c0953e6efd72}</SharePointProjectItemId>
+    </None>
     <None Include="app.config" />
+    <None Include="ArticlesArchiveWebPart\ArticlesArchiveWebPart.webpart" />
+    <None Include="ArticlesArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{bc1a9c22-c2c9-4a12-bcb2-207b8dc52c3f}</SharePointProjectItemId>
+    </None>
+    <None Include="BoardMembersWebPart\BoardMembersWebPart.webpart" />
+    <None Include="BoardMembersWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{522fa75b-3ea6-4dad-9553-9c7a0f16962d}</SharePointProjectItemId>
+    </None>
     <None Include="ControlLoaderWebPart\ControlLoaderWebPart.webpart" />
     <None Include="ControlLoaderWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{4f2fbf12-fb54-4b3f-95b9-ab618fff8419}</SharePointProjectItemId>
@@ -276,8 +308,28 @@
     <None Include="CONTROLTEMPLATES\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{62e17fd2-499d-4b9d-818a-bc5871dec502}</SharePointProjectItemId>
     </None>
+    <None Include="DocumentsArchiveWebPart\DocumentsArchiveWebPart.webpart" />
+    <None Include="DocumentsArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{7e94a563-2d0b-4bef-af7a-0f7de1864260}</SharePointProjectItemId>
+    </None>
+    <None Include="EligibilityCheckWebPart\EligibilityCheckWebPart.webpart" />
+    <None Include="EligibilityCheckWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{5c0a361d-1bd7-49e2-bf93-a30ef875640c}</SharePointProjectItemId>
+    </None>
+    <None Include="FAQWebPart\FAQWebPart.webpart" />
+    <None Include="FAQWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{45a64c26-1ac1-4fee-aeb8-3e085576f647}</SharePointProjectItemId>
+    </None>
     <None Include="Features\Exim Webparts feature\Exim Webparts feature.feature">
       <FeatureId>{efb532ac-d15d-42a4-881b-e1fa2451bc60}</FeatureId>
+    </None>
+    <None Include="FinancialServicesWebPart\FinancialServicesWebPart.webpart" />
+    <None Include="FinancialServicesWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{cf05efba-dd54-4457-b6f5-b66a5ab626e0}</SharePointProjectItemId>
+    </None>
+    <None Include="FundingWebPart\FundingWebPart.webpart" />
+    <None Include="FundingWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{dd94372d-65c4-47e4-aa71-f9ce1318d2c2}</SharePointProjectItemId>
     </None>
     <None Include="key.snk" />
     <None Include="LandingPageWebpart\LandingPageWebpart.webpart" />
@@ -287,6 +339,10 @@
     <None Include="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <None Include="Layouts\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{fbb7974d-54f9-439b-9344-d208180e70f6}</SharePointProjectItemId>
+    </None>
+    <None Include="NewsArchiveWebPart\NewsArchiveWebPart.webpart" />
+    <None Include="NewsArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{9d88f6b3-cd2d-401e-bc1e-1330869b572e}</SharePointProjectItemId>
     </None>
     <None Include="Package\Package.package">
       <PackageId>{e66af7dc-1570-4f8f-bd24-135576b1c0b7}</PackageId>
@@ -298,39 +354,69 @@
     <None Include="RelatedServicesWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{f0477273-4a14-4182-a092-ac7965593cf7}</SharePointProjectItemId>
     </None>
+    <None Include="SectorsArchiveWebPart\SectorsArchiveWebPart.webpart" />
+    <None Include="SectorsArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{1ce62705-ca4d-4734-a978-0bf75d91ac52}</SharePointProjectItemId>
+    </None>
+    <None Include="StoryArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{136d33be-6bd9-4ae0-9090-abc35f029d06}</SharePointProjectItemId>
+    </None>
+    <None Include="StoryArchiveWebPart\StoryArchiveWebPart.webpart" />
+    <None Include="WorkshopArchiveWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{a2fa928c-e379-480c-b8ce-8a5401151ffb}</SharePointProjectItemId>
+    </None>
+    <None Include="WorkshopArchiveWebPart\WorkshopArchiveWebPart.webpart" />
+    <None Include="YearlyReportsWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{61c0ac31-e268-485a-8f67-2184ef2c8957}</SharePointProjectItemId>
+    </None>
+    <None Include="YearlyReportsWebPart\YearlyReportsWebPart.webpart" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CONTROLTEMPLATES\Exim\AnnouncementsArchive\AnnouncementsArchiveControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\ArticlesArchive\ArticlesArchiveControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\BoardMembers\BoardMembersControl.ascx" />
+    <Content Include="AnnouncementsArchiveWebPart\AnnouncementsArchiveWebPartUserControl.ascx" />
+    <Content Include="AnnouncementsArchiveWebPart\Elements.xml" />
+    <Content Include="ArticlesArchiveWebPart\ArticlesArchiveWebPartUserControl.ascx" />
+    <Content Include="ArticlesArchiveWebPart\Elements.xml" />
+    <Content Include="BoardMembersWebPart\BoardMembersWebPartUserControl.ascx" />
+    <Content Include="BoardMembersWebPart\Elements.xml" />
     <Content Include="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\DocumentsArchive\DocumentsControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\EligibilityCheck\EligibilityCheckControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\FAQ\FAQControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\FinancialServices\FinancialServiceControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\NewsArchive\NewsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\GuidForm\DownloadRequest.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\LabelMessage\LabelMessage.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\SectorsArchive\SectorsArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\SiteMap\SiteMapWPUserControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\StoryArchive\StoryArchiveControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\Violations\ReportAViolation.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\WorkshopArchive\WorkshopArchiveControl.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\YearlyReports\YearlyReportsControl.ascx" />
+    <Content Include="DocumentsArchiveWebPart\DocumentsArchiveWebPartUserControl.ascx" />
+    <Content Include="DocumentsArchiveWebPart\Elements.xml" />
+    <Content Include="EligibilityCheckWebPart\Elements.xml" />
+    <Content Include="EligibilityCheckWebPart\EligibilityCheckWebPartUserControl.ascx" />
+    <Content Include="FAQWebPart\Elements.xml" />
+    <Content Include="FAQWebPart\FAQWebPartUserControl.ascx" />
+    <Content Include="FinancialServicesWebPart\Elements.xml" />
+    <Content Include="FinancialServicesWebPart\FinancialServicesWebPartUserControl.ascx" />
+    <Content Include="FundingWebPart\Elements.xml" />
+    <Content Include="FundingWebPart\FundingWebPartUserControl.ascx" />
     <Content Include="LandingPageWebpart\Elements.xml" />
     <Content Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx" />
     <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />
+    <Content Include="NewsArchiveWebPart\Elements.xml" />
+    <Content Include="NewsArchiveWebPart\NewsArchiveWebPartUserControl.ascx" />
     <Content Include="RelatedServicesWebPart\Elements.xml" />
     <Content Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx" />
+    <Content Include="SectorsArchiveWebPart\Elements.xml" />
+    <Content Include="SectorsArchiveWebPart\SectorsArchiveWebPartUserControl.ascx" />
+    <Content Include="StoryArchiveWebPart\Elements.xml" />
+    <Content Include="StoryArchiveWebPart\StoryArchiveWebPartUserControl.ascx" />
+    <Content Include="WorkshopArchiveWebPart\Elements.xml" />
+    <Content Include="WorkshopArchiveWebPart\WorkshopArchiveWebPartUserControl.ascx" />
+    <Content Include="YearlyReportsWebPart\Elements.xml" />
+    <Content Include="YearlyReportsWebPart\YearlyReportsWebPartUserControl.ascx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ControlLoaderWebPart\Elements.xml" />

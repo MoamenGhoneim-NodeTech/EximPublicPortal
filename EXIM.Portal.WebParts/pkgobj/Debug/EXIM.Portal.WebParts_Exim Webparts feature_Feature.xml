@@ -7,5 +7,31 @@
     <ElementFile Location="LandingPageWebpart\LandingPageWebpart.webpart" />
     <ElementManifest Location="RelatedServicesWebPart\Elements.xml" />
     <ElementFile Location="RelatedServicesWebPart\RelatedServicesWebPart.webpart" />
+    <ElementManifest Location="ArticlesArchiveWebPart\Elements.xml" />
+    <ElementFile Location="ArticlesArchiveWebPart\ArticlesArchiveWebPart.webpart" />
+    <ElementManifest Location="NewsArchiveWebPart\Elements.xml" />
+    <ElementFile Location="NewsArchiveWebPart\NewsArchiveWebPart.webpart" />
+    <ElementManifest Location="AnnouncementsArchiveWebPart\Elements.xml" />
+    <ElementFile Location="AnnouncementsArchiveWebPart\AnnouncementsArchiveWebPart.webpart" />
+    <ElementManifest Location="BoardMembersWebPart\Elements.xml" />
+    <ElementFile Location="BoardMembersWebPart\BoardMembersWebPart.webpart" />
+    <ElementManifest Location="DocumentsArchiveWebPart\Elements.xml" />
+    <ElementFile Location="DocumentsArchiveWebPart\DocumentsArchiveWebPart.webpart" />
+    <ElementManifest Location="YearlyReportsWebPart\Elements.xml" />
+    <ElementFile Location="YearlyReportsWebPart\YearlyReportsWebPart.webpart" />
+    <ElementManifest Location="WorkshopArchiveWebPart\Elements.xml" />
+    <ElementFile Location="WorkshopArchiveWebPart\WorkshopArchiveWebPart.webpart" />
+    <ElementManifest Location="StoryArchiveWebPart\Elements.xml" />
+    <ElementFile Location="StoryArchiveWebPart\StoryArchiveWebPart.webpart" />
+    <ElementManifest Location="SectorsArchiveWebPart\Elements.xml" />
+    <ElementFile Location="SectorsArchiveWebPart\SectorsArchiveWebPart.webpart" />
+    <ElementManifest Location="FAQWebPart\Elements.xml" />
+    <ElementFile Location="FAQWebPart\FAQWebPart.webpart" />
+    <ElementManifest Location="FinancialServicesWebPart\Elements.xml" />
+    <ElementFile Location="FinancialServicesWebPart\FinancialServicesWebPart.webpart" />
+    <ElementManifest Location="EligibilityCheckWebPart\Elements.xml" />
+    <ElementFile Location="EligibilityCheckWebPart\EligibilityCheckWebPart.webpart" />
+    <ElementManifest Location="FundingWebPart\Elements.xml" />
+    <ElementFile Location="FundingWebPart\FundingWebPart.webpart" />
   </ElementManifests>
 </Feature>

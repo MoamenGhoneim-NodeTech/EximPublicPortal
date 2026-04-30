@@ -7,7 +7,7 @@
     </metaData>
     <data>
       <properties>
-        <property name="Title" type="string">RelatedServicesWebPart</property>
+        <property name="Title" type="string">Related Services WebPart</property>
         <property name="Description" type="string">My Visual Web Part</property>
       </properties>
     </data>

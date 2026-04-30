@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectItem Type="Microsoft.VisualStudio.SharePoint.VisualWebPart" DefaultFile="SectorsArchiveWebPartUserControl.ascx" SupportedTrustLevels="FullTrust" SupportedDeploymentScopes="Site" xmlns="http://schemas.microsoft.com/VisualStudio/2010/SharePointTools/SharePointProjectItemModel">
+  <Files>
+    <ProjectItemFile Source="Elements.xml" Target="SectorsArchiveWebPart\" Type="ElementManifest" />
+    <ProjectItemFile Source="SectorsArchiveWebPart.webpart" Target="SectorsArchiveWebPart\" Type="ElementFile" />
+    <ProjectItemFile Source="SectorsArchiveWebPartUserControl.ascx" Target="CONTROLTEMPLATES\EXIM.Portal.WebParts\SectorsArchiveWebPart\" Type="TemplateFile" />
+  </Files>
+  <SafeControls>
+    <SafeControl Name="SafeControlEntry1" Assembly="$SharePoint.Project.AssemblyFullName$" Namespace="EXIM.Portal.WebParts.SectorsArchiveWebPart" TypeName="*" IsSafe="true" IsSafeAgainstScript="false" />
+  </SafeControls>
+</ProjectItem>
