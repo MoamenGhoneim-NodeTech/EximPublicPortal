@@ -104,13 +104,6 @@
     <Compile Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx.designer.cs">
       <DependentUpon>ContactRequest.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.cs">
-      <DependentUpon>FundingControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx.designer.cs">
-      <DependentUpon>FundingControl.ascx.cs</DependentUpon>
-    </Compile>
     <Compile Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx.cs">
       <DependentUpon>HomePageControls.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -254,6 +247,14 @@
     <Compile Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx.designer.cs">
       <DependentUpon>RelatedServicesWebPartUserControl.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPart.cs" />
+    <Compile Include="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPartUserControl.ascx.cs">
+      <DependentUpon>RelatedSuccessStoryWebPartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPartUserControl.ascx.designer.cs">
+      <DependentUpon>RelatedSuccessStoryWebPartUserControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="SectorsArchiveWebPart\SectorsArchiveWebPart.cs" />
     <Compile Include="SectorsArchiveWebPart\SectorsArchiveWebPartUserControl.ascx.cs">
       <DependentUpon>SectorsArchiveWebPartUserControl.ascx</DependentUpon>
@@ -354,6 +355,10 @@
     <None Include="RelatedServicesWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{f0477273-4a14-4182-a092-ac7965593cf7}</SharePointProjectItemId>
     </None>
+    <None Include="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPart.webpart" />
+    <None Include="RelatedSuccessStoryWebPart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{6dfe2d7a-a6eb-45bb-8372-8ecfaeb5cef9}</SharePointProjectItemId>
+    </None>
     <None Include="SectorsArchiveWebPart\SectorsArchiveWebPart.webpart" />
     <None Include="SectorsArchiveWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{1ce62705-ca4d-4734-a978-0bf75d91ac52}</SharePointProjectItemId>
@@ -384,7 +389,6 @@
     </Content>
     <Content Include="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <Content Include="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
-    <Content Include="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
     <Content Include="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />
@@ -409,6 +413,8 @@
     <Content Include="NewsArchiveWebPart\NewsArchiveWebPartUserControl.ascx" />
     <Content Include="RelatedServicesWebPart\Elements.xml" />
     <Content Include="RelatedServicesWebPart\RelatedServicesWebPartUserControl.ascx" />
+    <Content Include="RelatedSuccessStoryWebPart\Elements.xml" />
+    <Content Include="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPartUserControl.ascx" />
     <Content Include="SectorsArchiveWebPart\Elements.xml" />
     <Content Include="SectorsArchiveWebPart\SectorsArchiveWebPartUserControl.ascx" />
     <Content Include="StoryArchiveWebPart\Elements.xml" />

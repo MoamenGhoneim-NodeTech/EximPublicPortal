@@ -33,5 +33,7 @@
     <ElementFile Location="EligibilityCheckWebPart\EligibilityCheckWebPart.webpart" />
     <ElementManifest Location="FundingWebPart\Elements.xml" />
     <ElementFile Location="FundingWebPart\FundingWebPart.webpart" />
+    <ElementManifest Location="RelatedSuccessStoryWebPart\Elements.xml" />
+    <ElementFile Location="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPart.webpart" />
   </ElementManifests>
 </Feature>
