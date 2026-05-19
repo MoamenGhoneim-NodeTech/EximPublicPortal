@@ -21,9 +21,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
         {
             if (IsPostBack) return;
 
-            System.IO.File.AppendAllText(
-          @"C:\Temp\sp-debug.txt",
-          DateTime.Now + " - Page_Load hit\n");
             try
             {
                 EnsureViewportMeta();

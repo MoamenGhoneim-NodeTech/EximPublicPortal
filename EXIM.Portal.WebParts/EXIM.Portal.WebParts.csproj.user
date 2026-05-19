@@ -3,6 +3,6 @@
   <PropertyGroup>
     <SharePointSiteUrl>http://nodetech:2020/</SharePointSiteUrl>
     <PublishToFileSystemTargetLocation>E:\EXIM Publish</PublishToFileSystemTargetLocation>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
 </Project>

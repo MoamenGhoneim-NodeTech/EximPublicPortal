@@ -65,13 +65,16 @@
         // Derive RTL from SharePoint page context.
         var isRtl = _spPageContextInfo.currentLanguage !== 1033;
 
-        // Nav arrow icons swap direction in RTL.
+        // In LTR: prev = left arrow, next = right arrow.
+        // In RTL: owlCarousel mirrors the track, so prev visually sits on the
+        //         right side → use the right-pointing icon; next sits on the
+        //         left side → use the left-pointing icon.
         var navPrev = isRtl
-            ? '<i class="ic-slider-nav-left"  aria-hidden="true"></i>'
+            ? '<i class="ic-slider-nav-right" aria-hidden="true"></i>'
             : '<i class="ic-slider-nav-right" aria-hidden="true"></i>';
 
         var navNext = isRtl
-            ? '<i class="ic-slider-nav-right" aria-hidden="true"></i>'
+            ? '<i class="ic-slider-nav-left"  aria-hidden="true"></i>'
             : '<i class="ic-slider-nav-left"  aria-hidden="true"></i>';
 
         function initCarousel() {

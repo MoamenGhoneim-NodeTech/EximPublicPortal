@@ -79,7 +79,7 @@
         <div class="row">
             <div class="col-md-6 order-first order-md-last">
                 <div class="financial-products-advisor-img" data-aos="fade-right" data-aos-delay="100">
-                    <img src="/Style Library/exim/ar/assets/images/vis.png" alt="">
+                    <img src="/Style Library/exim/ar/assets/images/vis.webp" alt="">
                 </div>
             </div>
             <div class="col-md-6 order-md-first order-last d-flex align-items-center">
@@ -324,6 +324,8 @@
 
 <%-- ══════════════════════════════════════════════════════
      NEWS / BLOGS SLIDER
+     FIX: .custom-nav-container moved OUTSIDE LanguageSpecificContent blocks
+          so it renders exactly once regardless of viewport width.
      ══════════════════════════════════════════════════════ --%>
 <section class="home-blogs-section">
     <div class="container">
@@ -357,10 +359,17 @@
                         </div>
                     </contenttemplate>
                 </SharePoint:LanguageSpecificContent>
+
+                <%-- ✅ FIX: Nav arrows are language-agnostic — rendered once here,
+                     outside both LanguageSpecificContent blocks.
+                     Previously this block was inside one of the language blocks,
+                     causing it to appear duplicated when the viewport narrowed
+                     (e.g. DevTools docked to left in Chrome). --%>
                 <div class="custom-nav-container mt-auto" data-aos="fade-up" data-aos-delay="100">
                     <a role="button" class="custom-prev-btn btn"><i class="ic-slider-nav-right"></i></a>
                     <a role="button" class="custom-next-btn btn"><i class="ic-slider-nav-left"></i></a>
                 </div>
+
             </div>
             <div class="col-lg-9 col-md-8" data-aos="fade-right" data-aos-delay="100">
                 <div class="home-blogs-slider owl-carousel owl-theme">
@@ -417,35 +426,35 @@
 
 <%-- Hero slider videos: MP4 sources use data-exim-src; exim-deferred-hero-video loads when near viewport (mobile LCP). --%>
 <script type="text/javascript">
-(function () {
-    function wireDeferredHeroVideos() {
-        var vids = document.querySelectorAll('video.exim-deferred-hero-video');
-        if (!vids.length) return;
-        function activateVideo(v) {
-            var s = v.querySelector('source[data-exim-src]');
-            if (!s) return;
-            var url = s.getAttribute('data-exim-src');
-            if (!url || s.getAttribute('src')) return;
-            s.setAttribute('src', url);
-            try { v.load(); v.play().catch(function () { }); } catch (e) { }
-        }
-        if (!('IntersectionObserver' in window)) {
-            for (var i = 0; i < vids.length; i++) activateVideo(vids[i]);
-            return;
-        }
-        var io = new IntersectionObserver(function (entries) {
-            for (var j = 0; j < entries.length; j++) {
-                if (!entries[j].isIntersecting) continue;
-                var v = entries[j].target;
-                activateVideo(v);
-                io.unobserve(v);
+    (function () {
+        function wireDeferredHeroVideos() {
+            var vids = document.querySelectorAll('video.exim-deferred-hero-video');
+            if (!vids.length) return;
+            function activateVideo(v) {
+                var s = v.querySelector('source[data-exim-src]');
+                if (!s) return;
+                var url = s.getAttribute('data-exim-src');
+                if (!url || s.getAttribute('src')) return;
+                s.setAttribute('src', url);
+                try { v.load(); v.play().catch(function () { }); } catch (e) { }
             }
-        }, { rootMargin: '120px', threshold: 0.01 });
-        for (var k = 0; k < vids.length; k++) io.observe(vids[k]);
-    }
-    if (document.readyState === 'loading')
-        document.addEventListener('DOMContentLoaded', wireDeferredHeroVideos);
-    else
-        wireDeferredHeroVideos();
-})();
+            if (!('IntersectionObserver' in window)) {
+                for (var i = 0; i < vids.length; i++) activateVideo(vids[i]);
+                return;
+            }
+            var io = new IntersectionObserver(function (entries) {
+                for (var j = 0; j < entries.length; j++) {
+                    if (!entries[j].isIntersecting) continue;
+                    var v = entries[j].target;
+                    activateVideo(v);
+                    io.unobserve(v);
+                }
+            }, { rootMargin: '120px', threshold: 0.01 });
+            for (var k = 0; k < vids.length; k++) io.observe(vids[k]);
+        }
+        if (document.readyState === 'loading')
+            document.addEventListener('DOMContentLoaded', wireDeferredHeroVideos);
+        else
+            wireDeferredHeroVideos();
+    })();
 </script>

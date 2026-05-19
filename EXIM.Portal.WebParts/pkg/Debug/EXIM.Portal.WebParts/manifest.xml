@@ -24,6 +24,7 @@
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.EligibilityCheckWebPart" TypeName="*" />
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.FundingWebPart" TypeName="*" />
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.RelatedSuccessStoryWebPart" TypeName="*" />
+        <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.PartnersWebPart" TypeName="*" />
       </SafeControls>
     </Assembly>
   </Assemblies>
@@ -44,13 +45,13 @@
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\EligibilityCheckWebPart\EligibilityCheckWebPartUserControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\FundingWebPart\FundingWebPartUserControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPartUserControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\PartnersWebPart\PartnersWebPartUserControl.ascx" />
     <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.resx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ContactUs\ContactRequest.ascx" />
-    <TemplateFile Location="CONTROLTEMPLATES\Exim\Funding\FundingControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\HomePage\HomePageControls.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\InvitationForm\InvitationForm.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\ProductConsultant\FindMyProduct.ascx" />

@@ -42,19 +42,19 @@
                     margin: 24,
                     stagePadding: 200,
                     rtl: <%: IsArabic ? "true" : "false" %>,
-                responsive: {
-                    0: { items: 1, stagePadding: 0, nav: true },
-                    575: { items: 1, stagePadding: 0, nav: true },
-                    768: { items: 2, stagePadding: 50, nav: true },
-                    992: { items: 2, stagePadding: 80, nav: true },
-                    1300: { items: 2, stagePadding: 100 }
-                },
-                dots: false,
-                nav: false,
-                navText: ['<i class="ic-slider-nav-right"></i>',
-                    '<i class="ic-slider-nav-left"></i>'],
-                autoplay: false
-            });
+                    responsive: {
+                        0: { items: 1, stagePadding: 0 },
+                        575: { items: 1, stagePadding: 0 },
+                        768: { items: 2, stagePadding: 50 },
+                        992: { items: 2, stagePadding: 80 },
+                        1300: { items: 2, stagePadding: 100 }
+                    },
+                    dots: false,
+                    nav: false,
+                    navText: ['<i class="ic-slider-nav-right"></i>',
+                        '<i class="ic-slider-nav-left"></i>'],
+                    autoplay: false
+                });
             }
 
             if (document.readyState === 'loading')
