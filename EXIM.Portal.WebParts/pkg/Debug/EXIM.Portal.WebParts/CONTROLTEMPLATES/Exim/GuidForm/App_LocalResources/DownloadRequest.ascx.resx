@@ -186,4 +186,7 @@
   <data name="guideListRelativeURL" xml:space="preserve">
     <value>/ar/NonFinServices/CreditFinancingInsurance/Lists/GuideRequests</value>
   </data>
+  <data name="InvalidTextOnly.Text" xml:space="preserve">
+    <value>هذا الحقل لا يقبل أرقامًا.</value>
+  </data>
 </root>

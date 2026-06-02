@@ -1,6 +1,7 @@
 ﻿using EXIM.Common.Lib.Utils;
 using Microsoft.SharePoint;
 using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
@@ -74,6 +75,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
 
         private string GetGuideFileUrl(SPWeb web)
         {
+
             string targetFileName = "Export Credit Financing and Insurance.pdf";
 
             foreach (SPList list in web.Lists)
@@ -97,7 +99,43 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
 
             return null;
         }
+        private void DownloadGuideFile(SPWeb web)
+        {
+            lnkbtnDownloadGuide.Enabled = false;
+            string targetFileName = "Export Credit Financing and Insurance.pdf";
 
+            foreach (SPList list in web.Lists)
+            {
+                SPDocumentLibrary lib = list as SPDocumentLibrary;
+                if (lib == null || lib.Hidden ) continue;
+
+                try
+                {
+                    SPFile file = lib.RootFolder.Files[targetFileName];
+                    if (file == null || !file.Exists) continue;
+
+                    byte[] fileBytes = file.OpenBinary();
+
+                    HttpResponse response = HttpContext.Current.Response;
+                    response.Clear();
+                    response.ContentType = "application/pdf";
+                    response.AddHeader("Content-Disposition", $"attachment; filename=\"{targetFileName}\"");
+                    response.AddHeader("Content-Length", fileBytes.Length.ToString());
+                    response.BinaryWrite(fileBytes);
+                    response.Flush();
+                    response.End();
+
+                    return; // Stop after first match
+                }
+                catch
+                {
+                    // Ignore and continue searching other libraries
+                }
+            }
+
+            // File not found — show error message
+            ucMessage.ShowError("File not found.");
+        }
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             try
@@ -131,17 +169,17 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
 
                                 newItem.Update();
 
-                                string fileUrl = GetGuideFileUrl(web);
-                                Session.Add("GuideFileURL", fileUrl);
-                                if (Session["GuideFileURL"] != null)//!string.IsNullOrEmpty(fileUrl))
-                                {
-                                    lnkDownloadGuide.NavigateUrl = Session["GuideFileURL"].ToString();
-                                    lnkDownloadGuide.Visible = true;
-                                }
-                                else
-                                {
-                                    lnkDownloadGuide.Visible = false;
-                                }
+                                //string fileUrl = GetGuideFileUrl(web);
+                                //Session.Add("GuideFileURL", fileUrl);
+                                //if (Session["GuideFileURL"] != null)//!string.IsNullOrEmpty(fileUrl))
+                                //{
+                                //    lnkDownloadGuide.NavigateUrl = Session["GuideFileURL"].ToString();
+                                //    lnkDownloadGuide.Visible = true;
+                                //}
+                                //else
+                                //{
+                                //    lnkDownloadGuide.Visible = false;
+                                //}
                             }
                             finally
                             {
@@ -160,6 +198,11 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
                 LogService.LogException(ex);
                 ucMessage.ShowUnexpectedError();
             }
+        }
+
+        protected void lnkbtnDownloadGuide_Click(object sender, EventArgs e)
+        {
+            DownloadGuideFile(SPContext.Current.Web);
         }
     }
 }

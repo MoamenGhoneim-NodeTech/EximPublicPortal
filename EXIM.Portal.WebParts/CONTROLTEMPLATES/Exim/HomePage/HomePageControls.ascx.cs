@@ -65,14 +65,14 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
                         litNews.Text = HomeHtmlRenderer.RenderNews(model.News, isArabic, lang);
 
-                        // Knowledge Center — 5 tabs
+                        // Knowledge Center —4 tabs
                         // Pass isArabic explicitly — never call SPContext inside elevated block
-                        PopulateKnowledgeTab(model.KnowledgeResearch, lang, "Research", litKnowledgeSlider1, litKnowledgeNavs1, isArabic);
-                        PopulateKnowledgeTab(model.KnowledgeDevelopment, lang, "Development", litKnowledgeSlider2, litKnowledgeNavs2, isArabic);
-                        PopulateKnowledgeTab(model.KnowledgeManagement, lang, "Management", litKnowledgeSlider3, litKnowledgeNavs3, isArabic);
-                        PopulateKnowledgeTab(model.KnowledgeMarket, lang, "Market", litKnowledgeSlider4, litKnowledgeNavs4, isArabic);
-                        PopulateKnowledgeTab(model.KnowledgeProcedures, lang, "Procedures", litKnowledgeSlider5, litKnowledgeNavs5, isArabic);
-
+                        PopulateKnowledgeTab(model.KnowledgeDevelopment, lang, "Sustain", litKnowledgeSlider2, litKnowledgeNavs2, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeManagement, lang, "MarketStudies", litKnowledgeSlider3, litKnowledgeNavs3, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeMarket, lang, "BusinessDevelopment", litKnowledgeSlider4, litKnowledgeNavs4, isArabic);
+                        PopulateKnowledgeTab(model.KnowledgeProcedures, lang, "ExportProcedure", litKnowledgeSlider5, litKnowledgeNavs5, isArabic);
+                        litKnowledgeSlider1.Text = "";
+                        litKnowledgeNavs1.Text = "";
                         litPartners.Text = HomeHtmlRenderer.RenderPartners(model.Partners, isArabic);
                     }
                 });
@@ -97,7 +97,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
             List<KnowledgeItem> items, string lang, string section,
             Literal sliderLiteral, Literal navsLiteral, bool isArabic)
         {
-            var listUrl = string.Format("/{0}/NonFinServices/KnowledgeCenter/{1}/Pages", lang, section);
+            var listUrl = string.Format("/{0}/NonFinServices/BusinessSupport/{1}/Lists/Services", lang, section);
             var (slider, navs) = HomeHtmlRenderer.RenderKnowledgeTab(items, isArabic, listUrl);
             sliderLiteral.Text = slider;
             navsLiteral.Text = navs;
@@ -267,11 +267,11 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 HomeNumbers = GetHomeNumbers(),
                 Stories = GetStories(),
                 News = GetNews(),
-                KnowledgeResearch = GetKnowledgeItems("Research"),
-                KnowledgeDevelopment = GetKnowledgeItems("Development"),
-                KnowledgeManagement = GetKnowledgeItems("Management"),
-                KnowledgeMarket = GetKnowledgeItems("Market"),
-                KnowledgeProcedures = GetKnowledgeItems("Procedures"),
+               // KnowledgeResearch = GetKnowledgeItems("ExportProcedure"),
+                KnowledgeDevelopment = GetKnowledgeItems("Sustain"),
+                KnowledgeManagement = GetKnowledgeItems("MarketStudies"),
+                KnowledgeMarket = GetKnowledgeItems("BusinessDevelopment"),
+                KnowledgeProcedures = GetKnowledgeItems("ExportProcedure"),
                 Partners = GetPartners(),
             };
         }
@@ -287,11 +287,11 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 {
                     ID = GetInt(i, "ID"),
                     EXIM_ItemOrder = GetInt(i, "EXIM_ItemOrder"),
-                    Title = GetStr(i, "Title"),
-                    TitleAr = GetStr(i, "TitleAr"),
+                    Title = GetStr(i, "TitleEn"),
+                    TitleAr = GetStr(i, "Title"),
                     PublishingRollupImage = GetStr(i, "PublishingRollupImage"),
-                    Url = GetStr(i, "Url"),
-                    UrlAr = GetStr(i, "UrlAr"),
+                    Url = GetStr(i, "EXIM_URL_En"),
+                    UrlAr = GetStr(i, "EXIM_URL"),
                     OpenInNewTab = GetBool(i, "EXIM_OpenInNewTab"),
                     Exim_SliderVideoURL = GetStr(i, "Exim_SliderVideoURL"),
                 }).ToList();
@@ -326,7 +326,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 {
                     ID = GetInt(i, "ID"),
                     EXIM_ItemOrder = GetInt(i, "EXIM_ItemOrder"),
-                    Title = GetStr(i, "TitleEN"),
+                    Title = GetStr(i, "TitleEn"),
                     TitleAr = GetStr(i, "Title"),
                     SubTitle = GetStr(i, "SubTitle"),
                     SubTitleEn = GetStr(i, "SubTitleEn"),
@@ -363,12 +363,12 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
         public List<KnowledgeItem> GetKnowledgeItems(string section)
         {
             return QueryListByUrl(
-                string.Format("/{0}/NonFinServices/KnowledgeCenter/{1}/Pages", _langStr, section), "Home")
+                string.Format("/{0}/NonFinServices/BusinessSupport/{1}/Lists/Services", _langStr, section), "Home")
                 .Take(3)
                 .Select(i => new KnowledgeItem
                 {
                     Title = GetStr(i, "Title"),
-                    Comments = GetStr(i, "Comments"),
+                    Comments = GetStr(i, "EXIM_SrvDescription"),
                     PublishingRollupImage = GetStr(i, "PublishingRollupImage"),
                     LinkFilename = GetStr(i, "FileLeafRef"),
                     FileRef = GetStr(i, "FileRef"),
@@ -387,8 +387,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                     Title = GetStr(i, "Title"),
                     TitleAr = GetStr(i, "TitleAr"),
                     PublishingRollupImage = GetStr(i, "PublishingRollupImage"),
-                    Url = GetStr(i, "Url"),
-                    UrlAr = GetStr(i, "UrlAr"),
+                    Url = GetStr(i, "EXIM_URL_En"),
+                    UrlAr = GetStr(i, "EXIM_URL"),
                     OpenInNewTab = GetBool(i, "EXIM_OpenInNewTab"),
                 }).ToList();
         }
@@ -412,22 +412,37 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
         private List<SPListItem> QueryListByUrl(string serverRelUrl, string viewName)
         {
-            // serverRelUrl is like "/ar/MediaCenter/News/Pages"
-            // Strategy:
-            //   1. Split into subsite URL and list-folder name.
-            //   2. Open the subsite (or reuse _web when it IS the subsite).
-            //   3. Use SPWeb.GetList() for a direct, efficient lookup that works
-            //      under anonymous access. Fall back to list enumeration only if
-            //      direct lookup fails (e.g. custom list URLs).
             SPWeb subWeb = null;
             var dispose = false;
             try
             {
                 var trimmed = serverRelUrl.TrimEnd('/');
-                var lastSlash = trimmed.LastIndexOf('/');
-                var listFolder = lastSlash >= 0 ? trimmed.Substring(lastSlash + 1) : trimmed;
-                var webRelUrl = lastSlash > 0 ? trimmed.Substring(0, lastSlash) : "/";
 
+                // ── Detect "/Lists/ListName" pattern and handle correctly ──────────
+                // SharePoint list URLs are: /<webRelUrl>/Lists/<listInternalName>
+                // OR:                       /<webRelUrl>/<listFolder>   (doc libs, pages libs)
+                //
+                // We must NOT treat "/Lists" as part of the subweb path.
+
+                string webRelUrl;
+                string listServerRelUrl; // full server-relative URL we pass to GetList()
+
+                var listsIdx = trimmed.LastIndexOf("/Lists/", StringComparison.OrdinalIgnoreCase);
+                if (listsIdx >= 0)
+                {
+                    // e.g. /en/NonFinServices/BusinessSupport/ExportProcedure/Lists/Services
+                    webRelUrl = trimmed.Substring(0, listsIdx);          // /en/NonFinServices/BusinessSupport/ExportProcedure
+                    listServerRelUrl = trimmed;                                  // full path — passed to GetList()
+                }
+                else
+                {
+                    // Doc library / Pages library: /en/MediaCenter/News/Pages
+                    var lastSlash = trimmed.LastIndexOf('/');
+                    webRelUrl = lastSlash > 0 ? trimmed.Substring(0, lastSlash) : "/";
+                    listServerRelUrl = trimmed;
+                }
+
+                // ── Open the correct subweb ────────────────────────────────────────
                 var siteRelUrl = _web.Site.ServerRelativeUrl.TrimEnd('/');
                 var webServerRelUrl = siteRelUrl + webRelUrl;
 
@@ -450,26 +465,25 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                     return new List<SPListItem>();
                 }
 
-                // ── PRIMARY: direct URL lookup — fast and anonymous-safe ────
+                // ── Resolve the list ───────────────────────────────────────────────
                 SPList list = null;
                 try
                 {
-                    // Build the full server-relative URL of the list root folder
-                    var fullListUrl = subWeb.ServerRelativeUrl.TrimEnd('/') + "/" + listFolder;
+                    // Build absolute server-relative path for GetList()
+                    var fullListUrl = siteRelUrl + listServerRelUrl;
                     list = subWeb.GetList(fullListUrl);
                 }
                 catch
                 {
-                    // GetList() failed (wrong URL shape, custom path, etc.)
-                    // ── FALLBACK: enumerate lists by title / root-folder name ─
-                    // Wrapped in its own try so one bad list doesn't abort the page.
+                    // Fallback: enumerate by title or root-folder suffix
                     try
                     {
+                        var suffix = "/" + listServerRelUrl.TrimEnd('/').Split('/').Last();
                         foreach (SPList candidate in subWeb.Lists)
                         {
-                            if (string.Equals(candidate.Title, listFolder, StringComparison.OrdinalIgnoreCase) ||
-                                candidate.RootFolder.ServerRelativeUrl.TrimEnd('/')
-                                    .EndsWith("/" + listFolder, StringComparison.OrdinalIgnoreCase))
+                            if (candidate.RootFolder.ServerRelativeUrl
+                                    .TrimEnd('/')
+                                    .EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
                             {
                                 list = candidate;
                                 break;
@@ -478,7 +492,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                     }
                     catch (Exception fallbackEx)
                     {
-                        Log("QueryListByUrl fallback enumeration (" + serverRelUrl + ")", fallbackEx);
+                        Log("QueryListByUrl fallback (" + serverRelUrl + ")", fallbackEx);
                     }
                 }
 
@@ -501,7 +515,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 if (dispose && subWeb != null) subWeb.Dispose();
             }
         }
-
         private List<SPListItem> RunViewQuery(SPList list, string viewName)
         {
             var query = new SPQuery { RowLimit = 100 };
@@ -617,14 +630,29 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                         "<img src=\"{0}\" alt=\"{1}\" width=\"{2}\" height=\"{3}\" decoding=\"async\"{4}{5}>",
                         A(img), A(title), HeroBannerImgWidth, HeroBannerImgHeight, lazyAttr, fetchAttr);
                 }
+                if (ar)
+                {
 
-                sb.Append("<div class=\"slider-data\">");
-                sb.AppendFormat("<h2 data-aos=\"fade-up\" data-aos-duration=\"1000\">{0}</h2>", T(title));
-                if (url.HasVal())
-                    sb.AppendFormat(
-                        "<div class=\"actions-btns\" data-aos=\"fade-up\" data-aos-duration=\"1400\" data-aos-delay=\"400\">" +
-                        "<a href=\"{0}\"{1} class=\"btn btn-primary\">{2} <span class=\"ic-arrow-left\"></span></a></div>",
-                        A(url), target, T(learnMore));
+                    sb.Append("<div class=\"slider-data\">");
+                    sb.AppendFormat("<h2 data-aos=\"fade-up\" data-aos-duration=\"1000\">{0}</h2>", T(title));
+                    if (url.HasVal())
+                        sb.AppendFormat(
+                            "<div class=\"actions-btns\" data-aos=\"fade-up\" data-aos-duration=\"1400\" data-aos-delay=\"400\">" +
+                            "<a href=\"{0}\"{1} class=\"btn btn-primary\">{2} <span class=\"ic-arrow-left\"></span></a></div>",
+                            A(url), target, T(learnMore));
+             
+                }
+                else {
+                    sb.Append("<div class=\"slider-data\">");
+                    if (url.HasVal())
+                        sb.AppendFormat(
+                            "<div class=\"actions-btns\" data-aos=\"fade-up\" data-aos-duration=\"1400\" data-aos-delay=\"400\">" +
+                            "<a href=\"{0}\"{1} class=\"btn btn-primary\"><span class=\"ic-arrow-left\"></span>{2} </a></div>",
+                            A(url), target, T(learnMore));
+                    sb.AppendFormat("<h2 data-aos=\"fade-up\" data-aos-duration=\"1000\" style=\"direction:ltr;\">{0}</h2>", T(title));
+
+
+                }
                 sb.Append("</div></div>");
             }
             return sb.ToString();

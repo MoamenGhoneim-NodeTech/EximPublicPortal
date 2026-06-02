@@ -1,10 +1,10 @@
 ﻿<%@ Assembly Name="$SharePoint.Project.AssemblyFullName$" %>
 <%@ Assembly Name="Microsoft.Web.CommandUI, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
-<%@ Register Tagprefix="SharePoint" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
-<%@ Register Tagprefix="Utilities" Namespace="Microsoft.SharePoint.Utilities" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
-<%@ Register Tagprefix="asp" Namespace="System.Web.UI" Assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" %>
-<%@ Import Namespace="Microsoft.SharePoint" %> 
-<%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register TagPrefix="SharePoint" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register TagPrefix="Utilities" Namespace="Microsoft.SharePoint.Utilities" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register TagPrefix="asp" Namespace="System.Web.UI" Assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" %>
+<%@ Import Namespace="Microsoft.SharePoint" %>
+<%@ Register TagPrefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ContactRequest.ascx.cs" Inherits="EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs.ContactRequest" %>
 
 <div class="row mb-4">
@@ -16,6 +16,7 @@
 <asp:Panel runat="server" ID="pnlFormBody">
     <div class="custom-form">
         <div class="row g-4">
+
             <!-- Sender Name -->
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
                 <div class="form-group">
@@ -59,28 +60,6 @@
                     <asp:RegularExpressionValidator runat="server" ID="revMobileNumber" CssClass="text-danger" meta:resourcekey="InvalidMobileNumber" ValidationGroup="submit" ControlToValidate="txtMobileNumber" ValidationExpression="^\d{9,14}$" Display="Dynamic" />
                 </div>
             </div>
-
-            <!-- Email -->
-            <div class="col-md-12" data-aos="fade-up" data-aos-delay="100">
-                <div class="form-group">
-                    <span class="text-danger">*</span>
-                    <asp:Label runat="server" ID="lblEmail" meta:resourcekey="lblEmail" AssociatedControlID="txtEmail" />
-                    <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" meta:resourcekey="txtEmail" ValidationGroup="" TextMode="Email" />
-                    <asp:RequiredFieldValidator runat="server" ID="rfvEmail" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtEmail" Display="Dynamic" />
-                    <asp:RegularExpressionValidator runat="server" ID="revEmail" CssClass="text-danger" meta:resourcekey="InvalidEmail" ValidationGroup="submit" ControlToValidate="txtEmail" ValidationExpression="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$" Display="Dynamic" />
-                </div>
-            </div>
-
-            <!-- Message -->
-            <div class="col-md-12" data-aos="fade-up" data-aos-delay="100">
-                <div class="form-group">
-                    <span class="text-danger">*</span>
-                    <asp:Label runat="server" ID="lblMessage" meta:resourcekey="lblMessage" AssociatedControlID="txtMessage" />
-                    <asp:TextBox runat="server" ID="txtMessage" CssClass="form-control limit-1000" meta:resourcekey="txtMessage" TextMode="MultiLine" Rows="4" MaxLength="1000"/>
-                    <asp:RequiredFieldValidator runat="server" ID="rfvMessage" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtMessage" Display="Dynamic" />
-                </div>
-            </div>
-
             <!-- Request Type -->
             <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
                 <div class="form-group">
@@ -100,11 +79,51 @@
                     <asp:RequiredFieldValidator runat="server" ID="rfvMessageTitle" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtMessageTitle" Display="Dynamic" />
                 </div>
             </div>
+               <!-- Message -->
+   <div class="col-md-12" data-aos="fade-up" data-aos-delay="100">
+       <div class="form-group">
+           <span class="text-danger">*</span>
+           <asp:Label runat="server" ID="lblMessage" meta:resourcekey="lblMessage" AssociatedControlID="txtMessage" />
+           <asp:TextBox runat="server" ID="txtMessage" CssClass="form-control limit-1000" meta:resourcekey="txtMessage" TextMode="MultiLine" Rows="4" MaxLength="1000" />
+           <asp:RequiredFieldValidator runat="server" ID="rfvMessage" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtMessage" Display="Dynamic" />
+       </div>
+   </div>
+            <!-- Email -->
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="form-group">
+                    <span class="text-danger">*</span>
+                    <asp:Label runat="server" ID="lblEmail" meta:resourcekey="lblEmail" AssociatedControlID="txtEmail" />
+                    <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" meta:resourcekey="txtEmail" ValidationGroup="" TextMode="Email" />
+                    <asp:RequiredFieldValidator runat="server" ID="rfvEmail" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtEmail" Display="Dynamic" />
+                    <asp:RegularExpressionValidator runat="server" ID="revEmail" CssClass="text-danger" meta:resourcekey="InvalidEmail" ValidationGroup="submit" ControlToValidate="txtEmail" ValidationExpression="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$" Display="Dynamic" />
+                </div>
+            </div>
+
+            <!-- ID Number -->
+            <div class="col-md-6" id="divIDNumber" runat="server" style="display: none;" data-aos="fade-up" data-aos-delay="100">
+                <div class="form-group">
+                    <span class="text-danger">*</span>
+                    <asp:Label runat="server" ID="lblIDNmber" meta:resourcekey="lblIDNmber" AssociatedControlID="txtIDNumber" />
+                    <asp:TextBox runat="server" ID="txtIDNumber" CssClass="form-control" meta:resourcekey="txtIDNumber" />
+                    <asp:RequiredFieldValidator
+                        runat="server"
+                        ID="rfvIDNumber"
+                        CssClass="text-danger"
+                        Enabled="false"
+                        meta:resourcekey="RequiredField"
+                        ValidationGroup="submit"
+                        ControlToValidate="txtIDNumber"
+                        Display="Dynamic" />
+                </div>
+            </div>
+         
+
+
 
             <!-- Captcha -->
             <div class="col-md-12" data-aos="fade-up" data-aos-delay="100">
                 <div class="form-group">
-                    <customtags:captcha runat="server" ID="captcha" validationgroup="submit" />
+                    <customtags:captcha runat="server" id="captcha" validationgroup="submit" />
                 </div>
             </div>
 
@@ -124,6 +143,136 @@
                 if ($(this).val().length > max) {
                     $(this).val($(this).val().substring(0, max));
                 }
+            });
+        });
+    </script>
+  <%--  <script>
+        $(document).ready(function () {
+
+            var defaultMessageLabel = $('#<%= lblMessage.ClientID %>').text();
+
+        function applyRequestTypeRules() {
+
+            var selectedText = $('#<%= ddlRequestType.ClientID %> option:selected').text();
+            var selectedvalue = $('#<%= ddlRequestType.ClientID %> option:selected').val();
+
+            if (selectedvalue === '4') {
+
+                // Show ID Number panel
+                $('#<%= divIDNumber.ClientID %>').show();
+
+                // Make ID Number required
+                ValidatorEnable(
+                    document.getElementById('<%= rfvIDNumber.ClientID %>'),
+                    true
+                );
+
+                // Change message label
+                $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
+
+            }
+            else if (selectedvalue === '5') {
+
+                // Hide ID Number panel
+                $('#<%= divIDNumber.ClientID %>').hide();
+
+                // Remove required validation
+                ValidatorEnable(
+                    document.getElementById('<%= rfvIDNumber.ClientID %>'),
+                    false
+                );
+
+                // Change message label
+                $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
+
+            }
+            else {
+
+                // Hide ID Number panel
+                $('#<%= divIDNumber.ClientID %>').hide();
+
+                // Remove required validation
+                ValidatorEnable(
+                    document.getElementById('<%= rfvIDNumber.ClientID %>'),
+                    false
+                );
+
+                // Restore original label
+                $('#<%= lblMessage.ClientID %>').text(defaultMessageLabel);
+            }
+        }
+
+        applyRequestTypeRules();
+
+        $('#<%= ddlRequestType.ClientID %>').change(function () {
+            applyRequestTypeRules();
+        });
+    });
+    </script>--%>
+    <script>
+        $(document).ready(function () {
+
+            var defaultMessageLabel = $('#<%= lblMessage.ClientID %>').text();
+
+            function applyRequestTypeRules() {
+
+                var selectedvalue = $('#<%= ddlRequestType.ClientID %> option:selected').val();
+                var selectedText = $('#<%= ddlRequestType.ClientID %> option:selected').text();
+
+                if (selectedvalue =='4') {
+
+                // Show ID Number panel
+                $('#<%= divIDNumber.ClientID %>').show();
+
+                // Make ID Number required
+                ValidatorEnable(
+                    document.getElementById('<%= rfvIDNumber.ClientID %>'),
+                    true
+                );
+
+                // Change message label
+                $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
+                $('#<%= txtMessageTitle.ClientID %>').val(selectedText);
+
+
+            }
+            else if (selectedvalue== '5') {
+
+                // Hide ID Number panel
+                $('#<%= divIDNumber.ClientID %>').hide();
+
+                // Remove required validation
+                ValidatorEnable(
+                    document.getElementById('<%= rfvIDNumber.ClientID %>'),
+                    false
+                );
+
+                // Change message label
+                $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
+                $('#<%= txtMessageTitle.ClientID %>').val(selectedText);
+
+            }
+            else {
+
+                // Hide ID Number panel
+                $('#<%= divIDNumber.ClientID %>').hide();
+
+                // Remove required validation
+                ValidatorEnable(
+                    document.getElementById('<%= rfvIDNumber.ClientID %>'),
+                    false
+                );
+
+                // Restore original label
+                    $('#<%= lblMessage.ClientID %>').text(defaultMessageLabel);
+              //$('#<%= txtMessageTitle.ClientID %>').val('');
+                }
+            }
+
+            applyRequestTypeRules();
+
+            $('#<%= ddlRequestType.ClientID %>').change(function () {
+                applyRequestTypeRules();
             });
         });
     </script>

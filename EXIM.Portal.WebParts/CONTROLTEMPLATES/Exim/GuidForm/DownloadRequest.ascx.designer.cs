@@ -87,6 +87,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvBeneficiaryName;
 
         /// <summary>
+        /// revBeneficiaryName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revBeneficiaryName;
+
+        /// <summary>
         /// lblCity control.
         /// </summary>
         /// <remarks>
@@ -112,6 +121,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCity;
+
+        /// <summary>
+        /// revCity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revCity;
 
         /// <summary>
         /// lblMobileNumber control.
@@ -249,12 +267,12 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         protected global::System.Web.UI.WebControls.Literal litGuideSuccessDescription;
 
         /// <summary>
-        /// lnkDownloadGuide control.
+        /// lnkbtnDownloadGuide control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkDownloadGuide;
+        protected global::System.Web.UI.WebControls.LinkButton lnkbtnDownloadGuide;
     }
 }

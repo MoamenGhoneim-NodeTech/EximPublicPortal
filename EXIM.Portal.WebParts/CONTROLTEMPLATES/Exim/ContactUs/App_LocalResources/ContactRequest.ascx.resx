@@ -198,4 +198,16 @@
   <data name="Select" xml:space="preserve">
     <value>اختر نوع الطلب</value>
   </data>
+  <data name="lblIDNmber.Text" xml:space="preserve">
+    <value>رقم الهوية</value>
+  </data>
+  <data name="PurposeofRequest" xml:space="preserve">
+    <value>الغرض من الطلب ووصفة</value>
+  </data>
+  <data name="RequestforInfoId" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="ShareDataTypeId" xml:space="preserve">
+    <value>5</value>
+  </data>
 </root>

@@ -90,7 +90,7 @@
                             <h2 data-aos="fade-up" data-aos-delay="200">We help you choose the financial services that suit your needs.</h2>
                             <p data-aos="fade-up" data-aos-delay="300">The Saudi Export-Import Bank aims to promote the development of Saudi non-oil exports and increase their competitiveness in global markets across various sectors by providing credit solutions for export financing, guarantees, and export credit insurance with competitive advantages. This is in line with the objectives and pillars of the Kingdom&apos;s Vision 2030, which aims to increase the proportion of non-oil exports to non-oil GDP.</p>
                             <div class="financial-products-advisor-text--action">
-                                <a href="" class="btn btn-secondary" data-aos="fade-up" data-aos-delay="200">
+                                <a href="" class="btn btn-secondary" data-aos="fade-up" data-aos-delay="200" >
                                     Contact a Product Advisor <i class="ic-arrow-left"></i>
                                 </a>
                             </div>
@@ -167,12 +167,7 @@
                                     aria-controls="pills-sol-2" aria-selected="false">Business Development and Growth
                             </button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-sol-1-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-sol-1" type="button" role="tab"
-                                    aria-controls="pills-sol-1" aria-selected="false">Accurate Scientific Research and Articles
-                            </button>
-                        </li>
+                     
                     </ul>
                 </contenttemplate>
             </SharePoint:LanguageSpecificContent>

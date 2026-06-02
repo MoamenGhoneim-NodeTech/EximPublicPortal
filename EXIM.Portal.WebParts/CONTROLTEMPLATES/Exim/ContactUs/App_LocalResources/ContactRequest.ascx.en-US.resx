@@ -198,4 +198,16 @@
   <data name="Select" xml:space="preserve">
     <value>Select request type</value>
   </data>
+  <data name="lblIDNmber.Text" xml:space="preserve">
+    <value>ID Number</value>
+  </data>
+  <data name="PurposeofRequest" xml:space="preserve">
+    <value>Purpose of Request and Description</value>
+  </data>
+  <data name="RequestforInfoId" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="ShareDataTypeId" xml:space="preserve">
+    <value>5</value>
+  </data>
 </root>

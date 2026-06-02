@@ -1,6 +1,7 @@
 ﻿using EXIM.Common.Lib.Utils;
 using Microsoft.SharePoint;
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
@@ -107,7 +108,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
                                 newItem["Email"] = txtEmail.Text;
                                 newItem["Message"] = txtMessage.Text;
                                 newItem["RequestType"] = ddlRequestType.SelectedValue;
-
+                                newItem["IDNumber"] = txtIDNumber.Text;
                                 newItem.Update();
 
                                 SendEmail(newItem);
@@ -134,7 +135,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
         {
             var isArabic = SPContext.Current.Web.Language == 1025;
             EXIM.Common.Lib.Utils.NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
-
+            Dictionary<string, string> values = EXIM.Common.Lib.Utils.NotificationHelper.BuildTokenDictionary(item);
+            values.Add("Messagelable", lblMessage.Text);
+            string ShowIDNumberStyle =ddlRequestType.SelectedValue == Convert.ToString(GetLocalResourceObject("RequestforInfoId")) ? "" : "display:none;";
+            values.Add("ShowIDNumber", ShowIDNumberStyle);
             string toEmail = item["RequestType:ToEmail"]?.ToString();
 
             if (toEmail != null)
@@ -142,7 +146,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
                 if (toEmail.Contains("#"))
                     toEmail=toEmail.Split('#')[1];
                 TemplateLanguage lang = isArabic ? TemplateLanguage.Ar : TemplateLanguage.En;
-                notification.SendEmail("ContactUsEmailTemplate", toEmail, item, lang);
+                notification.SendEmail("ContactUsEmailTemplate", toEmail, values, lang);
             }
         }
     }

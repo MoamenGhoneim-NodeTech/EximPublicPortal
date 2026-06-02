@@ -186,4 +186,7 @@
   <data name="guideListRelativeURL" xml:space="preserve">
     <value>/ar/NonFinServices/CreditFinancingInsurance/Lists/GuideRequests</value>
   </data>
+  <data name="InvalidTextOnly.Text" xml:space="preserve">
+    <value>This field does not accept numbers.</value>
+  </data>
 </root>
