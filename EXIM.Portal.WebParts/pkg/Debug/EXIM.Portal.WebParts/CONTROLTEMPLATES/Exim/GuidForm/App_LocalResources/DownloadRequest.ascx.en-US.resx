@@ -189,4 +189,7 @@
   <data name="InvalidTextOnly.Text" xml:space="preserve">
     <value>This field does not accept numbers.</value>
   </data>
+  <data name="FooterText" xml:space="preserve">
+    <value>We welcome your feedback on the Guidebook through email at</value>
+  </data>
 </root>

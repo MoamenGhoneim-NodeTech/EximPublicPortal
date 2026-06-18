@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
 using EXIM.Common.Lib.Utils;
+using System.Globalization;
 
 namespace EXIM.Portal.WebParts.NewsArchiveWebPart
 {
@@ -70,7 +71,7 @@ namespace EXIM.Portal.WebParts.NewsArchiveWebPart
             if (!string.IsNullOrEmpty(rawDate) &&
                 DateTime.TryParse(rawDate, out DateTime parsedDate))
             {
-                articleDate = parsedDate.ToString("dd MMM yyyy");
+                articleDate = parsedDate.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
             }
 
             return new NewsItemModel

@@ -169,7 +169,7 @@
     <value>Drag and drop files here to upload</value>
   </data>
   <data name="fileUploadDescription.Text" xml:space="preserve">
-    <value>Maximum file size is 2 MB. Supported formats: .jpg, .png, .pdf, .doc, .docx.</value>
+    <value>Maximum file size is 5 MB. Supported formats: .jpg, .png, .pdf, .rar.</value>
   </data>
   <data name="fileUploadBrowseText.Text" xml:space="preserve">
     <value>Browse files</value>
@@ -269,5 +269,11 @@
   </data>
   <data name="txtOtherType.Placeholder" xml:space="preserve">
     <value>Enter Violation Type</value>
+  </data>
+  <data name="FileTooLargeFile" xml:space="preserve">
+    <value>File size must not exceed 5 MB</value>
+  </data>
+  <data name="InvalidFileType" xml:space="preserve">
+    <value>Allowed types: PNG, JPG, PDF, RAR</value>
   </data>
 </root>

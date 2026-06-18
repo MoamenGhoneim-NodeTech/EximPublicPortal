@@ -130,7 +130,7 @@
     <value>اسم المستفيد:</value>
   </data>
   <data name="txtBeneficiaryName.Placeholder" xml:space="preserve">
-    <value>ادخل رقم السجل التجاري</value>
+    <value>ادخل المستفيد</value>
   </data>
   <data name="lblCity.Text" xml:space="preserve">
     <value>المدينة:</value>
@@ -188,5 +188,8 @@
   </data>
   <data name="InvalidTextOnly.Text" xml:space="preserve">
     <value>هذا الحقل لا يقبل أرقامًا.</value>
+  </data>
+  <data name="FooterText" xml:space="preserve">
+    <value>يسرنا تلقي ملاحظاتكم وانطباعاتكم عن محتوى الدليل عبر البريد الإلكتروني </value>
   </data>
 </root>

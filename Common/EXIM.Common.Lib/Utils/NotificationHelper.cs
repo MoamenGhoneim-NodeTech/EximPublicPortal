@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
 using System.Web.UI.WebControls;
 using Microsoft.SharePoint.Administration;
+using System.Globalization;
 
 
 
@@ -373,10 +374,10 @@ namespace EXIM.Common.Lib.Utils
                         case SPFieldType.DateTime:
                             if (DateTime.TryParse(rawValue.ToString(), out DateTime dateVal))
                             {
-                                dict[field.InternalName] = dateVal.ToString("dd/MM/yyyy");
-                                dict[$"{field.InternalName}:Date"] = dateVal.ToString("dd/MM/yyyy");
+                                dict[field.InternalName] = dateVal.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                dict[$"{field.InternalName}:Date"] = dateVal.ToString("dd/MM/yyyy",CultureInfo.InvariantCulture);
                                 dict[$"{field.InternalName}:Time"] = dateVal.ToString("HH:mm");
-                                dict[$"{field.InternalName}:Full"] = dateVal.ToString("dd/MM/yyyy HH:mm");
+                                dict[$"{field.InternalName}:Full"] = dateVal.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
                             }
                             break;
 
@@ -427,8 +428,8 @@ namespace EXIM.Common.Lib.Utils
             dict["ItemId"] = item.ID.ToString();
             dict["ItemUrl"] = item.Web.Url + "/Lists/" + item.ParentList.Title + "/DispForm.aspx?ID=" + item.ID;
             dict["SiteUrl"] = item.Web.Url;
-            dict["Today"] = DateTime.Now.ToString("dd/MM/yyyy");
-            dict["Now"] = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+            dict["Today"] = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+            dict["Now"] = DateTime.Now.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
 
             return dict;
         }
@@ -458,8 +459,18 @@ namespace EXIM.Common.Lib.Utils
                 int index = 1;
                 foreach (string fileName in item.Attachments)
                 {
-                    string fileUrl = baseUrl + "/" + attachmentPrefix.TrimStart('/') + fileName;
-                    string htmlLink = $"<a href='{fileUrl}'>{fileName}</a>";
+                    // fileName may contain spaces or already-encoded sequences.
+                    // Build the URL by encoding the filename portion only.
+                    string encodedFileName = Uri.EscapeDataString(fileName);
+
+                    // UrlPrefix already ends with the list-relative path + item ID + "/"
+                    // e.g. "/ar/ContactUs/Lists/Violations/Attachments/53/"
+                    string fileUrl =  item.Attachments.UrlPrefix.TrimEnd('/') + "/" + encodedFileName;
+                    //baseUrl +
+                    // Optionally append ?web=1 to match what SharePoint generates natively
+                    // string fileUrl = baseUrl + item.Attachments.UrlPrefix.TrimEnd('/') + "/" + encodedFileName + "?web=1";
+
+                    string htmlLink = $"<a href='{fileUrl}'>{fileName}</a>";  // display name stays raw
 
                     // Individual tokens per attachment
                     dict[$"Attachment:{index}"] = fileUrl;

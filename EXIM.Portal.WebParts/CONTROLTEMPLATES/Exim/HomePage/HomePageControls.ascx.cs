@@ -136,8 +136,8 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
             return web.Language == 1025;
         }
-    
-    
+
+
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -207,6 +207,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
         public string PublishingRollupImage { get; set; }
         public string LinkFilename { get; set; }
         public string FileRef { get; set; }
+        public string GeneralLink { get; set; }
     }
 
     public class PartnerItem
@@ -267,7 +268,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 HomeNumbers = GetHomeNumbers(),
                 Stories = GetStories(),
                 News = GetNews(),
-               // KnowledgeResearch = GetKnowledgeItems("ExportProcedure"),
+                // KnowledgeResearch = GetKnowledgeItems("ExportProcedure"),
                 KnowledgeDevelopment = GetKnowledgeItems("Sustain"),
                 KnowledgeManagement = GetKnowledgeItems("MarketStudies"),
                 KnowledgeMarket = GetKnowledgeItems("BusinessDevelopment"),
@@ -371,6 +372,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                     Comments = GetStr(i, "EXIM_SrvDescription"),
                     PublishingRollupImage = GetStr(i, "PublishingRollupImage"),
                     LinkFilename = GetStr(i, "FileLeafRef"),
+                    GeneralLink = GetStr(i, "Exim_GeneralLink"),
                     FileRef = GetStr(i, "FileRef"),
                 }).ToList();
         }
@@ -556,7 +558,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
 
         private static string GetStr(SPListItem i, string f)
         {
-            try { return i[f] != null ? i[f].ToString() : ""; } catch { return ""; }
+            try { return i[f] != null ? i[f].ToString() : ""; } catch(Exception ex) { return ""; }
         }
 
         private static int GetInt(SPListItem i, string f)
@@ -640,9 +642,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                             "<div class=\"actions-btns\" data-aos=\"fade-up\" data-aos-duration=\"1400\" data-aos-delay=\"400\">" +
                             "<a href=\"{0}\"{1} class=\"btn btn-primary\">{2} <span class=\"ic-arrow-left\"></span></a></div>",
                             A(url), target, T(learnMore));
-             
+
                 }
-                else {
+                else
+                {
                     sb.Append("<div class=\"slider-data\">");
                     if (url.HasVal())
                         sb.AppendFormat(
@@ -765,9 +768,10 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
         public static string RenderNews(IList<NewsItem> data, bool ar, string lang)
         {
             if (data == null || data.Count == 0) return "";
-            var culture = ar ? new CultureInfo("ar-EG") : new CultureInfo("en-GB");
-            var readMore = ar ? "عرض المزيد" : "Read more";
-            var arrow = ar ? "ic-left-arrow" : "ic-right-arrow";
+
+            var arMonths = new[] { "", "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+                                        "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر" };
+            var enCulture = new CultureInfo("en-GB");
             var sb = new StringBuilder();
 
             foreach (var x in data)
@@ -775,17 +779,34 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var url = string.Format("/{0}/MediaCenter/News/pages/{1}", lang, Uri.EscapeDataString(x.LinkFilename ?? ""));
                 var img = ImgSrc(x.PublishingRollupImage);
                 var name = x.Title ?? "";
-                var date = FormatDate(x.ArticleStartDate, culture);
                 var desc = x.Comments ?? "";
 
-                sb.Append("<div class=\"item\"><div class=\"img\">");
+                // ── Date: "03 February 2025" / "03 فبراير 2025" ─────────────
+                var dateStr = FormatDateFigma(x.ArticleStartDate, ar, arMonths, enCulture);
+
+                // ── Time ago: "2 minutes ago" / "منذ دقيقتين" ────────────────
+                var timeAgo = FormatTimeAgo(x.ArticleStartDate, ar);
+
+                sb.Append("<div class=\"item\">");
+                sb.Append("<div class=\"img\">");
                 sb.AppendFormat(
                     "<a href=\"{0}\" class=\"img-hover\"><img src=\"{1}\" alt=\"{2}\" loading=\"lazy\" decoding=\"async\" width=\"{3}\" height=\"{4}\"></a>",
                     A(url), A(img), A(name), CardImageWidth, CardImageHeight);
-                sb.Append("</div><div class=\"blog-data\">");
-                sb.AppendFormat("<div class=\"blog-date\">{0}</div>", T(date));
+                sb.Append("</div>");
+
+                sb.Append("<div class=\"blog-data\">");
+
+                // ── Meta row: date  •  time ago ──────────────────────────────
+                // dir="ltr" on EN prevents the parent RTL context from reversing
+                // the token order (e.g. "months ago 6 • November 2025 17")
+                var metaDir = ar ? "" : " dir=\"ltr\"";
+                sb.AppendFormat("<div class=\"blog-meta\"{0}>", metaDir);
+                sb.AppendFormat("<span class=\"blog-date\">{0}</span>", T(dateStr));
+                sb.Append("<span class=\"blog-meta-dot\"></span>");
+                sb.AppendFormat("<span class=\"blog-time-ago\">{0}</span>", T(timeAgo));
+                sb.Append("</div>");
+
                 sb.AppendFormat("<h3>{0}</h3><p>{1}</p>", T(name), T(desc));
-                sb.AppendFormat("<div class=\"blog-more\"><a href=\"{0}\">{1} <i class=\"{2}\"></i></a></div>", A(url), T(readMore), arrow);
                 sb.Append("</div></div>");
             }
             return sb.ToString();
@@ -805,9 +826,11 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 var img = ImgSrc(x.PublishingRollupImage).Or(defaultImg);
                 var name = x.Title ?? "";
                 var desc = x.Comments ?? "";
-                var url = x.FileRef.HasVal()
-                    ? x.FileRef
-                    : listUrl.TrimEnd('/') + "/" + Uri.EscapeDataString(x.LinkFilename ?? "");
+                var url = x.GeneralLink.Split(',')[0];
+                    
+                    //x.FileRef.HasVal()
+                    //? x.FileRef
+                    //: listUrl.TrimEnd('/') + "/" + Uri.EscapeDataString(x.LinkFilename ?? "");
 
                 sliderSb.Append("<div class=\"item\"><div class=\"img\">");
                 sliderSb.AppendFormat(
@@ -870,6 +893,102 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.HomePage
                 !int.TryParse(p[2], out int y)) return raw;
             try { return new DateTime(y, mo, d).ToString("d MMMM yyyy", culture); }
             catch { return raw; }
+        }
+
+        /// <summary>
+        /// Formats date as "03 February 2025" (EN) or "03 فبراير 2025" (AR)
+        /// matching the Figma design spec.
+        /// Accepts SharePoint "d/M/yyyy" and ISO datetime strings.
+        /// </summary>
+        private static string FormatDateFigma(string raw, bool ar, string[] arMonths, CultureInfo enCulture)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "";
+            DateTime dt;
+
+            var p = raw.Split('/');
+            if (p.Length == 3 &&
+                int.TryParse(p[0], out int d) &&
+                int.TryParse(p[1], out int mo) &&
+                int.TryParse(p[2], out int y))
+            {
+                try { dt = new DateTime(y, mo, d); }
+                catch { return raw; }
+            }
+            else if (!DateTime.TryParse(raw, out dt))
+            {
+                return raw;
+            }
+
+            return ar
+                ? string.Format("{0:D2} {1} {2}", dt.Day, arMonths[dt.Month], dt.Year)
+                : dt.ToString("dd MMMM yyyy", enCulture);
+        }
+
+        /// <summary>
+        /// Returns a human-friendly "time ago" string relative to now.
+        /// EN: "2 minutes ago", "3 hours ago", "5 days ago", "2 months ago", "1 year ago"
+        /// AR: "منذ دقيقتين", "منذ 3 ساعات", "منذ 5 أيام", "منذ شهرين", "منذ سنة"
+        /// Falls back to the formatted date for items older than 2 years.
+        /// </summary>
+        private static string FormatTimeAgo(string raw, bool ar)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "";
+            DateTime dt;
+
+            var p = raw.Split('/');
+            if (p.Length == 3 &&
+                int.TryParse(p[0], out int d) &&
+                int.TryParse(p[1], out int mo) &&
+                int.TryParse(p[2], out int y))
+            {
+                try { dt = new DateTime(y, mo, d); }
+                catch { return ""; }
+            }
+            else if (!DateTime.TryParse(raw, out dt))
+            {
+                return "";
+            }
+
+            var diff = DateTime.Now - dt;
+            var totalMinutes = (int)diff.TotalMinutes;
+            var totalHours = (int)diff.TotalHours;
+            var totalDays = (int)diff.TotalDays;
+            var totalMonths = (int)(totalDays / 30.44);
+            var totalYears = (int)(totalDays / 365.25);
+
+            if (ar)
+            {
+                if (totalMinutes < 1) return "الآن";
+                if (totalMinutes == 1) return "منذ دقيقة";
+                if (totalMinutes == 2) return "منذ دقيقتين";
+                if (totalMinutes < 60) return string.Format("منذ {0} دقائق", totalMinutes);
+                if (totalHours == 1) return "منذ ساعة";
+                if (totalHours == 2) return "منذ ساعتين";
+                if (totalHours < 24) return string.Format("منذ {0} ساعات", totalHours);
+                if (totalDays == 1) return "منذ يوم";
+                if (totalDays == 2) return "منذ يومين";
+                if (totalDays < 30) return string.Format("منذ {0} أيام", totalDays);
+                if (totalMonths == 1) return "منذ شهر";
+                if (totalMonths == 2) return "منذ شهرين";
+                if (totalMonths < 12) return string.Format("منذ {0} أشهر", totalMonths);
+                if (totalYears == 1) return "منذ سنة";
+                if (totalYears == 2) return "منذ سنتين";
+                return string.Format("منذ {0} سنوات", totalYears);
+            }
+            else
+            {
+                if (totalMinutes < 1) return "just now";
+                if (totalMinutes == 1) return "1 minute ago";
+                if (totalMinutes < 60) return string.Format("{0} minutes ago", totalMinutes);
+                if (totalHours == 1) return "1 hour ago";
+                if (totalHours < 24) return string.Format("{0} hours ago", totalHours);
+                if (totalDays == 1) return "1 day ago";
+                if (totalDays < 30) return string.Format("{0} days ago", totalDays);
+                if (totalMonths == 1) return "1 month ago";
+                if (totalMonths < 12) return string.Format("{0} months ago", totalMonths);
+                if (totalYears == 1) return "1 year ago";
+                return string.Format("{0} years ago", totalYears);
+            }
         }
 
         // Encode for HTML attribute values

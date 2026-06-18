@@ -141,6 +141,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         protected global::System.Web.UI.WebControls.Label lblMobileNumber;
 
         /// <summary>
+        /// hfSelectedCountryCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedCountryCode;
+
+        /// <summary>
         /// ddlCountryCode control.
         /// </summary>
         /// <remarks>
@@ -240,15 +249,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
 
         /// <summary>
-        /// litGuideSuccessSmallTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litGuideSuccessSmallTitle;
-
-        /// <summary>
         /// litGuideSuccessTitle control.
         /// </summary>
         /// <remarks>
@@ -274,5 +274,14 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkbtnDownloadGuide;
+
+        /// <summary>
+        /// pnlFooter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFooter;
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.SharePoint;
 using EXIM.Common.Lib.SPHelpers;
 using EXIM.Common.Lib.Utils;
+using System.Globalization;
 
 namespace EXIM.Portal.WebParts.WorkshopArchiveWebPart
 {
@@ -80,7 +81,7 @@ namespace EXIM.Portal.WebParts.WorkshopArchiveWebPart
                 ImgPath = LandingPageHelper.ExtractImageSrc(
                                     item["PublishingRollupImage"]?.ToString(), DefaultImage),
                 EventDate = eventDate.HasValue
-                                    ? eventDate.Value.ToString("dd MMM yyyy")
+                                    ? eventDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
                                     : string.Empty,
                 StatusText = LandingPageHelper.IsEnglish() ? status.En : status.Ar,
                 StatusClass = status.CssClass,

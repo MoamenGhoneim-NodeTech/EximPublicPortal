@@ -222,15 +222,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         protected global::System.Web.UI.WebControls.TextBox txtJobTitle;
 
         /// <summary>
-        /// rfvJobTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvJobTitle;
-
-        /// <summary>
         /// lblCompany control.
         /// </summary>
         /// <remarks>
@@ -247,15 +238,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCompany;
-
-        /// <summary>
-        /// rfvCompany control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCompany;
 
         /// <summary>
         /// btnAdd control.
@@ -492,15 +474,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         protected global::System.Web.UI.WebControls.TextBox txt_Name;
 
         /// <summary>
-        /// RequiredFieldValidator3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
-
-        /// <summary>
         /// lblMobileNumber control.
         /// </summary>
         /// <remarks>
@@ -508,6 +481,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMobileNumber;
+
+        /// <summary>
+        /// hfSelectedCountryCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedCountryCode;
 
         /// <summary>
         /// ddlCountryCode control.
@@ -562,15 +544,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtEmail;
-
-        /// <summary>
-        /// rfvEmail control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmail;
 
         /// <summary>
         /// revEmail control.

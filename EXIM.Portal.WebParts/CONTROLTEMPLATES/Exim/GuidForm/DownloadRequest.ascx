@@ -68,8 +68,17 @@
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" ID="lblMobileNumber" CssClass="" meta:resourcekey="lblMobileNumber" AssociatedControlID="txtMobileNumber" />
                     <div class="input-group">
-                        <asp:DropDownList runat="server" ID="ddlCountryCode" CssClass="country-code" meta:resourcekey="ddlCountryCode" TabIndex="4">
-                        </asp:DropDownList>
+
+                        <%-- Custom searchable country-code picker --%>
+                        <div class="country-code-picker" id="divCCP_DR">
+                            <div class="ccp-selected" id="ccpSelected_DR">
+                                <span id="ccpDisplay_DR">+---</span>
+                                <span class="ccp-arrow">&#9662;</span>
+                            </div>
+                        </div>
+                        <%-- Hidden: keeps server-side ID intact for btnSubmit_Click --%>
+                        <asp:HiddenField runat="server" ID="hfSelectedCountryCode" />
+                        <asp:DropDownList runat="server" ID="ddlCountryCode" style="display:none;" />
                         <asp:TextBox runat="server" ID="txtMobileNumber" CssClass="form-control digits" meta:resourcekey="txtMobileNumber" MaxLength="14" />
                     </div>
                     <asp:RequiredFieldValidator runat="server" ID="rfvMobileNumber" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="submit" ControlToValidate="txtMobileNumber" Display="Dynamic" />
@@ -106,7 +115,86 @@
 
         </div>
     </div>
+       <p> </p>
+   <p> <%= GetLocalResourceObject("FooterText") %> <a href="mailto:nfs@saudiexim.gov.sa">nfs@saudiexim.gov.sa</a> .</p>
 
+
+    <script>
+    $(document).ready(function () {
+        var data     = <%= CountriesJson %>;
+        var isArabic = <%= IsArabic ? "true" : "false" %>;
+        var $hfCode  = $('#<%= hfSelectedCountryCode.ClientID %>');
+        var $picker  = $('#divCCP_DR');
+        var $display = $('#ccpDisplay_DR');
+
+        var $dropdown = $(
+            '<div class="ccp-dropdown" style="display:none;position:fixed;">' +
+                '<input type="text" class="ccp-search" placeholder="Search..." autocomplete="off" />' +
+                '<ul></ul>' +
+            '</div>'
+        ).appendTo('body');
+
+        var $search = $dropdown.find('.ccp-search');
+        var $list   = $dropdown.find('ul');
+
+        function positionDropdown() {
+            var rect = document.getElementById('ccpSelected_DR').getBoundingClientRect();
+            $dropdown.css({ top: rect.bottom, left: rect.left, width: Math.max(rect.width, 240) });
+        }
+        function buildList(filter) {
+            filter = (filter || '').toLowerCase();
+            $list.empty();
+            var subset = filter
+                ? $.grep(data, function (c) {
+                    var name = isArabic ? c.nameAr : c.nameEn;
+                    return c.code.toLowerCase().indexOf(filter) > -1 || name.toLowerCase().indexOf(filter) > -1;
+                  })
+                : data;
+            $.each(subset.slice(0, 80), function (_, c) {
+                $('<li>').attr('data-code', c.code)
+                    .append($('<span class="ccp-li-code">').text(c.code))
+                    .append($('<span class="ccp-li-name">').text(isArabic ? c.nameAr : c.nameEn))
+                    .appendTo($list);
+            });
+        }
+        function applyCode(code) { $display.text(code); $hfCode.val(code); $dropdown.hide(); $search.val(''); }
+
+        $('#ccpSelected_DR').on('click', function (e) {
+            e.stopPropagation();
+            var opening = !$dropdown.is(':visible');
+            if (opening) { positionDropdown(); $dropdown.show(); buildList(''); $search.focus(); }
+            else { $dropdown.hide(); }
+        });
+        $(window).on('scroll resize', function () { if ($dropdown.is(':visible')) positionDropdown(); });
+        $search.on('input', function () { buildList($(this).val()); });
+        $list.on('click', 'li', function () { applyCode($(this).data('code')); });
+        $search.on('keydown', function (e) {
+            var $items = $list.find('li'), $active = $list.find('li.ccp-active');
+            if (e.key === 'ArrowDown') { e.preventDefault(); var $n = $active.length ? $active.removeClass('ccp-active').next('li') : $items.first(); if ($n.length) $n.addClass('ccp-active')[0].scrollIntoView({ block: 'nearest' }); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); var $p = $active.length ? $active.removeClass('ccp-active').prev('li') : $items.last(); if ($p.length) $p.addClass('ccp-active')[0].scrollIntoView({ block: 'nearest' }); }
+            else if (e.key === 'Enter') { e.preventDefault(); if ($active.length) $active.trigger('click'); }
+            else if (e.key === 'Escape') { $dropdown.hide(); }
+        });
+        $(document).on('click', function (e) {
+            if (!$picker.is(e.target) && !$picker.has(e.target).length && !$dropdown.is(e.target) && !$dropdown.has(e.target).length)
+                $dropdown.hide();
+        });
+        buildList('');
+        var ksa = data.filter(function (c) { return c.code === '966'; })[0];
+        if (ksa) applyCode(ksa.code);
+
+        // txtBeneficiaryName — letters (Arabic + English) and spaces only
+        $('#<%= txtBeneficiaryName.ClientID %>').on('input', function () {
+            $(this).val($(this).val().replace(/[^\u0600-\u06FFa-zA-Z\s]/g, ''));
+        });
+        $('#<%= txtCity.ClientID %>').on('input', function () {
+            $(this).val($(this).val().replace(/[^\u0600-\u06FFa-zA-Z\s]/g, ''));
+        });
+
+    });
+    </script>
+
+  
 </asp:Panel>
 
 <!-- Success panel (shown after submit) -->
@@ -114,8 +202,8 @@
     <section class="guide-ads">
         <div class="container">
             <div class="guide-ads--container">
-                <h3>
-                    <asp:Literal runat="server" ID="litGuideSuccessSmallTitle" meta:resourcekey="GuideSuccessSmallTitle" /></h3>
+             <%--   <h3>
+                    <asp:Literal runat="server" ID="litGuideSuccessSmallTitle" meta:resourcekey="GuideSuccessSmallTitle" /></h3>--%>
                 <h2>
                     <asp:Literal runat="server" ID="litGuideSuccessTitle" meta:resourcekey="GuideSuccessTitle" /></h2>
                 <p>
@@ -132,3 +220,5 @@
         </div>
     </section>
 </asp:Panel>
+<asp:Panel ID="pnlFooter" runat="server">
+ </asp:Panel>

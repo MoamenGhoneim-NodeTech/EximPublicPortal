@@ -8,12 +8,24 @@ namespace EXIM.Portal.WebParts
 {
     public partial class Workshop_Subscribe : UserControl
     {
-        #region Design controls 
+        #region Design controls
         protected global::Exim.Portal.WebParts.LabelMessage ucMessage;
         #endregion
 
         private const string visibilityFieldInternalName = "Exim_WorkshopEnableSubscription";
         private const string eventDateFieldInternalName = "ArticleStartDate";
+
+        /// <summary>Countries JSON array injected into the page for the code picker.</summary>
+        public string CountriesJson { get; private set; } = "[]";
+
+        public bool IsArabic
+        {
+            get
+            {
+                return System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+                       .StartsWith("ar", StringComparison.OrdinalIgnoreCase);
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -24,7 +36,7 @@ namespace EXIM.Portal.WebParts
 
                 CheckVisibility();
                 initFormData();
-
+                LoadCountriesAutocomplete();
             }
             catch (Exception ex)
             {
@@ -43,43 +55,44 @@ namespace EXIM.Portal.WebParts
                 Guid siteId = SPContext.Current.Site.ID;
                 var ctx = SPContext.Current;
                 var currentItem = ctx?.ListItem ?? ctx?.File?.Item;
+
                 if (currentItem == null)
                 {
                     ucMessage.ShowUnexpectedError();
                     return;
                 }
-                int currentPageId = currentItem?.ID ?? 0;
-                string currentPageTitle = currentItem?.Title ?? string.Empty;
+
+                // Read selected country code from the hidden field
+                string selectedCountryCode = hfSelectedCountryCode.Value;
+
                 SPSecurity.RunWithElevatedPrivileges(delegate ()
                 {
                     using (SPSite site = new SPSite(siteId))
+                    using (SPWeb eventSubSite = site.OpenWeb(GetLocalResourceObject("eventsArSiteURL").ToString()))
                     {
-                        using (SPWeb eventSubSite = site.OpenWeb(GetLocalResourceObject("eventsArSiteURL").ToString()))
+                        SPList subsList = eventSubSite.GetList(
+                            GetLocalResourceObject("eventsSubscriptionListRelativeURL").ToString());
+                        if (subsList == null) return;
+
+                        bool resetUnsafe = !eventSubSite.AllowUnsafeUpdates;
+                        if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = true;
+                        try
                         {
-                            SPList subsList = eventSubSite.GetList(GetLocalResourceObject("eventsSubscriptionListRelativeURL").ToString());
-                            if (subsList == null) return;
+                            SPListItem newItem = subsList.AddItem();
 
-                            bool resetUnsafe = !eventSubSite.AllowUnsafeUpdates;
-                            if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = true;
-                            try
-                            {
-                                SPListItem newItem = subsList.AddItem();
-
-                                newItem["Title"] = $"{currentItem.Title} - {txtEmail.Text}";
-                                newItem["Workshop"] = new SPFieldLookupValue(currentItem.ID, currentItem.Title);
-                                newItem["CompanyName"] = txtCompanyName.Text;
-                                newItem["ComNumber"] = txtCommNumber.Text;
-                                newItem["Representative"] = txtResponsiblePersonName.Text;
-                                newItem["ContryCode"] = ddlCountryCode.SelectedValue;
-                                newItem["MobileNumber"] = $"{ddlCountryCode.SelectedValue}{txtMobileNumber.Text}";
-                                newItem["Email"] = txtEmail.Text;
-                                newItem.Update();
-                            }
-                            finally
-                            {
-                                if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = false;
-                            }
-                            
+                            newItem["Title"] = $"{currentItem.Title} - {txtEmail.Text}";
+                            newItem["Workshop"] = new SPFieldLookupValue(currentItem.ID, currentItem.Title);
+                            newItem["CompanyName"] = txtCompanyName.Text;
+                            newItem["ComNumber"] = txtCommNumber.Text;
+                            newItem["Representative"] = txtResponsiblePersonName.Text;
+                            newItem["ContryCode"] = selectedCountryCode;
+                            newItem["MobileNumber"] = $"{selectedCountryCode}{txtMobileNumber.Text}";
+                            newItem["Email"] = txtEmail.Text;
+                            newItem.Update();
+                        }
+                        finally
+                        {
+                            if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = false;
                         }
                     }
                 });
@@ -97,8 +110,7 @@ namespace EXIM.Portal.WebParts
         private void CheckVisibility()
         {
             var ctx = SPContext.Current;
-            if (ctx == null || ctx.ListItem == null)
-                return;
+            if (ctx == null || ctx.ListItem == null) return;
 
             SPListItem item = ctx?.ListItem ?? ctx?.File?.Item;
             if (item == null) return;
@@ -112,11 +124,7 @@ namespace EXIM.Portal.WebParts
                 enableSubscription = val != null && Convert.ToBoolean(val);
             }
 
-            if (!enableSubscription)
-            {
-                HideControl();
-                return;
-            }
+            if (!enableSubscription) { HideControl(); return; }
 
             if (item.Fields.ContainsFieldWithStaticName(eventDateFieldInternalName))
             {
@@ -124,11 +132,7 @@ namespace EXIM.Portal.WebParts
                 if (rawDate != null)
                 {
                     DateTime startDate = (DateTime)rawDate;
-                    if (startDate.Date < DateTime.Today)
-                    {
-                        HideControl();
-                        return;
-                    }
+                    if (startDate.Date < DateTime.Today) { HideControl(); return; }
                 }
             }
         }
@@ -137,45 +141,64 @@ namespace EXIM.Portal.WebParts
         {
             this.Visible = false;
             if (this.Parent != null)
-            {
                 try { this.Parent.Controls.Remove(this); } catch { }
-            }
         }
 
         private void initFormData()
         {
-            ddlCountryCode.Items.Clear();
+            // ddlCountryCode population removed — picker uses CountriesJson instead
+        }
 
-            Guid siteId = SPContext.Current.Site.ID;
-            using (SPSite site = new SPSite(siteId))
+        private void LoadCountriesAutocomplete()
+        {
+            try
             {
-                using (SPWeb web = site.OpenWeb(GetLocalResourceObject("eventsArSiteURL").ToString()))
+                using (SPSite site = new SPSite(SPContext.Current.Site.Url))
+                using (SPWeb web = site.OpenWeb("/"))
                 {
-                    SPList list = web.Lists.TryGetList("Subscriptions");
+                    SPList list = web.Lists.TryGetList("Countries");
                     if (list == null) return;
 
-                    // Use internal name when possible
-                    SPField field = list.Fields.TryGetFieldByStaticName("ContryCode")
-                                    ?? list.Fields["CountryCode"];
-
-                    var choiceField = field as SPFieldChoice;
-                    if (choiceField == null)
-                        return;
-
-                    foreach (string choice in choiceField.Choices)
+                    SPQuery q = new SPQuery
                     {
-                        ddlCountryCode.Items.Add(new ListItem(choice, choice));
-                    }
+                        Query = "<OrderBy><FieldRef Name='CountryName' /></OrderBy>",
+                        ViewFields = "<FieldRef Name='ID'/><FieldRef Name='CountryCode'/>" +
+                                     "<FieldRef Name='CountryName'/><FieldRef Name='CountryNameAr'/>",
+                        RowLimit = 300
+                    };
 
-                    // Default value (if set in the column settings)
-                    if (!string.IsNullOrEmpty(choiceField.DefaultValue))
+                    var sb = new System.Text.StringBuilder("[");
+                    bool first = true;
+
+                    foreach (SPListItem item in list.GetItems(q))
                     {
-                        var item = ddlCountryCode.Items.FindByValue(choiceField.DefaultValue)
-                                   ?? ddlCountryCode.Items.FindByText(choiceField.DefaultValue);
-                        if (item != null) ddlCountryCode.SelectedValue = item.Value;
+                        if (!first) sb.Append(",");
+                        first = false;
+                        sb.AppendFormat(
+                            "{{\"id\":{0},\"code\":\"{1}\",\"nameEn\":\"{2}\",\"nameAr\":\"{3}\"}}",
+                            item.ID,
+                            Encode(item["CountryCode"]?.ToString()),
+                            Encode(item["CountryName"]?.ToString()),
+                            Encode(item["CountryNameAr"]?.ToString()));
                     }
+                    sb.Append("]");
+                    CountriesJson = sb.ToString();
                 }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError("LoadCountriesAutocomplete: " + ex.Message);
+                CountriesJson = "[]";
+            }
+        }
+
+        private static string Encode(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return string.Empty;
+            return s.Replace("\\", "\\\\")
+                    .Replace("\"", "\\\"")
+                    .Replace("\r", "")
+                    .Replace("\n", "");
         }
     }
 }

@@ -60,6 +60,15 @@ namespace EXIM.Portal.WebParts.BusinessConsultation
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCommNumber;
 
         /// <summary>
+        /// revCommNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revCommNumber;
+
+        /// <summary>
         /// txtResponsiblePersonName control.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,24 @@ namespace EXIM.Portal.WebParts.BusinessConsultation
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvResponsiblePersonName;
+
+        /// <summary>
+        /// revResponsiblePersonName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revResponsiblePersonName;
+
+        /// <summary>
+        /// hfSelectedCountryCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedCountryCode;
 
         /// <summary>
         /// ddlCountryCode control.
@@ -157,6 +184,15 @@ namespace EXIM.Portal.WebParts.BusinessConsultation
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvProductDescription;
+
+        /// <summary>
+        /// revProductDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revProductDescription;
 
         /// <summary>
         /// txtExportVolumeValue control.

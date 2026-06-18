@@ -18,11 +18,24 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
 {
     public partial class ReportAViolation : UserControl
     {
-        #region Design controls 
+        #region Design controls
         protected global::Exim.Portal.WebParts.LabelMessage ucMessage;
         #endregion
 
+        /// <summary>Countries JSON array injected into the page for the code picker.</summary>
+        public string CountriesJson { get; private set; } = "[]";
+
+        public bool IsArabic
+        {
+            get
+            {
+                return System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+                       .StartsWith("ar", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         #region Event Handlers
+
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -31,6 +44,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                     return;
 
                 initFormData();
+                LoadCountriesAutocomplete();
             }
             catch (Exception ex)
             {
@@ -39,6 +53,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 pnlFormBody.Visible = false;
             }
         }
+
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             try
@@ -57,78 +72,110 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 SPSecurity.RunWithElevatedPrivileges(delegate ()
                 {
                     using (SPSite site = new SPSite(siteId))
+                    using (SPWeb eventSubSite = site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()))
                     {
-                        using (SPWeb eventSubSite = site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()))
+                        SPList subsList = eventSubSite.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
+                        if (subsList == null) return;
+
+                        bool resetUnsafe = !eventSubSite.AllowUnsafeUpdates;
+                        if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = true;
+
+                        try
                         {
-                            SPList subsList = eventSubSite.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
-                            if (subsList == null) return;
+                            string CanIdentifyParties = NumberToValue(rblCanIdentifyParties.SelectedValue);
+                            string ViolationOngoing = NumberToValue(rblViolationOngoing.SelectedValue);
 
-                            bool resetUnsafe = !eventSubSite.AllowUnsafeUpdates;
-                            if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = true;
+                            // Read selected country code from hidden field
+                            string selectedCountryCode = hfSelectedCountryCode.Value;
 
-                            try
+                            SPListItem newItem = subsList.AddItem();
+                            newItem["Title"] = txtViolationDetails.Text;
+
+                            if (ddlViolationType.SelectedItem == null)
                             {
-                                string CanIdentifyParties = NumberToValue(rblCanIdentifyParties.SelectedValue);
-                                string ViolationOngoing = NumberToValue(rblViolationOngoing.SelectedValue);
-                                SPListItem newItem = subsList.AddItem();
+                                ucMessage.ShowError(GetLocalResourceObject("InvalidInput").ToString());
+                                return;
+                            }
+                            newItem["ViolationType"] = ddlViolationType.SelectedValue;
+                            newItem["CanIdentify"] = rblCanIdentifyParties.SelectedItem != null && !string.IsNullOrEmpty(CanIdentifyParties) ? CanIdentifyParties : string.Empty;
+                            newItem["ViolationDetails"] = txtViolationDetails.Text;
+                            newItem["CountryCode"] = selectedCountryCode;
+                            newItem["Name"] = txt_Name.Text;
+                            newItem["MobileNumber"] = txtMobileNumber.Text;
+                            newItem["Email"] = txtEmail.Text;
+                            newItem["OtherViolationType"] = txtOtherType.Text;
 
-                                // Map fields to list columns (adjust internal names as needed)
-                                newItem["Title"] = txtViolationDetails.Text;
+                            if (!dtViolationDate.IsDateEmpty)
+                                newItem["Date"] = dtViolationDate.SelectedDate;
+                            else
+                                newItem["Date"] = null;
 
-                                if (ddlViolationType.SelectedItem == null)
+                            newItem["OnGoing"] = rblViolationOngoing.SelectedItem != null && !string.IsNullOrEmpty(ViolationOngoing) ? ViolationOngoing : string.Empty;
+
+                            if (ddlHowYouKnow.SelectedItem == null)
+                            {
+                                ucMessage.ShowError(GetLocalResourceObject("InvalidInput").ToString());
+                                return;
+                            }
+                            newItem["AwarenessMethod"] = ddlHowYouKnow.SelectedValue;
+                            newItem["OtherAwareness"] = txt_Other.Text;
+
+                            bool isAnonymous = false;
+                            if (!string.IsNullOrEmpty(rblAnonymous.SelectedValue))
+                                isAnonymous = Convert.ToBoolean(rblAnonymous.SelectedValue);
+                            newItem["StayAnonymous"] = isAnonymous;
+
+                            newItem.Update();
+
+                            // Attach supporting documents
+                            var httpFiles = System.Web.HttpContext.Current.Request.Files;
+                            string inputName = fuSupportingDocuments.UniqueID;
+                            bool hasNewAttachments = false;
+
+                            for (int fi = 0; fi < httpFiles.Count; fi++)
+                            {
+                                if (!string.Equals(httpFiles.GetKey(fi), inputName, StringComparison.OrdinalIgnoreCase))
+                                    continue;
+
+                                var postedFile = httpFiles[fi];
+                                if (postedFile == null || postedFile.ContentLength == 0) continue;
+
+                                string fileName = System.IO.Path.GetFileName(postedFile.FileName);
+                                if (string.IsNullOrEmpty(fileName)) continue;
+
+                                byte[] fileBytes = new byte[postedFile.ContentLength];
+                                int totalRead = 0;
+                                while (totalRead < fileBytes.Length)
                                 {
-                                    ucMessage.ShowError(GetLocalResourceObject("InvalidInput").ToString());
-                                    return;
+                                    int read = postedFile.InputStream.Read(fileBytes, totalRead, fileBytes.Length - totalRead);
+                                    if (read == 0) break;
+                                    totalRead += read;
                                 }
-                                newItem["ViolationType"] = ddlViolationType.SelectedValue;
+                                if (totalRead == 0) continue;
 
-                                newItem["CanIdentify"] = rblCanIdentifyParties.SelectedItem != null && !string.IsNullOrEmpty(CanIdentifyParties) ? CanIdentifyParties : string.Empty;
-                                newItem["ViolationDetails"] = txtViolationDetails.Text;
-                                newItem["CountryCode"] = ddlCountryCode.SelectedValue;
-                                newItem["Name"] = txt_Name.Text;
-                                newItem["MobileNumber"] = txtMobileNumber.Text;
-                                newItem["Email"] = txtEmail.Text;
-                                newItem["OtherViolationType"] = txtOtherType.Text;
-                                if (!dtViolationDate.IsDateEmpty)
-                                    newItem["Date"] = dtViolationDate.SelectedDate;
-                                else
-                                    newItem["Date"] = null;
-
-                                newItem["OnGoing"] = rblViolationOngoing.SelectedItem != null && !string.IsNullOrEmpty(ViolationOngoing) ? ViolationOngoing : string.Empty;
-
-                                if (ddlHowYouKnow.SelectedItem == null)
+                                string attachName = fileName;
+                                int suffix = 1;
+                                while (newItem.Attachments.Cast<string>().Any(a =>
+                                    string.Equals(a, attachName, StringComparison.OrdinalIgnoreCase)))
                                 {
-                                    ucMessage.ShowError(GetLocalResourceObject("InvalidInput").ToString());
-                                    return;
+                                    attachName = System.IO.Path.GetFileNameWithoutExtension(fileName)
+                                                 + "_" + suffix++
+                                                 + System.IO.Path.GetExtension(fileName);
                                 }
-                                newItem["AwarenessMethod"] = ddlHowYouKnow.SelectedValue; 
-                                newItem["OtherAwareness"] = txt_Other.Text;
-                                bool isAnonymous = false;
-                                if (!string.IsNullOrEmpty(rblAnonymous.SelectedValue))
-                                    isAnonymous = Convert.ToBoolean(rblAnonymous.SelectedValue);
-                                newItem["StayAnonymous"] = isAnonymous;
 
-                                // Save item first so we can attach files
+                                newItem.Attachments.Add(attachName, fileBytes);
+                                hasNewAttachments = true;
+                            }
+
+                            if (hasNewAttachments)
                                 newItem.Update();
 
-                                // Attach supporting document if provided
-                                if (fuSupportingDocuments != null && fuSupportingDocuments.HasFile)
-                                {
-                                    string fileName = System.IO.Path.GetFileName(fuSupportingDocuments.FileName);
-                                    byte[] fileBytes = fuSupportingDocuments.FileBytes;
-                                    if (fileBytes != null && fileBytes.Length > 0)
-                                    {
-                                        newItem.Attachments.Add(fileName, fileBytes);
-                                        newItem.Update();
-                                    }
-                                }
-                                SaveViolationParties(newItem.ID);
-                                SendEmail(newItem);
-                            }
-                            finally
-                            {
-                                if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = false;
-                            }
+                            SaveViolationParties(newItem.ID);
+                            SendEmail(newItem);
+                        }
+                        finally
+                        {
+                            if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = false;
                         }
                     }
                 });
@@ -146,22 +193,21 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         #endregion
 
         #region Private Methods
+
         private void initFormData()
         {
             Guid siteId = SPContext.Current.Site.ID;
 
             using (SPSite site = new SPSite(siteId))
+            using (SPWeb web = site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()))
             {
-                using (SPWeb web = site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()))
-                {
-                    bindViolationType(web);
-                    bindHowYouKnow(web);
-                    bindCanIdentifyParties(web);
-                    bindViolationOngoing(web);
-                    initAnonymousRadio();
-                    BindCountryCode(web);
-                    BindRelations(web);
-                }
+                bindViolationType(web);
+                bindHowYouKnow(web);
+                bindCanIdentifyParties(web);
+                bindViolationOngoing(web);
+                initAnonymousRadio();
+                // BindCountryCode removed — picker uses CountriesJson instead
+                BindRelations(web);
             }
         }
 
@@ -173,16 +219,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         private void bindViolationType(SPWeb web)
         {
             ddlViolationType.Items.Clear();
-
-            string listName = "ViolationType";
-            SPList list = web.Lists.TryGetList(listName);
+            SPList list = web.Lists.TryGetList("ViolationType");
             if (list == null) return;
 
             ddlViolationType.DataSource = list.Items.GetDataTable();
             ddlViolationType.DataTextField = isArabic() ? "Title" : "TitleEn";
             ddlViolationType.DataValueField = "ID";
             ddlViolationType.DataBind();
-
             ddlViolationType.Items.Insert(0, new ListItem(GetLocalResourceObject("Select.Text").ToString(), "-1"));
             ddlViolationType.SelectedIndex = 0;
         }
@@ -190,16 +233,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         private void bindHowYouKnow(SPWeb web)
         {
             ddlHowYouKnow.Items.Clear();
-
-            string listName = "ViolationKnowledgeSource";
-            SPList list = web.Lists.TryGetList(listName);
+            SPList list = web.Lists.TryGetList("ViolationKnowledgeSource");
             if (list == null) return;
 
             ddlHowYouKnow.DataSource = list.Items.GetDataTable();
             ddlHowYouKnow.DataTextField = isArabic() ? "Title" : "TitleEn";
             ddlHowYouKnow.DataValueField = "ID";
             ddlHowYouKnow.DataBind();
-
             ddlHowYouKnow.Items.Insert(0, new ListItem(GetLocalResourceObject("Select.Text").ToString(), "-1"));
             ddlHowYouKnow.SelectedIndex = 0;
         }
@@ -221,26 +261,9 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
             rblViolationOngoing.Items.Add(new ListItem(GetLocalResourceObject("DontKnow").ToString(), "3"));
         }
 
-        private void BindCountryCode(SPWeb web)
-        {
-            SPList violations = web.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
-            if (violations == null || violations == null) return;
-
-            SPField field = violations.Fields["CountryCode"];
-
-            var choiceField = field as SPFieldChoice;
-            if (choiceField == null)
-                return;
-
-            foreach (string choice in choiceField.Choices)
-            {
-                ddlCountryCode.Items.Add(new ListItem(choice, choice));
-            }
-        }
         private void BindRelations(SPWeb web)
         {
             ddlRelation.Items.Clear();
-
             SPList list = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
             if (list == null) return;
 
@@ -248,8 +271,6 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
             ddlRelation.DataTextField = isArabic() ? "Title" : "TitleEn";
             ddlRelation.DataValueField = "ID";
             ddlRelation.DataBind();
-
-          
         }
 
         private void initAnonymousRadio()
@@ -263,62 +284,64 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         {
             switch (number)
             {
-                case "1":
-                    return "نعم";
-                case "2":
-                    return "لا";
-                case "3":
-                    return "لا اعلم";
-                default:
-                    return string.Empty;
+                case "1": return "نعم";
+                case "2": return "لا";
+                case "3": return "لا اعلم";
+                default: return string.Empty;
             }
         }
 
         private bool ValidateFileUpload(out string errorMessage)
         {
             errorMessage = string.Empty;
+            var httpFiles = System.Web.HttpContext.Current.Request.Files;
+            if (httpFiles == null || httpFiles.Count == 0) return true;
 
-            // If file is optional and nothing is uploaded, treat as valid
-            if (fuSupportingDocuments == null || !fuSupportingDocuments.HasFile)
-                return true;
-
-            // 2 MB in bytes
-            const int maxFileSizeBytes = 2 * 1024 * 1024;
-
-            if (fuSupportingDocuments.PostedFile.ContentLength > maxFileSizeBytes)
+            string inputName = fuSupportingDocuments.UniqueID;
+            var postedFiles = new List<System.Web.HttpPostedFile>();
+            for (int i = 0; i < httpFiles.Count; i++)
             {
-                errorMessage = GetLocalResourceObject("FileTooLarge.ErrorMessage").ToString();
+                if (httpFiles.GetKey(i) == inputName && httpFiles[i].ContentLength > 0)
+                    postedFiles.Add(httpFiles[i]);
+            }
+            if (postedFiles.Count == 0) return true;
+
+            const int maxFileSizeBytes = 5 * 1024 * 1024;
+            const int maxTotalFiles = 5;
+            string[] allowedExtensions = { "pdf", "jpg", "jpeg", "png", "rar" };
+
+            if (postedFiles.Count > maxTotalFiles)
+            {
+                errorMessage = GetLocalResourceObject("FileTooManyFiles.ErrorMessage") != null
+                    ? GetLocalResourceObject("FileTooManyFiles.ErrorMessage").ToString()
+                    : string.Format("You may upload at most {0} files.", maxTotalFiles);
                 return false;
             }
 
-            string extension = System.IO.Path.GetExtension(fuSupportingDocuments.FileName);
-            if (string.IsNullOrEmpty(extension))
+            foreach (var file in postedFiles)
             {
-                errorMessage = GetLocalResourceObject("FileInvalidExtension.ErrorMessage").ToString();
-                return false;
-            }
-
-            extension = extension.TrimStart('.').ToLowerInvariant();
-
-            // Allowed: pdf, doc, docx, jpeg, png (+ jpg if you want)
-            string[] allowedExtensions = { "pdf", "doc", "docx", "jpeg", "jpg", "png" };
-
-            bool isAllowed = false;
-            foreach (string ext in allowedExtensions)
-            {
-                if (extension == ext)
+                if (file.ContentLength > maxFileSizeBytes)
                 {
-                    isAllowed = true;
-                    break;
+                    errorMessage = GetLocalResourceObject("FileTooLarge.ErrorMessage").ToString();
+                    return false;
+                }
+                string extension = System.IO.Path.GetExtension(file.FileName);
+                if (string.IsNullOrEmpty(extension))
+                {
+                    errorMessage = GetLocalResourceObject("FileInvalidExtension.ErrorMessage").ToString();
+                    return false;
+                }
+                extension = extension.TrimStart('.').ToLowerInvariant();
+                bool isAllowed = false;
+                foreach (string ext in allowedExtensions)
+                    if (extension == ext) { isAllowed = true; break; }
+
+                if (!isAllowed)
+                {
+                    errorMessage = GetLocalResourceObject("FileInvalidExtension.ErrorMessage").ToString();
+                    return false;
                 }
             }
-
-            if (!isAllowed)
-            {
-                errorMessage = GetLocalResourceObject("FileInvalidExtension.ErrorMessage").ToString();
-                return false;
-            }
-
             return true;
         }
 
@@ -328,12 +351,17 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         {
             try
             {
-                args.IsValid = !dtViolationDate.IsDateEmpty;
+                // IsDateEmpty can return true under ar-SA/UmAlQuraCalendar even when
+                // the user picked a valid date. Check SelectedDate directly as fallback.
+                if (!dtViolationDate.IsDateEmpty)
+                {
+                    args.IsValid = true;
+                    return;
+                }
+                // Fallback: try parsing SelectedDate
+                args.IsValid = (dtViolationDate.SelectedDate != DateTime.MinValue);
             }
-            catch
-            {
-                args.IsValid = false;
-            }
+            catch { args.IsValid = false; }
         }
 
         #region ViolationConcernedParties
@@ -342,97 +370,64 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         {
             try
             {
-                // Method 1: Check web language directly
                 using (SPWeb web = site.RootWeb)
                 {
-                    if (web.Language == 1025) // Arabic LCID
-                        return true;
+                    if (web.Language == 1025) return true;
                 }
-
-                // Method 2: Check current UI culture
                 int currentLCID = System.Threading.Thread.CurrentThread.CurrentUICulture.LCID;
-                if (currentLCID == 1025)
-                    return true;
-
-                // Method 3: Check URL for language indicator
+                if (currentLCID == 1025) return true;
                 string url = site.Url.ToLower();
-                if (url.Contains("/ar/") || url.Contains("/ar-") || url.Contains("-ar"))
-                    return true;
-
-                // Method 4: Check query string parameter
+                if (url.Contains("/ar/") || url.Contains("/ar-") || url.Contains("-ar")) return true;
                 string langParam = System.Web.HttpContext.Current.Request.QueryString["lang"];
-                if (!string.IsNullOrEmpty(langParam) && langParam.ToLower() == "ar")
-                    return true;
-
-                // Default to English
+                if (!string.IsNullOrEmpty(langParam) && langParam.ToLower() == "ar") return true;
                 return false;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; }
         }
 
         private List<ViolationParty> ParsePartiesFromHiddenField()
         {
             string json = hfPartiesJson.Value;
-
             if (string.IsNullOrWhiteSpace(json) || json == "[]")
                 return new List<ViolationParty>();
-
             var serializer = new JavaScriptSerializer();
             return serializer.Deserialize<List<ViolationParty>>(json);
         }
 
-        // ────────────────────────────────────────────────────────────────────
-        // STEP 2 — Map Arabic relation → English for RelationEn column
-        // ────────────────────────────────────────────────────────────────────
-
         private void SaveViolationParties(int violationItemId)
         {
             List<ViolationParty> parties = ParsePartiesFromHiddenField();
-
             if (parties.Count == 0) return;
-            
-                SPWeb web = SPContext.Current.Site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()) ;
 
+            SPWeb web = SPContext.Current.Site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString());
             SPList partiesList;
             try
             {
-                partiesList = web.GetList(GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString());  
+                partiesList = web.GetList(GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString());
             }
             catch
             {
                 throw new Exception($"SharePoint list '{GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString()}' was not found.");
             }
 
-            // Get the violation lookup item to set the Violation field
             SPList violationsList = web.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
-            // change if your violations list has a different name
             SPListItem violationItem = violationsList.GetItemById(violationItemId);
-
             SPList relationTypesList = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
 
             web.AllowUnsafeUpdates = true;
-
             try
             {
                 foreach (ViolationParty party in parties)
                 {
                     SPListItem newItem = partiesList.Items.Add();
                     SPListItem RelationTypeItem = relationTypesList.GetItemById(int.Parse(party.Relation));
-
                     newItem["Title"] = party.Name;
                     newItem["JobTitle"] = party.JobTitle;
                     newItem["Company"] = party.Company;
-
-                    // Set the Violation lookup field
                     newItem["Violation"] = new SPFieldLookupValue(violationItem.ID, violationItem.Title);
                     newItem["Relation"] = new SPFieldLookupValue(RelationTypeItem.ID, RelationTypeItem.Title);
-
                     newItem.Update();
                 }
-
                 partiesList.Update();
             }
             finally
@@ -440,72 +435,111 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 web.AllowUnsafeUpdates = false;
             }
         }
+
         #endregion
 
         protected void SendEmail(SPListItem item)
         {
-            var isArabic = SPContext.Current.Web.Language == 1025;
-            EXIM.Common.Lib.Utils.NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
-            Dictionary<string, string> values = EXIM.Common.Lib.Utils.NotificationHelper.BuildTokenDictionary(item);
+            var isArabicLang = SPContext.Current.Web.Language == 1025;
+            NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
+            Dictionary<string, string> values = NotificationHelper.BuildTokenDictionary(item);
             values.Add("Parties", hfPartiesHTML.Value);
             values = AddConditionalContentKeys(values, item);
-            string toEmail = "NA";//item["RequestType:ToEmail"]?.ToString();
-
+            string toEmail = "NA";
             if (toEmail != null)
             {
                 if (toEmail.Contains("#"))
                     toEmail = toEmail.Split('#')[1];
-                TemplateLanguage lang = isArabic ? TemplateLanguage.Ar : TemplateLanguage.En;
+                TemplateLanguage lang = isArabicLang ? TemplateLanguage.Ar : TemplateLanguage.En;
                 notification.SendEmail("NewViolationReportEmailTemplate", toEmail, values, lang);
             }
         }
+
         public Dictionary<string, string> AddConditionalContentKeys(Dictionary<string, string> values, SPListItem item)
         {
-            if (values == null)
-                values = new Dictionary<string, string>();
-
+            if (values == null) values = new Dictionary<string, string>();
             var updatedValues = new Dictionary<string, string>(values);
 
             string otherViolationText = Convert.ToString(GetLocalResourceObject("OtherViolationType"));
             string howDoYouKnowOther = Convert.ToString(GetLocalResourceObject("HowDoYouKnow-Other"));
 
-            // Violation Type
             updatedValues["ShowOtherViolationTypeStyle"] =
                 ddlViolationType.SelectedValue == otherViolationText ? "display:block;" : "display:none;";
-
-            // Parties
             updatedValues["ShowPartiesStyle"] =
                 !string.IsNullOrEmpty(hfPartiesJson.Value) ? "display:block;" : "display:none;";
-
-            // Other Awareness
             updatedValues["ShowOtherAwarenessStyle"] =
                 ddlHowYouKnow.SelectedValue == howDoYouKnowOther ? "display:block;" : "display:none;";
-
-            // Non Anonymous
             updatedValues["ShowNonAnonymousStyle"] =
                 rblAnonymous.SelectedValue == "false" ? "display:block;" : "display:none;";
-
             updatedValues["StayAnonymousValue"] =
-                rblAnonymous.SelectedValue == "false" ? Convert.ToString(GetLocalResourceObject("No")) : Convert.ToString(GetLocalResourceObject("Yes"));
-
-            updatedValues["CanIdentifyPartiesValue"] =
-              Convert.ToString(rblCanIdentifyParties.SelectedItem.Text);
-
-            updatedValues["IsViolationOngoingValue"] =
-                Convert.ToString(rblViolationOngoing.SelectedItem.Text);
-            //rblViolationOngoing.SelectedItem.SelectedValue == "false" ? Convert.ToString(GetLocalResourceObject("No")) : Convert.ToString(GetLocalResourceObject("Yes"));
+                rblAnonymous.SelectedValue == "false"
+                    ? Convert.ToString(GetLocalResourceObject("No"))
+                    : Convert.ToString(GetLocalResourceObject("Yes"));
+            updatedValues["CanIdentifyPartiesValue"] = Convert.ToString(rblCanIdentifyParties.SelectedItem.Text);
+            updatedValues["IsViolationOngoingValue"] = Convert.ToString(rblViolationOngoing.SelectedItem.Text);
 
             return updatedValues;
         }
 
+        private void LoadCountriesAutocomplete()
+        {
+            try
+            {
+                using (SPSite site = new SPSite(SPContext.Current.Site.Url))
+                using (SPWeb web = site.OpenWeb("/"))
+                {
+                    SPList list = web.Lists.TryGetList("Countries");
+                    if (list == null) return;
+
+                    SPQuery q = new SPQuery
+                    {
+                        Query = "<OrderBy><FieldRef Name='CountryName' /></OrderBy>",
+                        ViewFields = "<FieldRef Name='ID'/><FieldRef Name='CountryCode'/>" +
+                                     "<FieldRef Name='CountryName'/><FieldRef Name='CountryNameAr'/>",
+                        RowLimit = 300
+                    };
+
+                    var sb = new System.Text.StringBuilder("[");
+                    bool first = true;
+
+                    foreach (SPListItem item in list.GetItems(q))
+                    {
+                        if (!first) sb.Append(",");
+                        first = false;
+                        sb.AppendFormat(
+                            "{{\"id\":{0},\"code\":\"{1}\",\"nameEn\":\"{2}\",\"nameAr\":\"{3}\"}}",
+                            item.ID,
+                            Encode(item["CountryCode"]?.ToString()),
+                            Encode(item["CountryName"]?.ToString()),
+                            Encode(item["CountryNameAr"]?.ToString()));
+                    }
+                    sb.Append("]");
+                    CountriesJson = sb.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError("LoadCountriesAutocomplete: " + ex.Message);
+                CountriesJson = "[]";
+            }
+        }
+
+        private static string Encode(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return string.Empty;
+            return s.Replace("\\", "\\\\")
+                    .Replace("\"", "\\\"")
+                    .Replace("\r", "")
+                    .Replace("\n", "");
+        }
     }
+
     public class ViolationParty
     {
-        public string Relation { get; set; }  // Arabic value  e.g. "طرف خارجي"
-        public string RelationEn { get; set; }  // English value e.g. "External"
+        public string Relation { get; set; }
+        public string RelationEn { get; set; }
         public string Name { get; set; }
         public string JobTitle { get; set; }
         public string Company { get; set; }
     }
-
 }

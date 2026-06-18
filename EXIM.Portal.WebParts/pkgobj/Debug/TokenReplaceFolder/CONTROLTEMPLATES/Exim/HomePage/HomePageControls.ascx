@@ -11,6 +11,30 @@
 
 
     <link rel="stylesheet" href="/Style%20Library/exim/chatbot/chatbot.css" />
+
+<style>
+/* ── News card meta row: date  •  time-ago ── */
+.blog-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+.blog-meta-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    flex-shrink: 0;
+    display: inline-block;
+}
+.blog-date,
+.blog-time-ago {
+    white-space: nowrap;
+}
+</style>
 	<%--<script defer src="/Style Library/exim/js/homeV2.js"></script>
 	<script defer src="/Style%20Library/exim/chatbot/chatbot.js"></script>--%>
 
@@ -90,7 +114,7 @@
                             <h2 data-aos="fade-up" data-aos-delay="200">We help you choose the financial services that suit your needs.</h2>
                             <p data-aos="fade-up" data-aos-delay="300">The Saudi Export-Import Bank aims to promote the development of Saudi non-oil exports and increase their competitiveness in global markets across various sectors by providing credit solutions for export financing, guarantees, and export credit insurance with competitive advantages. This is in line with the objectives and pillars of the Kingdom&apos;s Vision 2030, which aims to increase the proportion of non-oil exports to non-oil GDP.</p>
                             <div class="financial-products-advisor-text--action">
-                                <a href="" class="btn btn-secondary" data-aos="fade-up" data-aos-delay="200" >
+                                <a href="/en/Services/" class="btn btn-secondary" data-aos="fade-up" data-aos-delay="200" >
                                     Contact a Product Advisor <i class="ic-arrow-left"></i>
                                 </a>
                             </div>
@@ -102,7 +126,7 @@
                             <h2 data-aos="fade-up" data-aos-delay="200">نساعدك في اختيار الخدمات المالية المناسبة لك بناءً على احتياجاتك.</h2>
                             <p data-aos="fade-up" data-aos-delay="300">يهدف بنك التصدير والاستيراد السعودي إلى تعزيز تنمية الصادرات السعودية غير النفطية وزيادة تنافسيتها في الأسواق العالمية في مختلف القطاعات، وذلك من خلال تقديم حلول ائتمانية لتمويل الصادرات، والضمانات، وتأمين ائتمان الصادرات بمزايا تنافسية، وذلك ضمن أهداف ومرتكزات رؤية المملكة 2030 المعنية بزيادة نسبة الصادرات غير النفطية إلى الناتج الإجمالي المحلي غير النفطي.</p>
                             <div class="financial-products-advisor-text--action">
-                                <a href="" class="btn btn-secondary" data-aos="fade-up" data-aos-delay="200">
+                                <a href="/ar/Services/" class="btn btn-secondary" data-aos="fade-up" data-aos-delay="200">
                                     تواصل مع مستشار المنتجات <i class="ic-arrow-left"></i>
                                 </a>
                             </div>
@@ -124,14 +148,14 @@
             <div class="text-center">
                 <SharePoint:LanguageSpecificContent runat="server" Languages="1033">
                     <contenttemplate>
-                        <h2 class="text-blue" data-aos="fade-up" data-aos-delay="100">Financing and Commercial Solutions</h2>
-                        <p data-aos="fade-up" data-aos-delay="200">Everything you need to know about financing and commercial solutions designed for you</p>
+                        <h2 class="text-blue" data-aos="fade-up" data-aos-delay="100">Export and international business empowerment services and programmes</h2>
+                        <p data-aos="fade-up" data-aos-delay="200">Everything you need to know about financing and <br/> commercial solutions designed for you</p>
                     </contenttemplate>
                 </SharePoint:LanguageSpecificContent>
                 <SharePoint:LanguageSpecificContent runat="server" Languages="1025">
                     <contenttemplate>
-                        <h2 class="text-blue" data-aos="fade-up" data-aos-delay="100">الحلول التمويلية والتجارية</h2>
-                        <p data-aos="fade-up" data-aos-delay="200">كل ما تحتاج معرفته عن الحلول التمويلية والتجارية المصممة لك</p>
+                        <h2 class="text-blue" data-aos="fade-up" data-aos-delay="100">خدمات وبرامج تمكين الصادرات والأعمال الدولية</h2>
+                        <p data-aos="fade-up" data-aos-delay="200">كل ما تحتاج معرفته عن الحلول  <br/>التمويلية والتجارية المصممة لك</p>
                     </contenttemplate>
                 </SharePoint:LanguageSpecificContent>
             </div>

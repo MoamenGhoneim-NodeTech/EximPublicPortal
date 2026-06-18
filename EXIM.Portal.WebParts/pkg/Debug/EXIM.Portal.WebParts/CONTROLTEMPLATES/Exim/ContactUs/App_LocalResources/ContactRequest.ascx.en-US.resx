@@ -210,4 +210,7 @@
   <data name="ShareDataTypeId" xml:space="preserve">
     <value>5</value>
   </data>
+  <data name="cpDisplayPlaceHolder" xml:space="preserve">
+    <value>Select country</value>
+  </data>
 </root>

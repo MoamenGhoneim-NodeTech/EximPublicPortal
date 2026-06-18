@@ -16,7 +16,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
         private const string WhereClause =
             "<Where><Eq><FieldRef Name='EXIM_ShowInArchive'/><Value Type='Boolean'>1</Value></Eq></Where>";
 
-   
+
         public int RowsPerPage { get; set; } = 9;
         public bool ShowPaging { get; set; } = true;
         public string NoResultsMessage { get; set; } = "No results found.";
@@ -56,6 +56,13 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
             set => ViewState["VSPage"] = value;
         }
 
+        // "asc" = A→Z, "desc" = Z→A, "" = default (no sort)
+        private string CurrentSortOrder
+        {
+            get => ViewState["VSSort"] as string ?? "";
+            set => ViewState["VSSort"] = value ?? "";
+        }
+
         private static List<string> ParseList(string raw) =>
             string.IsNullOrEmpty(raw) ? new List<string>()
             : raw.Split('|').Where(s => s.Length > 0).ToList();
@@ -69,6 +76,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
         {
             btnApply.Text = IsArabic ? "تطبيق" : "Apply";
             btnClear.Text = IsArabic ? "مسح" : "Clear";
+            txtSearch.Attributes["placeholder"] = IsArabic ? "ابحث عن اسم الخدمة" : "Search by service name";
 
             if (!string.IsNullOrWhiteSpace(DownloadGuideUrl))
             {
@@ -77,7 +85,14 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
             }
 
             if (!IsPostBack)
+            {
                 txtSearch.Text = CurrentKeyword;
+
+                // Populate sort dropdown ONCE — ViewState keeps items on postbacks
+                ddlSortBy.Items.Add(new ListItem(IsArabic ? "-- الترتيب الافتراضي --" : "-- Default order --", ""));
+                ddlSortBy.Items.Add(new ListItem(IsArabic ? "الفئة: أ ← ي" : "Category: A → Z", "asc"));
+                ddlSortBy.Items.Add(new ListItem(IsArabic ? "الفئة: ي ← أ" : "Category: Z → A", "desc"));
+            }
         }
 
         protected void Page_PreRender(object sender, EventArgs e)
@@ -113,6 +128,16 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
             txtSearch.Text = string.Empty;
         }
 
+        protected void ddlSortBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Read raw posted value — SelectedValue is unreliable when Items are
+            // only populated on !IsPostBack (control has zero items on postback).
+            var postedValue = Request.Form[ddlSortBy.UniqueID] ?? "";
+            var allowed = new[] { "asc", "desc", "" };
+            CurrentSortOrder = Array.IndexOf(allowed, postedValue) >= 0 ? postedValue : "";
+            CurrentPageIndex = 0;
+        }
+
         protected void Pager_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "Page" && int.TryParse(e.CommandArgument.ToString(), out int idx))
@@ -134,7 +159,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
             return LandingPageHelper.TryGetList(web, "Pages")
                 ?? LandingPageHelper.TryGetList(web, "الصفحات");
         }
-        
+
         private IList<IDictionary<string, string>> FetchItems()
         {
             var results = new List<IDictionary<string, string>>();
@@ -148,7 +173,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
 
                 var query = new SPQuery
                 {
-                    RowLimit = (uint)(RowsPerPage * 20),
+                    RowLimit = 5000,
                     Query = WhereClause + LandingPageHelper.DefaultOrderByClause,
                     QueryThrottleMode = SPQueryThrottleOption.Override
                 };
@@ -161,8 +186,10 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
                         ["Title"] = item["Title"]?.ToString() ?? "",
                         ["Desc"] = item["Comments"]?.ToString() ?? "",
                         ["SvcType"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceType" : "Exim_FinSrv_ServiceType_En"),
-                        ["Category"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceClass" : "Exim_FinSrv_ServiceClass_En")
-                    });
+                        ["Category"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceClass" : "Exim_FinSrv_ServiceClass_En"),
+                        ["CategoryColor"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceClass" : "Exim_FinSrv_ServiceClass_En") 
+                        == (IsArabic ?   "منتجات التمويل" : "Financing products" ) ? "color-blue" : "color-orange"
+                    }) ; 
                 }
             }
             catch (Exception ex)
@@ -228,12 +255,28 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
         private void Render(IList<IDictionary<string, string>> filtered)
         {
             int total = filtered.Count;
+
+            // ── Total count label ────────────────────────────────────────
+            litTotalCount.Text = IsArabic
+                ? $"{total} خدمة على هذه الصفحة"
+                : $"{total} service{(total == 1 ? "" : "s")} on this page";
+
+            // ── Sort ALL filtered items before paging ────────────────────
+            IList<IDictionary<string, string>> sorted;
+            if (CurrentSortOrder == "asc")
+                sorted = filtered.OrderBy(i => Val(i, "Category"), StringComparer.OrdinalIgnoreCase).ToList();
+            else if (CurrentSortOrder == "desc")
+                sorted = filtered.OrderByDescending(i => Val(i, "Category"), StringComparer.OrdinalIgnoreCase).ToList();
+            else
+                sorted = filtered;
+
             int totalPages = RowsPerPage > 0 ? (int)Math.Ceiling((double)total / RowsPerPage) : 0;
 
             // Clamp page index
             CurrentPageIndex = Math.Max(0, Math.Min(CurrentPageIndex, totalPages > 0 ? totalPages - 1 : 0));
 
-            RenderCards(filtered.Skip(CurrentPageIndex * RowsPerPage).Take(RowsPerPage).ToList());
+            // Slice the already-sorted full list for the current page
+            RenderCards(sorted.Skip(CurrentPageIndex * RowsPerPage).Take(RowsPerPage).ToList());
             RenderNoResults(total);
             RenderPaging(totalPages);
         }
@@ -247,14 +290,15 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
                 string title = Val(item, "Title");
                 string desc = Val(item, "Desc");
                 string type = Val(item, "SvcType");
-
+                string category = Val(item, "Category");
+                string categoryColor = Val(item, "CategoryColor");
                 var html = new StringBuilder();
                 html.Append($"<div class=\"col-md-4 pagingItem\"><div class=\"services-item\">");
                 html.Append($"<h3><a href=\"{Enc(url)}\">{Enc(title)}</a></h3>");
                 if (!string.IsNullOrWhiteSpace(desc))
                     html.Append($"<p>{Enc(desc)}</p>");
                 html.Append($"<a href=\"{Enc(url)}\" class=\"services-item-footer\">");
-                html.Append($"<span class=\"service-category color-blue\">{Enc(type)}</span>");
+                html.Append($"<span class=\"service-category {Enc(categoryColor)}\">{Enc(type)}</span>");
                 html.Append($"<i class=\"ic-left-arrow-dark\"></i></a>");
                 html.Append($"</div></div>");
                 phResults.Controls.Add(new LiteralControl(html.ToString()));

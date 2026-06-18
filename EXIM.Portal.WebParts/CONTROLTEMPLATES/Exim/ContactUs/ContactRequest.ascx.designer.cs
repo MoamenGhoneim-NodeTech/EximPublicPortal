@@ -93,7 +93,25 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCountry;
+        protected global::System.Web.UI.WebControls.HiddenField txtCountry;
+
+        /// <summary>
+        /// hfCountryId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfCountryId;
+
+        /// <summary>
+        /// dtxtCountry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox dtxtCountry;
 
         /// <summary>
         /// rfvCountry control.
@@ -112,6 +130,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMobileNumber;
+
+        /// <summary>
+        /// hfSelectedCountryCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedCountryCode;
 
         /// <summary>
         /// ddlCountryCode control.

@@ -129,8 +129,17 @@
   <data name="formTitle.Text" xml:space="preserve">
     <value>طلب استشارة</value>
   </data>
+  <data name="InvalidCommNumber.ErrorMessage" xml:space="preserve">
+    <value>هذا الحقل يقبل الأرقام فقط.</value>
+  </data>
+  <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
+    <value>البريد الإلكتروني غير صحيح.</value>
+  </data>
   <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
     <value>رقم الجوال غير صحيح.</value>
+  </data>
+  <data name="InvalidResponsiblePersonName.ErrorMessage" xml:space="preserve">
+    <value>هذا الحقل لا يقبل أرقامًا.</value>
   </data>
   <data name="lblCommNumber.Text" xml:space="preserve">
     <value>رقم السجل التجاري:</value>
@@ -158,6 +167,9 @@
   </data>
   <data name="lblTargetCountries.Text" xml:space="preserve">
     <value>الدول المستهدفة للتصدير:</value>
+  </data>
+  <data name="MaxLengthProductDescription.ErrorMessage" xml:space="preserve">
+    <value>الحد الأقصى 1000 حرف</value>
   </data>
   <data name="rblCurrentCustomerNo.Text" xml:space="preserve">
     <value>لا</value>

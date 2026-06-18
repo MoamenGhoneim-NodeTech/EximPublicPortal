@@ -63,6 +63,22 @@
                 </div>
             </div>
 
+            <%-- ── Total count + Sort bar ── --%>
+            <div class="exim-results-bar d-flex justify-content-between align-items-center mb-3">
+                <span class="exim-total-count">
+                    <asp:Literal ID="litTotalCount" runat="server" />
+                </span>
+                <div class="exim-sort-wrap d-flex align-items-center gap-2">
+                    <label class="mb-0 fw-semibold">
+                        <%: IsArabic ? "ترتيب حسب الفئة" : "Sort by category" %>
+                    </label>
+                    <asp:DropDownList ID="ddlSortBy" runat="server"
+                        CssClass="form-select form-select-sm exim-sort-select"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlSortBy_SelectedIndexChanged" />
+                </div>
+            </div>
+
             <div class="services-items row g-3">
                 <asp:PlaceHolder ID="phResults" runat="server" />
             </div>
@@ -119,6 +135,8 @@
     .exim-btn-link { border:none; background:none; color:Highlight; padding:0;
                      text-decoration:none; cursor:pointer; display:inline; }
     .exim-btn-link:hover { text-decoration:underline; }
+    .exim-total-count { font-size:.95rem; color:#555; }
+    .exim-sort-select { width:auto; min-width:160px; font-size:.875rem; }
 </style>
 
     </asp:Panel>

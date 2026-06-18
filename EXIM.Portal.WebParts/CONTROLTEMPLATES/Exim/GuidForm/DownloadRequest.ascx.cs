@@ -10,9 +10,21 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
 {
     public partial class DownloadRequest : UserControl
     {
-        #region Design controls 
+        #region Design controls
         protected global::Exim.Portal.WebParts.LabelMessage ucMessage;
         #endregion
+
+        /// <summary>Countries JSON array injected into the page for the code picker.</summary>
+        public string CountriesJson { get; private set; } = "[]";
+
+        public bool IsArabic
+        {
+            get
+            {
+                return System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+                       .StartsWith("ar", StringComparison.OrdinalIgnoreCase);
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,6 +34,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
                     return;
 
                 initFormData();
+                LoadCountriesAutocomplete();
             }
             catch (Exception ex)
             {
@@ -34,88 +47,41 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
 
         private void initFormData()
         {
-            ddlCountryCode.Items.Clear();
-
-            Guid siteId = SPContext.Current.Site.ID;
-
-            using (SPSite site = new SPSite(siteId))
-            {
-                using (SPWeb web = site.OpenWeb(GetLocalResourceObject("guideArSiteURL").ToString()))
-                {
-                    SPList list = web.GetList(GetLocalResourceObject("guideListRelativeURL").ToString());
-                    if (list == null) return;
-
-                    // Try to get the country-code choice field (handle common internal names)
-                    SPField field = list.Fields.TryGetFieldByStaticName("CountryCode");
-
-                    if (field == null) return;
-
-                    SPFieldChoice choiceField = field as SPFieldChoice;
-                    if (choiceField == null) return;
-
-                    foreach (string choice in choiceField.Choices)
-                    {
-                        ddlCountryCode.Items.Add(new ListItem(choice, choice));
-                    }
-
-                    // Default value if set in the column
-                    if (!string.IsNullOrEmpty(choiceField.DefaultValue))
-                    {
-                        ListItem defaultItem = ddlCountryCode.Items.FindByValue(choiceField.DefaultValue)
-                                                  ?? ddlCountryCode.Items.FindByText(choiceField.DefaultValue);
-                        if (defaultItem != null)
-                        {
-                            ddlCountryCode.ClearSelection();
-                            defaultItem.Selected = true;
-                        }
-                    }
-                }
-            }
+            // ddlCountryCode population removed — picker uses CountriesJson instead
         }
 
         private string GetGuideFileUrl(SPWeb web)
         {
-
             string targetFileName = "Export Credit Financing and Insurance.pdf";
-
             foreach (SPList list in web.Lists)
             {
                 SPDocumentLibrary lib = list as SPDocumentLibrary;
                 if (lib == null || lib.Hidden) continue;
-
                 try
                 {
                     SPFile file = lib.RootFolder.Files[targetFileName];
                     if (file != null && file.Exists)
-                    {
                         return file.ServerRelativeUrl;
-                    }
                 }
-                catch
-                {
-                    // Ignore and continue searching other libraries
-                }
+                catch { }
             }
-
             return null;
         }
+
         private void DownloadGuideFile(SPWeb web)
         {
             lnkbtnDownloadGuide.Enabled = false;
             string targetFileName = "Export Credit Financing and Insurance.pdf";
-
             foreach (SPList list in web.Lists)
             {
                 SPDocumentLibrary lib = list as SPDocumentLibrary;
-                if (lib == null || lib.Hidden ) continue;
-
+                if (lib == null || lib.Hidden) continue;
                 try
                 {
                     SPFile file = lib.RootFolder.Files[targetFileName];
                     if (file == null || !file.Exists) continue;
 
                     byte[] fileBytes = file.OpenBinary();
-
                     HttpResponse response = HttpContext.Current.Response;
                     response.Clear();
                     response.ContentType = "application/pdf";
@@ -124,18 +90,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
                     response.BinaryWrite(fileBytes);
                     response.Flush();
                     response.End();
-
-                    return; // Stop after first match
+                    return;
                 }
-                catch
-                {
-                    // Ignore and continue searching other libraries
-                }
+                catch { }
             }
-
-            // File not found — show error message
             ucMessage.ShowError("File not found.");
         }
+
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             try
@@ -147,49 +108,35 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
                 SPSecurity.RunWithElevatedPrivileges(delegate ()
                 {
                     using (SPSite site = new SPSite(siteId))
+                    using (SPWeb web = site.OpenWeb(GetLocalResourceObject("guideArSiteURL").ToString()))
                     {
-                        using (SPWeb web = site.OpenWeb(GetLocalResourceObject("guideArSiteURL").ToString()))
+                        SPList subsList = web.GetList(GetLocalResourceObject("guideListRelativeURL").ToString());
+                        if (subsList == null) return;
+
+                        bool resetUnsafe = !web.AllowUnsafeUpdates;
+                        if (resetUnsafe) web.AllowUnsafeUpdates = true;
+                        try
                         {
-                            SPList subsList = web.GetList(GetLocalResourceObject("guideListRelativeURL").ToString());
-                            if (subsList == null) return;
+                            // Read selected country code from the hidden field
+                            string selectedCountryCode = hfSelectedCountryCode.Value;
 
-                            bool resetUnsafe = !web.AllowUnsafeUpdates;
-                            if (resetUnsafe) web.AllowUnsafeUpdates = true;
-
-                            try
-                            {
-                                SPListItem newItem = subsList.AddItem();
-
-                                newItem["Title"] = txtCompanyName.Text;
-                                newItem["CompanyName"] = txtCompanyName.Text;
-                                newItem["BeneficiaryName"] = txtBeneficiaryName.Text;
-                                newItem["City"] = txtCity.Text;
-                                newItem["MobileNumber"] = string.Format("{0}{1}", ddlCountryCode.SelectedValue, txtMobileNumber.Text);
-                                newItem["Email"] = txtEmail.Text;
-
-                                newItem.Update();
-
-                                //string fileUrl = GetGuideFileUrl(web);
-                                //Session.Add("GuideFileURL", fileUrl);
-                                //if (Session["GuideFileURL"] != null)//!string.IsNullOrEmpty(fileUrl))
-                                //{
-                                //    lnkDownloadGuide.NavigateUrl = Session["GuideFileURL"].ToString();
-                                //    lnkDownloadGuide.Visible = true;
-                                //}
-                                //else
-                                //{
-                                //    lnkDownloadGuide.Visible = false;
-                                //}
-                            }
-                            finally
-                            {
-                                if (resetUnsafe) web.AllowUnsafeUpdates = false;
-                            }
+                            SPListItem newItem = subsList.AddItem();
+                            newItem["Title"] = txtCompanyName.Text;
+                            newItem["CompanyName"] = txtCompanyName.Text;
+                            newItem["BeneficiaryName"] = txtBeneficiaryName.Text;
+                            newItem["City"] = txtCity.Text;
+                            newItem["MobileNumber"] = string.Format("{0}{1}", selectedCountryCode, txtMobileNumber.Text);
+                            newItem["Email"] = txtEmail.Text;
+                            newItem.Update();
+                        }
+                        finally
+                        {
+                            if (resetUnsafe) web.AllowUnsafeUpdates = false;
                         }
                     }
                 });
 
-                ucMessage.ShowSuccess(GetLocalResourceObject("MessageSentSuccessfully").ToString());
+                //ucMessage.ShowSuccess(GetLocalResourceObject("MessageSentSuccessfully").ToString());
                 pnlFormBody.Visible = false;
                 pnlSuccess.Visible = true;
             }
@@ -203,6 +150,58 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         protected void lnkbtnDownloadGuide_Click(object sender, EventArgs e)
         {
             DownloadGuideFile(SPContext.Current.Web);
+        }
+
+        private void LoadCountriesAutocomplete()
+        {
+            try
+            {
+                using (SPSite site = new SPSite(SPContext.Current.Site.Url))
+                using (SPWeb web = site.OpenWeb("/"))
+                {
+                    SPList list = web.Lists.TryGetList("Countries");
+                    if (list == null) return;
+
+                    SPQuery q = new SPQuery
+                    {
+                        Query = "<OrderBy><FieldRef Name='CountryName' /></OrderBy>",
+                        ViewFields = "<FieldRef Name='ID'/><FieldRef Name='CountryCode'/>" +
+                                     "<FieldRef Name='CountryName'/><FieldRef Name='CountryNameAr'/>",
+                        RowLimit = 300
+                    };
+
+                    var sb = new System.Text.StringBuilder("[");
+                    bool first = true;
+
+                    foreach (SPListItem item in list.GetItems(q))
+                    {
+                        if (!first) sb.Append(",");
+                        first = false;
+                        sb.AppendFormat(
+                            "{{\"id\":{0},\"code\":\"{1}\",\"nameEn\":\"{2}\",\"nameAr\":\"{3}\"}}",
+                            item.ID,
+                            Encode(item["CountryCode"]?.ToString()),
+                            Encode(item["CountryName"]?.ToString()),
+                            Encode(item["CountryNameAr"]?.ToString()));
+                    }
+                    sb.Append("]");
+                    CountriesJson = sb.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.TraceError("LoadCountriesAutocomplete: " + ex.Message);
+                CountriesJson = "[]";
+            }
+        }
+
+        private static string Encode(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return string.Empty;
+            return s.Replace("\\", "\\\\")
+                    .Replace("\"", "\\\"")
+                    .Replace("\r", "")
+                    .Replace("\n", "");
         }
     }
 }

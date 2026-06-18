@@ -169,7 +169,7 @@
     <value>اسحب و أفلت الملفات هنا للرفع</value>
   </data>
   <data name="fileUploadDescription.Text" xml:space="preserve">
-    <value>الحد الأقصى لحجم الملف المسموح به هو 2 ميجابايت، وتشمل الصيغ المدعومة .jpg و .png و .pdf.</value>
+    <value>الحد الأقصى لحجم الملف المسموح به هو 5 ميجابايت، وتشمل الصيغ المدعومة .jpg و .png ,jpg, .pdf ,.rar . </value>
   </data>
   <data name="fileUploadBrowseText.Text" xml:space="preserve">
     <value>تصفح الملفات</value>
@@ -269,5 +269,11 @@
   </data>
   <data name="txtOtherType.Placeholder" xml:space="preserve">
     <value>ادخل نوع المخالفة</value>
+  </data>
+  <data name="FileTooLargeFile" xml:space="preserve">
+    <value>يجب ألا يتجاوز حجم الملف 5 ميجابايت</value>
+  </data>
+  <data name="InvalidFileType" xml:space="preserve">
+    <value>أنواع الملفات المسموح بها: PNG، JPG، PDF، RAR</value>
   </data>
 </root>

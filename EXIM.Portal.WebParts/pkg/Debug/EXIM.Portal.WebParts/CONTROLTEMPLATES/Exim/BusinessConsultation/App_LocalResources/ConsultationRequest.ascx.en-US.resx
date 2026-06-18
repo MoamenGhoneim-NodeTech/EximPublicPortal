@@ -129,8 +129,17 @@
   <data name="formTitle.Text" xml:space="preserve">
     <value>Consultation Request</value>
   </data>
+  <data name="InvalidCommNumber.ErrorMessage" xml:space="preserve">
+    <value>This field accept numbers only.</value>
+  </data>
+  <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
+    <value>Invalid Email.</value>
+  </data>
   <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
     <value>Invalid mobile number.</value>
+  </data>
+  <data name="InvalidResponsiblePersonName.ErrorMessage" xml:space="preserve">
+    <value>This field does not accept numbers.</value>
   </data>
   <data name="lblCommNumber.Text" xml:space="preserve">
     <value>Commercial Registration Number:</value>
@@ -158,6 +167,9 @@
   </data>
   <data name="lblTargetCountries.Text" xml:space="preserve">
     <value>Target Export Countries:</value>
+  </data>
+  <data name="MaxLengthProductDescription.ErrorMessage" xml:space="preserve">
+    <value>Maximum length 1000 character</value>
   </data>
   <data name="rblCurrentCustomerNo.Text" xml:space="preserve">
     <value>No</value>
