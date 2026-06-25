@@ -215,6 +215,14 @@
     <Compile Include="FundingWebPart\FundingWebPartUserControl.ascx.designer.cs">
       <DependentUpon>FundingWebPartUserControl.ascx.cs</DependentUpon>
     </Compile>
+    <Compile Include="GeneralSearchWebpart\GeneralSearchWebpart.cs" />
+    <Compile Include="GeneralSearchWebpart\GeneralSearchWebpartUserControl.ascx.cs">
+      <DependentUpon>GeneralSearchWebpartUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GeneralSearchWebpart\GeneralSearchWebpartUserControl.ascx.designer.cs">
+      <DependentUpon>GeneralSearchWebpartUserControl.ascx.cs</DependentUpon>
+    </Compile>
     <Compile Include="LandingPageWebpart\LandingPageWebpart.cs" />
     <Compile Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx.cs">
       <DependentUpon>LandingPageWebpartUserControl.ascx</DependentUpon>
@@ -340,6 +348,10 @@
     <None Include="FundingWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{dd94372d-65c4-47e4-aa71-f9ce1318d2c2}</SharePointProjectItemId>
     </None>
+    <None Include="GeneralSearchWebpart\GeneralSearchWebpart.webpart" />
+    <None Include="GeneralSearchWebpart\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{17b9049b-9ac1-4532-8cd2-5af212e6a4ec}</SharePointProjectItemId>
+    </None>
     <None Include="key.snk" />
     <None Include="LandingPageWebpart\LandingPageWebpart.webpart" />
     <None Include="LandingPageWebpart\SharePointProjectItem.spdata">
@@ -418,6 +430,8 @@
     <Content Include="FinancialServicesWebPart\FinancialServicesWebPartUserControl.ascx" />
     <Content Include="FundingWebPart\Elements.xml" />
     <Content Include="FundingWebPart\FundingWebPartUserControl.ascx" />
+    <Content Include="GeneralSearchWebpart\Elements.xml" />
+    <Content Include="GeneralSearchWebpart\GeneralSearchWebpartUserControl.ascx" />
     <Content Include="LandingPageWebpart\Elements.xml" />
     <Content Include="LandingPageWebpart\LandingPageWebpartUserControl.ascx" />
     <Content Include="Layouts\EXIM.Portal\Captcha.aspx" />

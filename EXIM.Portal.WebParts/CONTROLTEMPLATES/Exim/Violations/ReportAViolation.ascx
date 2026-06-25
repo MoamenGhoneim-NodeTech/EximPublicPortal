@@ -730,8 +730,16 @@
                 $dropdown.hide();
         });
         buildList('');
-        var ksa = data.filter(function (c) { return c.code === '966'; })[0];
-        if (ksa) applyCode(ksa.code);
+
+        // ── Restore state after postback (e.g. failed captcha / validation) ──────
+        var existingCode = $hfCode.val();
+        if (existingCode) {
+            $display.text(existingCode);   // restore visible label; hidden field value already set
+        } else {
+            // Fresh page load — default to KSA (+966)
+            var ksa = data.filter(function (c) { return c.code === '966'; })[0];
+            if (ksa) applyCode(ksa.code);
+        }
     });
     </script>
 

@@ -19,7 +19,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm.App_LocalRes
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class InvitationForm_ascx {
@@ -73,9 +73,36 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm.App_LocalRes
         /// <summary>
         ///   Looks up a localized string similar to معلومات الاتصال.
         /// </summary>
+        internal static string formSubTitle_text {
+            get {
+                return ResourceManager.GetString("formSubTitle.text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to سجل اهتمامك للحصول على المزيد من التفاصيل:.
+        /// </summary>
         internal static string formTitle_text {
             get {
                 return ResourceManager.GetString("formTitle.text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to البريد الإلكتروني غير صحيح.
+        /// </summary>
+        internal static string InvalidMobileNumber_ErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidMobileNumber.ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to يُسمح بإدخال الأحرف فقط.
+        /// </summary>
+        internal static string InvalidName_ErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidName.ErrorMessage", resourceCulture);
             }
         }
         

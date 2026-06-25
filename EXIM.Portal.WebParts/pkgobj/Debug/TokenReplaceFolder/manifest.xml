@@ -25,6 +25,7 @@
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.FundingWebPart" TypeName="*" />
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.RelatedSuccessStoryWebPart" TypeName="*" />
         <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.PartnersWebPart" TypeName="*" />
+        <SafeControl Assembly="EXIM.Portal.WebParts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6c14352c1754619e" Namespace="EXIM.Portal.WebParts.GeneralSearchWebpart" TypeName="*" />
       </SafeControls>
     </Assembly>
   </Assemblies>
@@ -46,6 +47,7 @@
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\FundingWebPart\FundingWebPartUserControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPartUserControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\PartnersWebPart\PartnersWebPartUserControl.ascx" />
+    <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\GeneralSearchWebpart\GeneralSearchWebpartUserControl.ascx" />
     <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
     <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />

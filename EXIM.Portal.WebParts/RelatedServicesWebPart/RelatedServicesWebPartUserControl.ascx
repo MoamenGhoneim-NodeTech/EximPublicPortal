@@ -19,7 +19,7 @@
      (mirrors: if(!$(".services-item").length) $(".service-details-related-section").hide()) --%>
 <asp:PlaceHolder ID="phRelatedSection" runat="server" Visible="false">
 
-    <div class="service-details-related-section" dir="<%: IsArabic ? "rtl" : "ltr" %>">
+    <div dir="<%: IsArabic ? "rtl" : "ltr" %>">
 
         <%-- Carousel wrapper – Owl Carousel initialised in the inline script below --%>
         <div class="services-items services-items-slider owl-carousel owl-theme">

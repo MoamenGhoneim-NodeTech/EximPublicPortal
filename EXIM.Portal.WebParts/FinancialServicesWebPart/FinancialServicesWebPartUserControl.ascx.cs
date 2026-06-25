@@ -27,7 +27,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
         protected bool IsArabic => CurrentLanguage == 1025;
         protected string PagingNavLabel => IsArabic ? "عدد الصفحات المتاحة" : "Available pages";
         protected string TotalPagesLabel { get; private set; } = string.Empty;
-        public string DownloadGuideUrl => IsArabic ? "~/ar/FinServices/Documents/ServicesGuide.pdf" : "~/en/FinServices/Documents/ServicesGuide.pdf";
+        public string DownloadGuideUrl => IsArabic ? "~/ar/FinServices/Documents/ExploreProductsAR.pdf" : "~/en/FinServices/Documents/ExploreProductsEN.pdf";
         // ── ViewState filter + paging state ─────────────────────────────
         // All user selections are stored in ViewState so they survive
         // PostBack automatically — no query string or hidden fields needed.
@@ -88,10 +88,6 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
             {
                 txtSearch.Text = CurrentKeyword;
 
-                // Populate sort dropdown ONCE — ViewState keeps items on postbacks
-                ddlSortBy.Items.Add(new ListItem(IsArabic ? "-- الترتيب الافتراضي --" : "-- Default order --", ""));
-                ddlSortBy.Items.Add(new ListItem(IsArabic ? "الفئة: أ ← ي" : "Category: A → Z", "asc"));
-                ddlSortBy.Items.Add(new ListItem(IsArabic ? "الفئة: ي ← أ" : "Category: Z → A", "desc"));
             }
         }
 
@@ -128,15 +124,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
             txtSearch.Text = string.Empty;
         }
 
-        protected void ddlSortBy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Read raw posted value — SelectedValue is unreliable when Items are
-            // only populated on !IsPostBack (control has zero items on postback).
-            var postedValue = Request.Form[ddlSortBy.UniqueID] ?? "";
-            var allowed = new[] { "asc", "desc", "" };
-            CurrentSortOrder = Array.IndexOf(allowed, postedValue) >= 0 ? postedValue : "";
-            CurrentPageIndex = 0;
-        }
+       
 
         protected void Pager_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -178,8 +166,13 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
                     QueryThrottleMode = SPQueryThrottleOption.Override
                 };
 
+
+
                 foreach (SPListItem item in list.GetItems(query))
                 {
+                    var serviceType = ReadField(item,
+   IsArabic ? "Exim_FinSrv_ServiceType" : "Exim_FinSrv_ServiceType_En");
+
                     results.Add(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                     {
                         ["Path"] = BuildAbsoluteUrl(site, item["FileRef"]?.ToString()),
@@ -187,9 +180,12 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
                         ["Desc"] = item["Comments"]?.ToString() ?? "",
                         ["SvcType"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceType" : "Exim_FinSrv_ServiceType_En"),
                         ["Category"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceClass" : "Exim_FinSrv_ServiceClass_En"),
-                        ["CategoryColor"] = ReadField(item, IsArabic ? "Exim_FinSrv_ServiceClass" : "Exim_FinSrv_ServiceClass_En") 
-                        == (IsArabic ?   "منتجات التمويل" : "Financing products" ) ? "color-blue" : "color-orange"
-                    }) ; 
+                        ["CategoryColor"] = serviceType == (IsArabic ? "البنوك أو المؤسسات المالية" : "Financial Institutions")
+                        ? "color-orange"
+                        : serviceType == (IsArabic ? "المصدر المحلى" : "Local Exporter")
+                            ? "color-green"
+                            : "color-blue"
+                    });
                 }
             }
             catch (Exception ex)
@@ -197,6 +193,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
                 System.Diagnostics.Trace.TraceError("[FinancialServiceControl] {0}", ex);
             }
             return results;
+
         }
 
         // ── Filtering ────────────────────────────────────────────────────
@@ -258,7 +255,7 @@ namespace EXIM.Portal.WebParts.FinancialServicesWebPart
 
             // ── Total count label ────────────────────────────────────────
             litTotalCount.Text = IsArabic
-                ? $"{total} خدمة على هذه الصفحة"
+                ? $"{total} خدمة في هذه الصفحة"
                 : $"{total} service{(total == 1 ? "" : "s")} on this page";
 
             // ── Sort ALL filtered items before paging ────────────────────

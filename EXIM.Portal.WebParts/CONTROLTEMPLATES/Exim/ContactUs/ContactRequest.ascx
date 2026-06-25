@@ -188,6 +188,10 @@
     <script>
         $(document).ready(function () {
             var defaultMessageLabel = $('#<%= lblMessage.ClientID %>').text();
+            var $subject = $('#<%= txtMessageTitle.ClientID %>');
+
+            // Tracks the last value we auto-filled so we only clear our own writes
+            var autoFilledSubject = '';
 
             function applyRequestTypeRules() {
                 var selectedvalue = $('#<%= ddlRequestType.ClientID %> option:selected').val();
@@ -197,16 +201,24 @@
                     $('#<%= divIDNumber.ClientID %>').show();
                     ValidatorEnable(document.getElementById('<%= rfvIDNumber.ClientID %>'), true);
                     $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
-                    $('#<%= txtMessageTitle.ClientID %>').val(selectedText);
+                    autoFilledSubject = selectedText;
+                    $subject.val(selectedText);
                 } else if (selectedvalue == '5') {
                     $('#<%= divIDNumber.ClientID %>').hide();
                     ValidatorEnable(document.getElementById('<%= rfvIDNumber.ClientID %>'), false);
                     $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
-                    $('#<%= txtMessageTitle.ClientID %>').val(selectedText);
+                    autoFilledSubject = selectedText;
+                    $subject.val(selectedText);
                 } else {
                     $('#<%= divIDNumber.ClientID %>').hide();
                     ValidatorEnable(document.getElementById('<%= rfvIDNumber.ClientID %>'), false);
                     $('#<%= lblMessage.ClientID %>').text(defaultMessageLabel);
+
+                    // Only clear the subject if it still holds our auto-filled value
+                    if ($subject.val() === autoFilledSubject) {
+                        $subject.val('');
+                    }
+                    autoFilledSubject = '';
                 }
             }
 
@@ -337,7 +349,7 @@
         var $cpDisplay  = $('#cpDisplay');
         var $hfCountry  = $('#<%= txtCountry.ClientID %>');
         var $hfId       = $('#<%= hfCountryId.ClientID %>');
-        var $dtxtCountry = $('#<%= dtxtCountry.ClientID %>'); 
+        var $dtxtCountry = $('#<%= dtxtCountry.ClientID %>');
         // Build country dropdown and append to <body>
         var $cpDropdown = $(
             '<div id="cpDropdown" class="ccp-dropdown" style="display:none;position:fixed;">' +
@@ -450,9 +462,23 @@
         // Pre-build list on page load so picker is ready on first open
         buildList('');
 
-        // Set KSA (+966) as the default country code
-        var ksaEntry = data.filter(function (c) { return c.code === '966'; })[0];
-        if (ksaEntry) applyCode(ksaEntry.code);
+        // ── Restore state after postback (e.g. failed captcha / validation) ──────
+        // hfSelectedCountryCode keeps its posted value via ViewState; use it to
+        // restore the visual display instead of always defaulting to KSA.
+        var existingCode = $hfCode.val();
+        if (existingCode) {
+            $display.text(existingCode);   // restore visible label; hidden field value already set
+        } else {
+            // Fresh page load — default to KSA (+966)
+            var ksaEntry = data.filter(function (c) { return c.code === '966'; })[0];
+            if (ksaEntry) applyCode(ksaEntry.code);
+        }
+
+        // Restore country name display after postback
+        var existingCountry = $hfCountry.val();
+        if (existingCountry) {
+            $cpDisplay.text(existingCountry).removeClass('cp-placeholder');
+        }
 
     });
     </script>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/" >
+  <Module Name="GeneralSearchWebpart" List="113" Url="_catalogs/wp">
+    <File Path="GeneralSearchWebpart\GeneralSearchWebpart.webpart" Url="EXIM.Portal.WebParts_GeneralSearchWebpart.webpart" Type="GhostableInLibrary" >
+      <Property Name="Group" Value="EXIM" />
+    </File>
+  </Module>
+</Elements>

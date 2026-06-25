@@ -42,6 +42,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvtxtName;
 
         /// <summary>
+        /// revtxtName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revtxtName;
+
+        /// <summary>
         /// txtEmail control.
         /// </summary>
         /// <remarks>
@@ -67,6 +76,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revtxtEmail;
+
+        /// <summary>
+        /// hfSelectedCountryCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedCountryCode;
 
         /// <summary>
         /// ddlCountryCode control.
@@ -123,6 +141,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvtxtCompanyName;
 
         /// <summary>
+        /// revtxtCompanyName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revtxtCompanyName;
+
+        /// <summary>
         /// txtJobTitle control.
         /// </summary>
         /// <remarks>
@@ -139,6 +166,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+
+        /// <summary>
+        /// revtxtJobTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revtxtJobTitle;
 
         /// <summary>
         /// btnSubmit control.

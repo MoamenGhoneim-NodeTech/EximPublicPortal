@@ -34,11 +34,12 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
         {
             try
             {
+                LoadCountriesAutocomplete();
                 if (Page.IsPostBack)
                     return;
 
                 initFormData();
-                LoadCountriesAutocomplete();
+              
             }
             catch (Exception ex)
             {
@@ -194,30 +195,36 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.ContactUs
 
         protected void SendEmail(SPListItem item)
         {
-            var isArabic = SPContext.Current.Web.Language == 1025;
-
-            NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
-            Dictionary<string, string> values = NotificationHelper.BuildTokenDictionary(item);
-
-            values.Add("Messagelable",
-                ddlRequestType.SelectedValue == Convert.ToString(GetLocalResourceObject("RequestforInfoId")) ||
-                ddlRequestType.SelectedValue == Convert.ToString(GetLocalResourceObject("ShareDataTypeId"))
-                    ? Convert.ToString(GetLocalResourceObject("PurposeofRequest"))
-                    : lblMessage.Text);
-
-            string showIDNumberStyle = ddlRequestType.SelectedValue ==
-                Convert.ToString(GetLocalResourceObject("RequestforInfoId")) ? "" : "display:none;";
-            values.Add("ShowIDNumber", showIDNumberStyle);
-
-            string toEmail = item["RequestType:ToEmail"]?.ToString();
-            if (toEmail != null)
+            try
             {
-                if (toEmail.Contains("#"))
-                    toEmail = toEmail.Split('#')[1];
+                var isArabic = SPContext.Current.Web.Language == 1025;
 
-                TemplateLanguage lang = isArabic ? TemplateLanguage.Ar : TemplateLanguage.En;
-                notification.SendEmail("ContactUsEmailTemplate", toEmail, values, lang);
+                NotificationHelper notification = new NotificationHelper(SPContext.Current.Site.RootWeb.Url);
+                Dictionary<string, string> values = NotificationHelper.BuildTokenDictionary(item);
+
+                values.Add("Messagelable",
+                    ddlRequestType.SelectedValue == Convert.ToString(GetLocalResourceObject("RequestforInfoId")) ||
+                    ddlRequestType.SelectedValue == Convert.ToString(GetLocalResourceObject("ShareDataTypeId"))
+                        ? Convert.ToString(GetLocalResourceObject("PurposeofRequest"))
+                        : lblMessage.Text);
+
+                string showIDNumberStyle = ddlRequestType.SelectedValue ==
+                    Convert.ToString(GetLocalResourceObject("RequestforInfoId")) ? "" : "display:none;";
+                values.Add("ShowIDNumber", showIDNumberStyle);
+
+                string toEmail = item["RequestType:ToEmail"]?.ToString();
+                if (toEmail != null)
+                {
+                    if (toEmail.Contains("#"))
+                        toEmail = toEmail.Split('#')[1];
+
+                    TemplateLanguage lang = isArabic ? TemplateLanguage.Ar : TemplateLanguage.En;
+                    notification.SendEmail("ContactUsEmailTemplate", toEmail, values, lang);
+                }
+
             }
+            catch (Exception ex)
+            { }
         }
     }
 }

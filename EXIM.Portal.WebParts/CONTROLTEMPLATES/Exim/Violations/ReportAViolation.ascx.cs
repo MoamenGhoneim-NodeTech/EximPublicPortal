@@ -40,11 +40,12 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         {
             try
             {
+                LoadCountriesAutocomplete();
                 if (Page.IsPostBack)
                     return;
 
                 initFormData();
-                LoadCountriesAutocomplete();
+               
             }
             catch (Exception ex)
             {

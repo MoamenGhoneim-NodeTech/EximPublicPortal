@@ -180,10 +180,10 @@
         </div>
     </section>
     <script>
-    $(document).ready(function () {
-        var data     = <%= CountriesJson %>;
+        $(document).ready(function () {
+            var data = <%= CountriesJson %>;
         var isArabic = <%= IsArabic ? "true" : "false" %>;
-        var $hfCode  = $('#<%= hfSelectedCountryCode.ClientID %>');
+        var $hfCode = $('#<%= hfSelectedCountryCode.ClientID %>');
         var $picker  = $('#divCCP_CR');
         var $display = $('#ccpDisplay_CR');
 
@@ -250,6 +250,11 @@
 
 // txtCommNumber — digits only
         $('#<%= txtCommNumber.ClientID %>').on('input', function () {
+            $(this).val($(this).val().replace(/\D/g, ''));
+        });
+
+        // txtExportVolumeValue — digits only
+        $('#<%= txtExportVolumeValue.ClientID %>').on('input', function () {
             $(this).val($(this).val().replace(/\D/g, ''));
         });
     });

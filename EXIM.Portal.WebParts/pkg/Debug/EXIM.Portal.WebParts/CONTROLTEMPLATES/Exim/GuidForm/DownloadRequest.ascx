@@ -120,10 +120,10 @@
 
 
     <script>
-    $(document).ready(function () {
-        var data     = <%= CountriesJson %>;
+        $(document).ready(function () {
+            var data = <%= CountriesJson %>;
         var isArabic = <%= IsArabic ? "true" : "false" %>;
-        var $hfCode  = $('#<%= hfSelectedCountryCode.ClientID %>');
+        var $hfCode = $('#<%= hfSelectedCountryCode.ClientID %>');
         var $picker  = $('#divCCP_DR');
         var $display = $('#ccpDisplay_DR');
 
@@ -188,6 +188,9 @@
             $(this).val($(this).val().replace(/[^\u0600-\u06FFa-zA-Z\s]/g, ''));
         });
         $('#<%= txtCity.ClientID %>').on('input', function () {
+            $(this).val($(this).val().replace(/[^\u0600-\u06FFa-zA-Z\s]/g, ''));
+        });
+        $('#<%= txtCompanyName.ClientID %>').on('input', function () {
             $(this).val($(this).val().replace(/[^\u0600-\u06FFa-zA-Z\s]/g, ''));
         });
 

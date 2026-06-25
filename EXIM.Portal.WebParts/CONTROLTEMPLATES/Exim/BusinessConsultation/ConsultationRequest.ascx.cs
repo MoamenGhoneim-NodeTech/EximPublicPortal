@@ -28,11 +28,12 @@ namespace EXIM.Portal.WebParts.BusinessConsultation
         {
             try
             {
+                LoadCountriesAutocomplete();
                 if (Page.IsPostBack)
                     return;
 
                 initFormData();
-                LoadCountriesAutocomplete();
+         
             }
             catch (Exception ex)
             {

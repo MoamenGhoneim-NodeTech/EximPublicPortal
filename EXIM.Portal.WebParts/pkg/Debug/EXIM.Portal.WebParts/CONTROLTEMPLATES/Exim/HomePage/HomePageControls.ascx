@@ -354,7 +354,7 @@
                     <contenttemplate>
                         <div class="home-blogs-text">
                             <div>
-                                <h2 data-aos="fade-up" data-aos-delay="100">About the Bank</h2>
+                                <h2 data-aos="fade-up" data-aos-delay="100">Media Center</h2>
                                 <h3 data-aos="fade-up" data-aos-delay="150">Latest News and Events</h3>
                             </div>
                             <p data-aos="fade-up" data-aos-delay="200">The Saudi Export-Import Bank works to empower non-oil national exports and enhance their presence in global markets.</p>
@@ -368,7 +368,7 @@
                     <contenttemplate>
                         <div class="home-blogs-text">
                             <div>
-                                <h2 data-aos="fade-up" data-aos-delay="100">عن البنك</h2>
+                                <h2 data-aos="fade-up" data-aos-delay="100">المركز الإعلامي</h2>
                                 <h3 data-aos="fade-up" data-aos-delay="150">اخر الاخبار والأحداث</h3>
                             </div>
                             <p data-aos="fade-up" data-aos-delay="200">يعمل بنك التصدير والاستيراد السعودي على تمكين الصادرات الوطنية غير النفطية، وتعزيز حضورها في الأسواق العالمية</p>

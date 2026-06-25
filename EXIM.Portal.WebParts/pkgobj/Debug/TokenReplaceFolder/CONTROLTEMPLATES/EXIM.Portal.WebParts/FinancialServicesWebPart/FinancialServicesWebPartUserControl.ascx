@@ -68,15 +68,7 @@
                 <span class="exim-total-count">
                     <asp:Literal ID="litTotalCount" runat="server" />
                 </span>
-                <div class="exim-sort-wrap d-flex align-items-center gap-2">
-                    <label class="mb-0 fw-semibold">
-                        <%: IsArabic ? "ترتيب حسب الفئة" : "Sort by category" %>
-                    </label>
-                    <asp:DropDownList ID="ddlSortBy" runat="server"
-                        CssClass="form-select form-select-sm exim-sort-select"
-                        AutoPostBack="true"
-                        OnSelectedIndexChanged="ddlSortBy_SelectedIndexChanged" />
-                </div>
+             
             </div>
 
             <div class="services-items row g-3">

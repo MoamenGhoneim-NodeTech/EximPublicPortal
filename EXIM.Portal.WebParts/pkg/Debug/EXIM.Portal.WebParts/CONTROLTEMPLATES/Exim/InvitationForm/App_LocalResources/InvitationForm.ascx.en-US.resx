@@ -120,8 +120,17 @@
   <data name="btnSubmit.text" xml:space="preserve">
     <value>Submit</value>
   </data>
-  <data name="formTitle.text" xml:space="preserve">
+  <data name="formSubTitle.text" xml:space="preserve">
     <value>Contact Information</value>
+  </data>
+  <data name="formTitle.text" xml:space="preserve">
+    <value>Register you interest for upcoming updates:</value>
+  </data>
+  <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
+    <value>Invalid email address</value>
+  </data>
+  <data name="InvalidName.ErrorMessage" xml:space="preserve">
+    <value>Only letters are allowed.</value>
   </data>
   <data name="InvitationArListURL" xml:space="preserve">
     <value>/ar/Invitation/Lists/Registrations</value>

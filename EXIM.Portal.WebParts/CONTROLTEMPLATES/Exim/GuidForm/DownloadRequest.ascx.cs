@@ -30,11 +30,13 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
         {
             try
             {
+                LoadCountriesAutocomplete();
+
                 if (Page.IsPostBack)
                     return;
 
                 initFormData();
-                LoadCountriesAutocomplete();
+              
             }
             catch (Exception ex)
             {

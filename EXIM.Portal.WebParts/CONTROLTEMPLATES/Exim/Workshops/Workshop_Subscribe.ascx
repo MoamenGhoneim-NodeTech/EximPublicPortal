@@ -100,23 +100,23 @@
     </div>
 
     <script>
-    $(document).ready(function () {
-        var data     = <%= CountriesJson %>;
+        $(document).ready(function () {
+            var data = <%= CountriesJson %>;
         var isArabic = <%= IsArabic ? "true" : "false" %>;
         var $hfCode  = $('#<%= hfSelectedCountryCode.ClientID %>');
-        var $picker  = $('#divCCP_WS');
+        var $picker = $('#divCCP_WS');
         var $display = $('#ccpDisplay_WS');
 
         // Build dropdown and append to <body> to escape any overflow:hidden parent
         var $dropdown = $(
             '<div class="ccp-dropdown" style="display:none;position:fixed;">' +
-                '<input type="text" class="ccp-search" placeholder="Search..." autocomplete="off" />' +
-                '<ul></ul>' +
+            '<input type="text" class="ccp-search" placeholder="Search..." autocomplete="off" />' +
+            '<ul></ul>' +
             '</div>'
         ).appendTo('body');
 
         var $search = $dropdown.find('.ccp-search');
-        var $list   = $dropdown.find('ul');
+        var $list = $dropdown.find('ul');
 
         function positionDropdown() {
             var rect = document.getElementById('ccpSelected_WS').getBoundingClientRect();
@@ -130,8 +130,8 @@
                 ? $.grep(data, function (c) {
                     var name = isArabic ? c.nameAr : c.nameEn;
                     return c.code.toLowerCase().indexOf(filter) > -1 ||
-                           name.toLowerCase().indexOf(filter) > -1;
-                  })
+                        name.toLowerCase().indexOf(filter) > -1;
+                })
                 : data;
             $.each(subset.slice(0, 80), function (_, c) {
                 $('<li>').attr('data-code', c.code)
@@ -164,7 +164,7 @@
         $list.on('click', 'li', function () { applyCode($(this).data('code')); });
 
         $search.on('keydown', function (e) {
-            var $items  = $list.find('li');
+            var $items = $list.find('li');
             var $active = $list.find('li.ccp-active');
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
@@ -183,15 +183,23 @@
         });
 
         $(document).on('click', function (e) {
-            if (!$picker.is(e.target)   && !$picker.has(e.target).length &&
+            if (!$picker.is(e.target) && !$picker.has(e.target).length &&
                 !$dropdown.is(e.target) && !$dropdown.has(e.target).length)
                 $dropdown.hide();
         });
 
         // Init with KSA default
         buildList('');
-        var ksa = data.filter(function (c) { return c.code === '966'; })[0];
-        if (ksa) applyCode(ksa.code);
+
+        // ── Restore state after postback (e.g. failed captcha / validation) ──────
+        var existingCode = $hfCode.val();
+        if (existingCode) {
+            $display.text(existingCode);   // restore visible label; hidden field value already set
+        } else {
+            // Fresh page load — default to KSA (+966)
+            var ksa = data.filter(function (c) { return c.code === '966'; })[0];
+            if (ksa) applyCode(ksa.code);
+        }
     });
     </script>
 

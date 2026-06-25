@@ -37,5 +37,7 @@
     <ElementFile Location="RelatedSuccessStoryWebPart\RelatedSuccessStoryWebPart.webpart" />
     <ElementManifest Location="PartnersWebPart\Elements.xml" />
     <ElementFile Location="PartnersWebPart\PartnersWebPart.webpart" />
+    <ElementManifest Location="GeneralSearchWebpart\Elements.xml" />
+    <ElementFile Location="GeneralSearchWebpart\GeneralSearchWebpart.webpart" />
   </ElementManifests>
 </Feature>

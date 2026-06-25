@@ -31,12 +31,13 @@ namespace EXIM.Portal.WebParts
         {
             try
             {
+                LoadCountriesAutocomplete();
                 if (Page.IsPostBack)
                     return;
 
                 CheckVisibility();
                 initFormData();
-                LoadCountriesAutocomplete();
+              
             }
             catch (Exception ex)
             {
@@ -65,6 +66,10 @@ namespace EXIM.Portal.WebParts
                 // Read selected country code from the hidden field
                 string selectedCountryCode = hfSelectedCountryCode.Value;
 
+                // Title is built the same way it will be stored, so the duplicate check matches on it
+                string newTitle = $"{currentItem.Title} - {txtEmail.Text}";
+                bool alreadySubscribed = false;
+
                 SPSecurity.RunWithElevatedPrivileges(delegate ()
                 {
                     using (SPSite site = new SPSite(siteId))
@@ -74,13 +79,30 @@ namespace EXIM.Portal.WebParts
                             GetLocalResourceObject("eventsSubscriptionListRelativeURL").ToString());
                         if (subsList == null) return;
 
+                        // Check whether a subscription with this title already exists
+                        SPQuery dupQuery = new SPQuery
+                        {
+                            Query = "<Where><Eq><FieldRef Name='Title' /><Value Type='Text'>" +
+                                    System.Security.SecurityElement.Escape(newTitle) +
+                                    "</Value></Eq></Where>",
+                            ViewFields = "<FieldRef Name='ID'/><FieldRef Name='Title'/>",
+                            RowLimit = 1
+                        };
+
+                        SPListItemCollection existing = subsList.GetItems(dupQuery);
+                        if (existing != null && existing.Count > 0)
+                        {
+                            alreadySubscribed = true;
+                            return;
+                        }
+
                         bool resetUnsafe = !eventSubSite.AllowUnsafeUpdates;
                         if (resetUnsafe) eventSubSite.AllowUnsafeUpdates = true;
                         try
                         {
                             SPListItem newItem = subsList.AddItem();
 
-                            newItem["Title"] = $"{currentItem.Title} - {txtEmail.Text}";
+                            newItem["Title"] = newTitle;
                             newItem["Workshop"] = new SPFieldLookupValue(currentItem.ID, currentItem.Title);
                             newItem["CompanyName"] = txtCompanyName.Text;
                             newItem["ComNumber"] = txtCommNumber.Text;
@@ -96,6 +118,12 @@ namespace EXIM.Portal.WebParts
                         }
                     }
                 });
+
+                if (alreadySubscribed)
+                {
+                    ucMessage.ShowError(GetLocalResourceObject("AlreadySubscribed").ToString());
+                    return;
+                }
 
                 ucMessage.ShowSuccess(GetLocalResourceObject("SubscribedSuccessfully").ToString());
                 pnlFormBody.Visible = false;

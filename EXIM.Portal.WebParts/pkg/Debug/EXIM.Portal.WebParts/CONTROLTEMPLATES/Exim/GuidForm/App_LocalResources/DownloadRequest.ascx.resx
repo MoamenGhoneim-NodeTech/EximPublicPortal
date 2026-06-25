@@ -130,7 +130,7 @@
     <value>اسم المستفيد:</value>
   </data>
   <data name="txtBeneficiaryName.Placeholder" xml:space="preserve">
-    <value>ادخل المستفيد</value>
+    <value>ادخل اسم المستفيد</value>
   </data>
   <data name="lblCity.Text" xml:space="preserve">
     <value>المدينة:</value>
