@@ -45,7 +45,7 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                     return;
 
                 initFormData();
-               
+
             }
             catch (Exception ex)
             {
@@ -397,44 +397,52 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
 
         private void SaveViolationParties(int violationItemId)
         {
-            List<ViolationParty> parties = ParsePartiesFromHiddenField();
-            if (parties.Count == 0) return;
-
-            SPWeb web = SPContext.Current.Site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString());
-            SPList partiesList;
-            try
+            SPSecurity.RunWithElevatedPrivileges(delegate ()
             {
-                partiesList = web.GetList(GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString());
-            }
-            catch
-            {
-                throw new Exception($"SharePoint list '{GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString()}' was not found.");
-            }
+                List<ViolationParty> parties = ParsePartiesFromHiddenField();
+                if (parties.Count == 0) return;
 
-            SPList violationsList = web.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
-            SPListItem violationItem = violationsList.GetItemById(violationItemId);
-            SPList relationTypesList = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
+                Guid siteId = SPContext.Current.Site.ID; // capture the ID before entering elevated scope
 
-            web.AllowUnsafeUpdates = true;
-            try
-            {
-                foreach (ViolationParty party in parties)
+                using (SPSite site = new SPSite(siteId))
+                using (SPWeb web = site.OpenWeb(GetLocalResourceObject("violationArSiteURL").ToString()))
                 {
-                    SPListItem newItem = partiesList.Items.Add();
-                    SPListItem RelationTypeItem = relationTypesList.GetItemById(int.Parse(party.Relation));
-                    newItem["Title"] = party.Name;
-                    newItem["JobTitle"] = party.JobTitle;
-                    newItem["Company"] = party.Company;
-                    newItem["Violation"] = new SPFieldLookupValue(violationItem.ID, violationItem.Title);
-                    newItem["Relation"] = new SPFieldLookupValue(RelationTypeItem.ID, RelationTypeItem.Title);
-                    newItem.Update();
+                    SPList partiesList;
+                    try
+                    {
+                        partiesList = web.GetList(GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString());
+                    }
+                    catch
+                    {
+                        throw new Exception($"SharePoint list '{GetLocalResourceObject("ConcernedPartiesListRelativeURL").ToString()}' was not found.");
+                    }
+
+                    SPList violationsList = web.GetList(GetLocalResourceObject("violationListRelativeURL").ToString());
+                    SPListItem violationItem = violationsList.GetItemById(violationItemId);
+                    SPList relationTypesList = web.GetList(GetLocalResourceObject("RelationTypesListRelativeURL").ToString());
+
+                    web.AllowUnsafeUpdates = true;
+                    try
+                    {
+                        foreach (ViolationParty party in parties)
+                        {
+                            SPListItem newItem = partiesList.Items.Add();
+                            SPListItem RelationTypeItem = relationTypesList.GetItemById(int.Parse(party.Relation));
+                            newItem["Title"] = party.Name;
+                            newItem["JobTitle"] = party.JobTitle;
+                            newItem["Company"] = party.Company;
+                            newItem["Violation"] = new SPFieldLookupValue(violationItem.ID, violationItem.Title);
+                            newItem["Relation"] = new SPFieldLookupValue(RelationTypeItem.ID, RelationTypeItem.Title);
+                            newItem.Update();
+                        }
+                        partiesList.Update();
+                    }
+                    finally
+                    {
+                        web.AllowUnsafeUpdates = false;
+                    }
                 }
-                partiesList.Update();
-            }
-            finally
-            {
-                web.AllowUnsafeUpdates = false;
-            }
+            });
         }
 
         #endregion

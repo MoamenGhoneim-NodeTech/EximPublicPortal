@@ -606,7 +606,7 @@
                 relation: vrSelectedRelationID,
                 relationName: vrSelectedRelation,
                 name: name,
-                job: job,
+                jobtitle: job,
                 company: company
             });
 
@@ -649,7 +649,7 @@
                         '<td>' + (i + 1) + '</td>' +
                         '<td><span class="vr-badge ' + bc + '">' + e.relationName + '</span></td>' +
                         '<td>' + (e.name || '—') + '</td>' +
-                        '<td>' + (e.job || '—') + '</td>' +
+                        '<td>' + (e.jobtitle || '—') + '</td>' +
                         '<td>' + (e.company || '—') + '</td>' +
                         '<td>' +
                         '<button type="button" class="vr-btn-delete" onclick="vrRemoveEntry(' + i + ')">' +
