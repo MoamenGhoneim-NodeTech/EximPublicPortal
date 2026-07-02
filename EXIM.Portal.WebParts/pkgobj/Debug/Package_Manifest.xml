@@ -49,6 +49,7 @@
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\PartnersWebPart\PartnersWebPartUserControl.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\EXIM.Portal.WebParts\GeneralSearchWebpart\GeneralSearchWebpartUserControl.ascx" />
     <TemplateFile Location="Layouts\EXIM.Portal\PortalHandler.ashx" />
+    <TemplateFile Location="Layouts\EXIM.Portal\SearchProxy.ashx" />
     <TemplateFile Location="Layouts\EXIM.Portal\Captcha.aspx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\BusinessConsultation\ConsultationRequest.ascx" />
     <TemplateFile Location="CONTROLTEMPLATES\Exim\Captcha\App_LocalResources\Captcha.ascx.en-US.resx" />

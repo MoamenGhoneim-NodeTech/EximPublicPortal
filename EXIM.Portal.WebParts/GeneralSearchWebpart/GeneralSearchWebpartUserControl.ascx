@@ -299,13 +299,21 @@
             _spPageContextInfo.currentLanguage == 1025);
         var moreText = isArabic ? 'تفاصيل الخدمة' : 'More details';
 
+        // ── Proxy URL ─────────────────────────────────────────────────────────
+        // Points to the server-side ASHX handler that runs KeywordQuery with
+        // SafeQueryPropertiesTemplateUrl = "" — bypassing the broken anonymous
+        // URL-resolution step while preserving full security trimming.
+        // Adjust the path to match where SearchProxy.ashx is deployed in your WSP.
+        var PROXY_URL = (_spPageContextInfo.siteAbsoluteUrl.replace(/\/+$/, '')) +
+            '/_layouts/15/EXIM.Portal/SearchProxy.ashx';
+
         // ── State ─────────────────────────────────────────────────────────────
         var state = {
             query: '',
-            sortQuery: '',
+            sortVal: '',          // raw select value e.g. "LastModifiedTime:descending"
             currentPage: 1,
             totalRows: 0,
-            allResults: []   // we fetch up to 500 and page client-side
+            allResults: []        // fetch up to 500 and page client-side
         };
 
         // ── DOM refs ──────────────────────────────────────────────────────────
@@ -324,7 +332,7 @@
         // ── Wire events ───────────────────────────────────────────────────────
         elSort.addEventListener('change', function () {
             if (!state.query) return;
-            state.sortQuery = buildSortParam(elSort.value);
+            state.sortVal = elSort.value;
             state.currentPage = 1;
             fetchResults();
         });
@@ -334,94 +342,76 @@
             renderPage();
         });
 
-        // ── Auto-search from query-string (?k= or ?q=) ────────────────────────
+        // ── Auto-search from query-string (?k=) ───────────────────────────────
         (function () {
-            var qs = getHashParam('k');
-
+            var qs = getQueryStringParam('k');
             if (qs) {
                 state.query = qs;
+                state.sortVal = elSort.value;
                 state.currentPage = 1;
-                state.sortQuery = buildSortParam(elSort.value);
                 fetchResults();
             }
         })();
 
         window.addEventListener('hashchange', function () {
-            var qs = getHashParam('k');
-
+            var qs = getQueryStringParam('k');
             if (qs !== state.query) {
                 state.query = qs;
                 state.currentPage = 1;
-                state.sortQuery = buildSortParam(elSort.value);
+                state.sortVal = elSort.value;
                 fetchResults();
             }
         });
 
-        // ── Core functions ────────────────────────────────────────────────────
-
-        function triggerSearch() {
-            // Kept for backward compatibility. Search is now driven by ?k=.
-        }
-
+        // ── Core: fetch via server-side proxy ─────────────────────────────────
         function fetchResults() {
             showLoading(true);
             hideAll();
 
-            var sortParam = state.sortQuery;   // e.g. "&sortlist='LastModifiedTime:descending'"
-
-            // Scope 1 – content type (same as the CSWP query on /en):
-            //   ContentTypeId:0x010100C568DB52D9D0A14D9B2FDCC96666E9F2007948130EC3DB064584E219954237AF39*
-            var CONTENT_TYPE_SCOPE =
-                'ContentTypeId:0x010100C568DB52D9D0A14D9B2FDCC96666E9F2007948130EC3DB064584E219954237AF39*';
-
-            // Scope 2 – restrict to /en or /ar and all children.
-            // The web part lives under /en/Search so webAbsoluteUrl = http://nodetech:2020/en/Search.
-            // We need the language subsite root (/en or /ar), which is always 1 level below the
-            // site collection root (siteAbsoluteUrl = http://nodetech:2020).
-            // Strategy: strip siteAbsoluteUrl from webAbsoluteUrl, take the first path segment.
-            //   webAbsoluteUrl  = http://nodetech:2020/en/Search
-            //   siteAbsoluteUrl = http://nodetech:2020
-            //   relative        = /en/Search  → first segment = "en"
-            //   langRoot        = http://nodetech:2020/en
+            // Build the same KQL query as before
             var siteUrl = _spPageContextInfo.siteAbsoluteUrl.replace(/\/+$/, '');
             var webUrl = _spPageContextInfo.webAbsoluteUrl.replace(/\/+$/, '');
-            var relative = webUrl.replace(siteUrl, '');               // e.g. "/en/Search"
-            var firstSeg = relative.replace(/^\//, '').split('/')[0]; // e.g. "en"
-            var langRoot = siteUrl + (firstSeg ? '/' + firstSeg : '');// e.g. "http://nodetech:2020/en"
-            var PATH_SCOPE = 'path:' + langRoot;
+            var relative = webUrl.replace(siteUrl, '');
+            var firstSeg = relative.replace(/^\//, '').split('/')[0];
+            var langRoot = siteUrl + (firstSeg ? '/' + firstSeg : '');
 
-            // KQL structure: each clause separated, keyword wrapped in quotes if it contains spaces,
-            // wildcard appended outside the quotes: "multi word"* is valid KQL prefix on a phrase.
+            var CONTENT_TYPE_SCOPE =
+                'ContentTypeId:0x010100C568DB52D9D0A14D9B2FDCC96666E9F2007948130EC3DB064584E219954237AF39*';
+            var PATH_SCOPE = 'path:' + langRoot;
             var keyword = state.query.indexOf(' ') !== -1
                 ? '"' + state.query + '"*'
                 : state.query + '*';
 
             var fullQuery = CONTENT_TYPE_SCOPE + ' ' + PATH_SCOPE + ' ' + keyword;
 
-            var url = _spPageContextInfo.siteAbsoluteUrl +
-                '/_api/search/query?' +
-                "querytext='" + encodeURIComponent(fullQuery) + "'" +
-                sortParam +
-                '&rowlimit=500' +
-                "&selectedproperties='Title,Path,CommentsOWSMTXT,ContentClass,Description,FileExtension'";
+            // Build proxy URL
+            // sort is passed as "Property:direction" (e.g. "LastModifiedTime:descending")
+            // The ASHX handler translates this to SortList entries
+            var url = PROXY_URL +
+                '?q=' + encodeURIComponent(fullQuery) +
+                '&rows=500' +
+                '&start=0' +
+                (state.sortVal ? '&sort=' + encodeURIComponent(state.sortVal) : '');
 
-            // Use XMLHttpRequest for SP on-prem (no fetch polyfill needed)
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
-            xhr.setRequestHeader('Accept', 'application/json;odata=verbose');
-            xhr.setRequestHeader('Content-Type', 'application/json;odata=verbose');
+            xhr.setRequestHeader('Accept', 'application/json');
 
             xhr.onload = function () {
                 showLoading(false);
                 if (xhr.status >= 200 && xhr.status < 300) {
                     try {
                         var data = JSON.parse(xhr.responseText);
+                        if (data.error) {
+                            showError(data.error);
+                            return;
+                        }
                         processResults(data);
                     } catch (e) {
                         showError('JSON parse error: ' + e.message);
                     }
                 } else {
-                    showError('Search API error: HTTP ' + xhr.status);
+                    showError('Search error: HTTP ' + xhr.status);
                 }
             };
 
@@ -433,49 +423,31 @@
             xhr.send();
         }
 
+        // ── Process proxy response ────────────────────────────────────────────
+        // Proxy returns { totalRows: N, items: [{Title,Path,Description,ContentClass,FileExtension}] }
+        // Shape is normalised here to the same internal object the rest of the
+        // code (renderPage / renderCard / filters) already expects — no other
+        // function needed to change.
         function processResults(data) {
-            try {
-                var relevant = data.d.query.PrimaryQueryResult.RelevantResults;
-                state.totalRows = relevant.TotalRows;
-                var rows = relevant.Table.Rows.results;
+            state.totalRows = data.totalRows || 0;
 
-                state.allResults = rows.map(function (row) {
-                    var cells = {};
-                    row.Cells.results.forEach(function (c) { cells[c.Key] = c.Value; });
-                    return {
-                        title: cells['Title'] || '',
-                        url: cells['Path'] || '#',
-                        description: cells['CommentsOWSMTXT'] || cells['Description'] || '',
-                        contentClass: cells['ContentClass'] || '',
-                        fileExtension: (cells['FileExtension'] || '').toLowerCase()
-                    };
-                });
-            } catch (e) {
-                showError('Could not parse search results: ' + e.message);
-                return;
-            }
-
-            // Apply client-side sort if needed (title sort can be done server-side,
-            // but in case you want client-side as well)
-            applySortIfNeeded();
+            state.allResults = (data.items || []).map(function (r) {
+                return {
+                    title: r.Title || '',
+                    url: r.Path || '#',
+                    description: r.Description || '',
+                    contentClass: r.ContentClass || '',
+                    fileExtension: (r.FileExtension || '').toLowerCase()
+                };
+            });
 
             state.currentPage = 1;
             renderPage();
         }
 
-        function applySortIfNeeded() {
-            // Server-side sort handles most cases; add client-side fallback here if required
-        }
-
+        // ── Render page (unchanged) ───────────────────────────────────────────
         function renderPage() {
-            // Apply client-side filter.
-            // ContentClass alone cannot distinguish "Page" from "Document": SharePoint
-            // returns STS_ListItem_DocumentLibrary for BOTH publishing pages and regular
-            // library documents. So:
-            //   - "Lists"     → matched on ContentClass (STS_ListItem_GenericList etc.)
-            //   - "Pages"     → matched on FileExtension === 'aspx'
-            //   - "Documents" → ContentClass is a document-library item AND extension != aspx
-            var filterType = elFilter.value || ''; // '', 'type:page', 'type:list', 'type:document'
+            var filterType = elFilter.value || '';
 
             var filtered = !filterType
                 ? state.allResults
@@ -497,16 +469,13 @@
             var end = Math.min(start + PAGE_SIZE, total);
             var pageItems = filtered.slice(start, end);
 
-            // Show header
             elHeader.style.display = '';
             var titleFmt = isArabic
                 ? 'نتيجة البحث عن &ldquo;{q}&rdquo;'
                 : 'Search Results for &ldquo;{q}&rdquo;';
             elTitle.innerHTML = titleFmt.replace('{q}', escHtml(state.query));
 
-            var countFmt = isArabic
-                ? '{n} نتيجة وجدت'
-                : '{n} result(s) found';
+            var countFmt = isArabic ? '{n} نتيجة وجدت' : '{n} result(s) found';
             elCount.textContent = countFmt.replace('{n}', total);
 
             if (pageItems.length === 0) {
@@ -519,24 +488,22 @@
                 return;
             }
 
-            // Render cards
             elNoResults.style.display = 'none';
             elList.style.display = '';
             elList.innerHTML = pageItems.map(renderCard).join('');
 
-            // Render pagination
             if (totalPages > 1) {
                 elPagination.style.display = '';
                 renderPagination(page, totalPages);
-                var pagesLbl = isArabic
+                elPagesTotal.textContent = isArabic
                     ? 'إجمالي ' + totalPages + ' صفحات'
                     : 'Total ' + totalPages + ' pages';
-                elPagesTotal.textContent = pagesLbl;
             } else {
                 elPagination.style.display = 'none';
             }
         }
 
+        // ── Render card (unchanged) ───────────────────────────────────────────
         function renderCard(item) {
             var badge = mapCategory(item.contentClass);
             var badgeHtml = badge
@@ -559,6 +526,7 @@
                 '</div>';
         }
 
+        // ── Render pagination (unchanged) ─────────────────────────────────────
         function renderPagination(currentPage, totalPages) {
             var MAX_VISIBLE = 5;
             var half = Math.floor(MAX_VISIBLE / 2);
@@ -568,8 +536,6 @@
                 start = Math.max(1, end - MAX_VISIBLE + 1);
 
             var html = '';
-
-            // Use different arrow icons based on language direction
             var prevIcon = isArabic ? 'fa-angle-left' : 'fa-angle-right';
             var nextIcon = isArabic ? 'fa-angle-right' : 'fa-angle-left';
 
@@ -581,7 +547,6 @@
                     (currentPage - 1) + '"><i class="fas ' + prevIcon + '"></i></a></li>';
             }
 
-            // Numbered pages
             for (var p = start; p <= end; p++) {
                 if (p === currentPage) {
                     html += '<li class="page-item active"><a class="page-link" href="#">' + p + '</a></li>';
@@ -600,30 +565,17 @@
 
             elPagUl.innerHTML = html;
 
-            // Wire page clicks
             elPagUl.querySelectorAll('a[data-page]').forEach(function (a) {
                 a.addEventListener('click', function (e) {
                     e.preventDefault();
                     state.currentPage = parseInt(this.getAttribute('data-page'), 10);
                     renderPage();
-                    // Scroll to top of results
                     elHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────
-
-        function buildSortParam(val) {
-            // val is e.g. "LastModifiedTime:descending" or "" for relevance
-            if (!val) return '';
-            var parts = val.split(':');
-            if (parts.length !== 2) return '';
-            // SP Search REST sort syntax: &sortlist='Property:direction'
-            // direction: 0 = ascending, 1 = descending
-            var dir = parts[1] === 'descending' ? '1' : '0';
-            return "&sortlist='" + encodeURIComponent(parts[0] + ':' + dir) + "'";
-        }
+        // ── Helpers (unchanged) ───────────────────────────────────────────────
 
         function mapCategory(contentClass) {
             if (!contentClass) return '';
@@ -635,9 +587,7 @@
 
         function showLoading(visible) {
             elLoading.style.display = visible ? '' : 'none';
-            if (visible) {
-                elNoResults.style.display = 'none';
-            }
+            if (visible) elNoResults.style.display = 'none';
         }
 
         function hideAll() {
@@ -648,7 +598,9 @@
 
         function showError(msg) {
             elNoResults.style.display = 'block';
-            elNoResults.innerHTML = '<i class="fa fa-exclamation-triangle" style="font-size: 48px; color: #e67e22; display: block; margin-bottom: 15px;"></i>' + escHtml(msg);
+            elNoResults.innerHTML =
+                '<i class="fa fa-exclamation-triangle" style="font-size: 48px; color: #e67e22; display: block; margin-bottom: 15px;"></i>' +
+                escHtml(msg);
         }
 
         function escHtml(s) {
@@ -663,11 +615,6 @@
         function escAttr(s) { return escHtml(s); }
 
         function getQueryStringParam(name) {
-            var match = new RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-            return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : null;
-        }
-
-        function getHashParam(name) {
             var match = new RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
             return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : null;
         }

@@ -43,6 +43,14 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Server, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Common Files\microsoft shared\Web Server Extensions\16\ISAPI\Microsoft.Office.Server.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Server.Search, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Common Files\microsoft shared\Web Server Extensions\16\ISAPI\Microsoft.Office.Server.Search.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.SharePoint.Taxonomy, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -238,6 +246,9 @@
     <Compile Include="Layouts\EXIM.Portal\Captcha.aspx.designer.cs">
       <DependentUpon>Captcha.aspx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Layouts\EXIM.Portal\SearchProxy.ashx.cs">
+      <DependentUpon>SearchProxy.ashx</DependentUpon>
+    </Compile>
     <Compile Include="NewsArchiveWebPart\NewsArchiveWebPart.cs" />
     <Compile Include="NewsArchiveWebPart\NewsArchiveWebPartUserControl.ascx.cs">
       <DependentUpon>NewsArchiveWebPartUserControl.ascx</DependentUpon>
@@ -358,6 +369,7 @@
       <SharePointProjectItemId>{40d30d54-22d5-48b0-9883-ca365a763fd2}</SharePointProjectItemId>
     </None>
     <None Include="Layouts\EXIM.Portal\PortalHandler.ashx" />
+    <Content Include="Layouts\EXIM.Portal\SearchProxy.ashx" />
     <None Include="Layouts\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{fbb7974d-54f9-439b-9344-d208180e70f6}</SharePointProjectItemId>
     </None>
