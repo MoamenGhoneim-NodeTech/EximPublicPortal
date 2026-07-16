@@ -60,6 +60,15 @@ namespace EXIM.Portal.WebParts
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvtxtCommNumber;
 
         /// <summary>
+        /// revtxtCommNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revtxtCommNumber;
+
+        /// <summary>
         /// txtResponsiblePersonName control.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,15 @@ namespace EXIM.Portal.WebParts
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvtxtResponsiblePersonName;
+
+        /// <summary>
+        /// revtxtResponsiblePersonName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revtxtResponsiblePersonName;
 
         /// <summary>
         /// hfSelectedCountryCode control.

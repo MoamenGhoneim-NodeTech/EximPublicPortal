@@ -126,8 +126,11 @@
   <data name="formTitle.text" xml:space="preserve">
     <value>Register you interest for upcoming updates:</value>
   </data>
-  <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
+  <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
     <value>Invalid email address</value>
+  </data>
+  <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
+    <value>Invalid mobile number</value>
   </data>
   <data name="InvalidName.ErrorMessage" xml:space="preserve">
     <value>Only letters are allowed.</value>

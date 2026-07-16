@@ -276,4 +276,13 @@
   <data name="InvalidFileType" xml:space="preserve">
     <value>أنواع الملفات المسموح بها: PNG، JPG، PDF، RAR</value>
   </data>
+  <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
+    <value>البريد الإلكتروني غير صحيح</value>
+  </data>
+  <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
+    <value>رقم الجوال غير صحيح</value>
+  </data>
+  <data name="PartiesRequired.ErrorMessage" xml:space="preserve">
+    <value>يرجى إدخال بيانات شخص واحد على الأقل عند اختيار هذا الخيار.</value>
+  </data>
 </root>

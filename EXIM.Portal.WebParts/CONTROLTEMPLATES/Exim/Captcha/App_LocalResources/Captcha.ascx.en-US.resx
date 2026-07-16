@@ -123,6 +123,9 @@
   <data name="cvCaptchaResource1.ErrorMessage" xml:space="preserve">
     <value>Invalid code</value>
   </data>
+  <data name="ExceedAttemptsMessage" xml:space="preserve">
+    <value>"Too many attempts. Please wait 3 minutes before trying again."</value>
+  </data>
   <data name="imgResource.Title" xml:space="preserve">
     <value>Refresh</value>
   </data>

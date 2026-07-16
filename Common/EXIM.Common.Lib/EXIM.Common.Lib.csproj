@@ -61,6 +61,8 @@
     <Compile Include="SPHelpers\ListService.cs" />
     <Compile Include="Utils\Caching.cs" />
     <Compile Include="SPHelpers\LandingPageHelper.cs" />
+    <Compile Include="Utils\CaptchaRateLimiter.cs" />
+    <Compile Include="Utils\ClientIpHelper.cs" />
     <Compile Include="Utils\CommonProperties.cs" />
     <Compile Include="Utils\Cryptography.cs" />
     <Compile Include="Utils\DateTimeHelper.cs" />

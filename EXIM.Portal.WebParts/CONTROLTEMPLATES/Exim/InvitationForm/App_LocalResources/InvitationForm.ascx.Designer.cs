@@ -91,6 +91,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.InvitationForm.App_LocalRes
         /// <summary>
         ///   Looks up a localized string similar to البريد الإلكتروني غير صحيح.
         /// </summary>
+        internal static string InvalidEmail_ErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidEmail.ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to رقم الجوال غير صحيح.
+        /// </summary>
         internal static string InvalidMobileNumber_ErrorMessage {
             get {
                 return ResourceManager.GetString("InvalidMobileNumber.ErrorMessage", resourceCulture);

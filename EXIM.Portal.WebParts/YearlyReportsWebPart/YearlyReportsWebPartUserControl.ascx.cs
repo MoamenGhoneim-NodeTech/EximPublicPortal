@@ -74,7 +74,7 @@ namespace EXIM.Portal.WebParts.YearlyReportsWebPart
             {
                 Title = item["Title"]?.ToString() ?? string.Empty,
                 ItemUrl = itemUrl,
-                ReportDetailsUrl = reportDetailsUrl,
+                ReportDetailsUrl = reportDetailsUrl+"&Title="+ item["Title"]?.ToString(),
                 DownloadText = LandingPageHelper.IsEnglish() ? "Download report" : "تحميل التقرير",
                 ViewText = LandingPageHelper.IsEnglish() ? "View Report" : "عرض التقرير"
             };

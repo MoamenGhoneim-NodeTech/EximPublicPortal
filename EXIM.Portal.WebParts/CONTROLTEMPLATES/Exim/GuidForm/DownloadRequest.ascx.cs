@@ -70,32 +70,40 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.GuidForm
             return null;
         }
 
-        private void DownloadGuideFile(SPWeb web)
+        private void DownloadGuideFile(SPWeb spweb)
         {
             lnkbtnDownloadGuide.Enabled = false;
             string targetFileName = "Export Credit Financing and Insurance.pdf";
-            foreach (SPList list in web.Lists)
+            SPSecurity.RunWithElevatedPrivileges(delegate
             {
-                SPDocumentLibrary lib = list as SPDocumentLibrary;
-                if (lib == null || lib.Hidden) continue;
-                try
+                using (SPSite site = new SPSite(spweb.Site.Url))
+                using (SPWeb web = site.AllWebs[spweb.ID])
                 {
-                    SPFile file = lib.RootFolder.Files[targetFileName];
-                    if (file == null || !file.Exists) continue;
+                    foreach (SPList list in web.Lists)
+                    {
+                        SPDocumentLibrary lib = list as SPDocumentLibrary;
+                        if (lib == null || lib.Hidden) continue;
+                        try
+                        {
+                            SPFile file = lib.RootFolder.Files[targetFileName];
+                            if (file == null || !file.Exists) continue;
 
-                    byte[] fileBytes = file.OpenBinary();
-                    HttpResponse response = HttpContext.Current.Response;
-                    response.Clear();
-                    response.ContentType = "application/pdf";
-                    response.AddHeader("Content-Disposition", $"attachment; filename=\"{targetFileName}\"");
-                    response.AddHeader("Content-Length", fileBytes.Length.ToString());
-                    response.BinaryWrite(fileBytes);
-                    response.Flush();
-                    response.End();
-                    return;
+                            byte[] fileBytes = file.OpenBinary();
+                            HttpResponse response = HttpContext.Current.Response;
+                            response.Clear();
+                            response.ContentType = "application/pdf";
+                            response.AddHeader("Content-Disposition", $"attachment; filename=\"{targetFileName}\"");
+                            response.AddHeader("Content-Length", fileBytes.Length.ToString());
+                            response.BinaryWrite(fileBytes);
+                            response.Flush();
+                            response.End();
+                            return;
+                        }
+                        catch { }
+                    }
                 }
-                catch { }
-            }
+            });
+            
             ucMessage.ShowError("File not found.");
         }
 

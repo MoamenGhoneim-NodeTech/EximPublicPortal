@@ -100,8 +100,9 @@
                         <div class="form-group">
                             <span class="text-danger">*</span>
                             <asp:Label runat="server" ID="lblName" CssClass="" meta:resourcekey="lblName" AssociatedControlID="txtName" />
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" meta:resourcekey="txtName" />
+                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control letters" meta:resourcekey="txtName" />
                             <asp:RequiredFieldValidator runat="server" ID="rfvName" CssClass="text-danger" meta:resourcekey="RequiredField" ValidationGroup="AddGroup" ControlToValidate="txtName" Display="Dynamic" />
+                            <asp:RegularExpressionValidator runat="server" ID="revName" CssClass="text-danger" meta:resourcekey="InvalidName" ValidationGroup="AddGroup" ControlToValidate="txtName" ValidationExpression="^[\u0600-\u06FFa-zA-Z\s'\-]+$" Display="Dynamic" />
                         </div>
                     </div>
 
@@ -109,7 +110,8 @@
                     <div class="col-md-6" data-aos="fade-up" data-aos-delay="120">
                         <div class="form-group">
                             <asp:Label runat="server" ID="lblJobTitle" CssClass="" meta:resourcekey="lblJobTitle" AssociatedControlID="txtJobTitle" />
-                            <asp:TextBox runat="server" ID="txtJobTitle" CssClass="form-control" meta:resourcekey="txtJobTitle" />
+                            <asp:TextBox runat="server" ID="txtJobTitle" CssClass="form-control letters" meta:resourcekey="txtJobTitle" />
+                            <asp:RegularExpressionValidator runat="server" ID="revJobTitle" CssClass="text-danger" meta:resourcekey="InvalidJobTitle" ValidationGroup="AddGroup" ControlToValidate="txtJobTitle" ValidationExpression="^[\u0600-\u06FFa-zA-Z\s'\-]+$" Display="Dynamic" />
                         </div>
                     </div>
 
@@ -162,6 +164,11 @@
 
                 </div>
             </asp:Panel>
+
+            <!-- Required: at least one involved party when user can identify parties -->
+            <div class="col-md-12">
+                <asp:CustomValidator runat="server" ID="cvPartiesRequired" CssClass="text-danger" meta:resourcekey="PartiesRequired" ValidationGroup="submit" OnServerValidate="cvPartiesRequired_ServerValidate" ClientValidationFunction="validatePartiesRequired" Display="Dynamic" />
+            </div>
 
             <!-- Hidden field to pass parties data to server on postback -->
             <asp:HiddenField runat="server" ID="hfPartiesJson" />
@@ -249,7 +256,8 @@
                     <div class="col-md-6" data-aos="fade-up" data-aos-delay="140">
                         <div class="form-group">
                             <asp:Label runat="server" ID="Label3" CssClass="" meta:resourcekey="lblName" AssociatedControlID="txtName" />
-                            <asp:TextBox runat="server" ID="txt_Name" CssClass="form-control" meta:resourcekey="txtName" />
+                            <asp:TextBox runat="server" ID="txt_Name" CssClass="form-control letters" meta:resourcekey="txtName" />
+                            <asp:RegularExpressionValidator runat="server" ID="revName_NotAnon" CssClass="text-danger" Enabled="false" meta:resourcekey="InvalidName" ValidationGroup="submit" ControlToValidate="txt_Name" ValidationExpression="^[\u0600-\u06FFa-zA-Z\s'\-]+$" Display="Dynamic" />
                         </div>
                     </div>
                     <div class="col-md-6" data-aos="fade-up" data-aos-delay="140">
@@ -421,6 +429,16 @@
                 fuSync(inp);
                 fuRender();
             });
+
+            // Paint any files already sitting in _fu.files now that #fuPreviewList exists.
+            // This covers the case where RestoreFileUploadPreview's inline startup script
+            // (emitted server-side after a failed postback, e.g. wrong captcha) ran BEFORE
+            // this ready-handler and already pushed files into _fu.files + called fuSync(),
+            // but its own fuRender() call was a no-op back then because #fuPreviewList
+            // didn't exist yet. Without this, the files are still attached to the real
+            // input (so submitting still works) but the visible preview list stays empty,
+            // making it look like the attachments were lost.
+            fuRender();
         }
 
         // ── REST OF PAGE LOGIC ───────────────────────────────────────────────────
@@ -438,6 +456,8 @@
                 } else {
                     $("#<%= PartiesSection.ClientID %>").hide();
                 }
+                var cvPR = document.getElementById('<%= cvPartiesRequired.ClientID %>');
+                if (cvPR && typeof ValidatorValidate === 'function') ValidatorValidate(cvPR);
             });
 
             // Handle initial state on page load (e.g. after postback)
@@ -451,6 +471,7 @@
             var Anonymous = "false";
             var rblAnonymousSelector = "input[name='<%= rblAnonymous.UniqueID %>']";
             var notAnonValidatorIds = [
+                '<%= revName_NotAnon.ClientID %>',
                 '<%= rfvMobileNumber.ClientID %>',
                 '<%= revMobileNumber.ClientID %>',
                 '<%= revEmail.ClientID %>'
@@ -518,6 +539,15 @@
             $(document).on("change", ddlHowDoYouKnowSelector, function () { toggleOther(); });
             toggleOther();
 
+            // ── Letters-only live filtering (Name / Job Title) ────────────────
+            // Strips digits/special characters as the user types; server-side
+            // RegularExpressionValidators (revName / revJobTitle) remain the
+            // authoritative check (e.g. for pasted text or disabled JS).
+            $(document).on("input", ".letters", function () {
+                var cleaned = this.value.replace(/[^\u0600-\u06FFa-zA-Z\s'\-]/g, "");
+                if (cleaned !== this.value) this.value = cleaned;
+            });
+
         }); // end document.ready
 
         // Confirmed from live DOM: SP renders the date input with id ending in
@@ -525,6 +555,19 @@
         function validateViolationDate(sender, args) {
             var inp = document.querySelector("[id$='dtViolationDateDate']");
             args.IsValid = !!(inp && inp.value.trim() !== '');
+        }
+
+        // Mirrors the show/hide rule for PartiesSection: required unless "No" ("2") is selected.
+        function validatePartiesRequired(sender, args) {
+            var selected = $("input[name='<%= rblCanIdentifyParties.UniqueID %>']:checked").val();
+            if (selected === "2") {
+                args.IsValid = true;
+                return;
+            }
+            var json = document.getElementById('<%= hfPartiesJson.ClientID %>').value;
+            var arr = [];
+            try { arr = JSON.parse(json || "[]"); } catch (e) { arr = []; }
+            args.IsValid = Array.isArray(arr) && arr.length > 0;
         }
 
         function validateFormBeforeSubmit() {
@@ -554,36 +597,36 @@
             // ── Sync entries to hidden field ─────────────────────────
             function vrSyncHiddenField() {
                 var hf = document.getElementById('<%= hfPartiesJson.ClientID %>');
-            if (hf) hf.value = JSON.stringify(vrEntries);
-        }
+                if (hf) hf.value = JSON.stringify(vrEntries);
+            }
 
-        // ── Clear form ───────────────────────────────────────────
-        window.vrClearForm = function () {
-            // Uncheck all radios in ddlRelation
-            document.querySelectorAll('#ddlRelation input[type="radio"]').forEach(function (r) {
-                r.checked = false;
-            });
-            document.getElementById('ddlRelation').style.outline = "";
+            // ── Clear form ───────────────────────────────────────────
+            window.vrClearForm = function () {
+                // Uncheck all radios in ddlRelation
+                document.querySelectorAll('#ddlRelation input[type="radio"]').forEach(function (r) {
+                    r.checked = false;
+                });
+                document.getElementById('ddlRelation').style.outline = "";
 
-            document.getElementById('<%= txtName.ClientID %>').value = "";
+                document.getElementById('<%= txtName.ClientID %>').value = "";
             document.getElementById('<%= txtJobTitle.ClientID %>').value = "";
             document.getElementById('<%= txtCompany.ClientID %>').value = "";
 
-            document.querySelectorAll('.vr-input.error').forEach(function (el) {
-                el.classList.remove('error');
-            });
+                document.querySelectorAll('.vr-input.error').forEach(function (el) {
+                    el.classList.remove('error');
+                });
 
-            // Clear the message label
-            var lbl = document.getElementById("lblVrMessage");
-            if (lbl) { lbl.style.display = "none"; lbl.textContent = ""; }
-        };
+                // Clear the message label
+                var lbl = document.getElementById("lblVrMessage");
+                if (lbl) { lbl.style.display = "none"; lbl.textContent = ""; }
+            };
 
-        // ── Add entry ────────────────────────────────────────────
-        window.vrAddEntry = function () {
-            var hasError = false;
+            // ── Add entry ────────────────────────────────────────────
+            window.vrAddEntry = function () {
+                var hasError = false;
 
-            // Read selected relation from ddlRelation RadioButtonList
-            var selectedRelationInput = "#<%= ddlRelation.ClientID %>";
+                // Read selected relation from ddlRelation RadioButtonList
+                var selectedRelationInput = "#<%= ddlRelation.ClientID %>";
             //document.querySelector('#ddlRelation input[type="radio"]:checked');
             var vrSelectedRelationID = $(selectedRelationInput).val(); //selectedRelationInput ? selectedRelationInput.value : "";
             var vrSelectedRelation = $(selectedRelationInput + " option:selected").text(); //selectedRelationInput ? selectedRelationInput.value : "";
@@ -613,32 +656,42 @@
             vrRenderTable();
             vrClearForm();
             vrSyncHiddenField();
+            var cvPR = document.getElementById('<%= cvPartiesRequired.ClientID %>');
+            if (cvPR && typeof ValidatorValidate === 'function') ValidatorValidate(cvPR);
             vrShowToast('<%= GetLocalResourceObject("SavedSuccessfully") %>', "success");
-        };
+            };
 
-        // ── Remove entry ─────────────────────────────────────────
-        window.vrRemoveEntry = function (index) {
-            vrEntries.splice(index, 1);
-            vrRenderTable();
-            vrSyncHiddenField();
-        };
+            // ── Remove entry ─────────────────────────────────────────
+            window.vrRemoveEntry = function (index) {
+                vrEntries.splice(index, 1);
+                vrRenderTable();
+                vrSyncHiddenField();
+                var cvPR2 = document.getElementById('<%= cvPartiesRequired.ClientID %>');
+                if (cvPR2 && typeof ValidatorValidate === 'function') ValidatorValidate(cvPR2);
+            };
 
-        // ── Render table ─────────────────────────────────────────
-        var vrTableBodyId = '<%= vrTableBody.ClientID %>';
-        var table = document.getElementById('PartiesTable');
+            // ── Restore entries (e.g. after a postback that failed captcha/validation) ──
+            window.__vrRestoreEntries = function (entries) {
+                vrEntries = entries || [];
+                vrRenderTable();
+            };
 
-        function vrRenderTable() {
-            var tbody = document.getElementById(vrTableBodyId);
-            tbody.innerHTML = "";
+            // ── Render table ─────────────────────────────────────────
+            var vrTableBodyId = '<%= vrTableBody.ClientID %>';
+            var table = document.getElementById('PartiesTable');
 
-            if (vrEntries.length === 0) {
+            function vrRenderTable() {
+                var tbody = document.getElementById(vrTableBodyId);
+                tbody.innerHTML = "";
 
-                if (table) table.style.display = 'none'
-                tbody.innerHTML =
-                    '<tr><td colspan="6">' +
-                    '<div class="vr-empty-state">' +
-                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>' +
-                    '<p>' + '<%= GetLocalResourceObject("NoItemsAddedMsg") %>' + '</p>' +
+                if (vrEntries.length === 0) {
+
+                    if (table) table.style.display = 'none'
+                    tbody.innerHTML =
+                        '<tr><td colspan="6">' +
+                        '<div class="vr-empty-state">' +
+                        '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>' +
+                        '<p>' + '<%= GetLocalResourceObject("NoItemsAddedMsg") %>' + '</p>' +
                     '</div></td></tr>';
             } else {
                 if (table) table.style.display = '';
@@ -666,14 +719,28 @@
             }
 
         })();
+
+        // ── Restore parties table after postback (e.g. failed captcha / validation) ──
+        // hfPartiesJson survives postback as a normal server HiddenField, but the visible
+        // table is purely client-rendered and was never repainted from it — this fixes that.
+        (function () {
+            var hfJsonEl = document.getElementById('<%= hfPartiesJson.ClientID %>');
+            if (!hfJsonEl || !hfJsonEl.value) return;
+            try {
+                var restored = JSON.parse(hfJsonEl.value);
+                if (Array.isArray(restored) && restored.length > 0 && typeof window.__vrRestoreEntries === 'function') {
+                    window.__vrRestoreEntries(restored);
+                }
+            } catch (e) { /* malformed JSON — leave table empty */ }
+        })();
     </script>
 
 
     <script>
-    $(document).ready(function () {
-        var data     = <%= CountriesJson %>;
+        $(document).ready(function () {
+            var data = <%= CountriesJson %>;
         var isArabic = <%= IsArabic ? "true" : "false" %>;
-        var $hfCode  = $('#<%= hfSelectedCountryCode.ClientID %>');
+        var $hfCode = $('#<%= hfSelectedCountryCode.ClientID %>');
         var $picker = $('#divCCP_VR');
         var $display = $('#ccpDisplay_VR');
 

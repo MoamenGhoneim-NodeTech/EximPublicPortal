@@ -126,8 +126,11 @@
   <data name="formTitle.text" xml:space="preserve">
     <value>سجل اهتمامك للحصول على المزيد من التفاصيل:</value>
   </data>
-  <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
+  <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
     <value>البريد الإلكتروني غير صحيح</value>
+  </data>
+  <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
+    <value>رقم الجوال غير صحيح</value>
   </data>
   <data name="InvalidName.ErrorMessage" xml:space="preserve">
     <value>يُسمح بإدخال الأحرف فقط</value>

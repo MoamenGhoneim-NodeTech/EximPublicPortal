@@ -120,8 +120,14 @@
   <data name="captchaCustomValidatorResource1.ErrorMessage" xml:space="preserve">
     <value>الرمز غير صحيح</value>
   </data>
+  <data name="ExceedAttemptsMessage" xml:space="preserve">
+    <value>لقد قمت بعدد كبير جدًا من المحاولات. يُرجى الانتظار لمدة ثلاث دقائق ثم إعادة المحاولة.</value>
+  </data>
   <data name="RequiredFieldValidator1Resource1.ErrorMessage" xml:space="preserve">
     <value>حقل مطلوب</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
   <data name="TextBox1Resource1.placeholder" xml:space="preserve">
     <value>الرجاء إدخال النص الظاهر في الصورة</value>

@@ -203,12 +203,14 @@
                     $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
                     autoFilledSubject = selectedText;
                     $subject.val(selectedText);
+                    $subject.prop('readonly', true);          // ADDED: lock subject when auto-set
                 } else if (selectedvalue == '5') {
                     $('#<%= divIDNumber.ClientID %>').hide();
                     ValidatorEnable(document.getElementById('<%= rfvIDNumber.ClientID %>'), false);
                     $('#<%= lblMessage.ClientID %>').text("<%= GetLocalResourceObject("PurposeofRequest") %>");
                     autoFilledSubject = selectedText;
                     $subject.val(selectedText);
+                    $subject.prop('readonly', true);          // ADDED: lock subject when auto-set
                 } else {
                     $('#<%= divIDNumber.ClientID %>').hide();
                     ValidatorEnable(document.getElementById('<%= rfvIDNumber.ClientID %>'), false);
@@ -219,6 +221,7 @@
                         $subject.val('');
                     }
                     autoFilledSubject = '';
+                    $subject.prop('readonly', false);          // ADDED: unlock subject for manual entry
                 }
             }
 
@@ -294,6 +297,11 @@
         $('#ccpSelected').on('click', function (e) {
             e.stopPropagation();
             var opening = !$dropdown.is(':visible');
+
+            // FIX: close the Country dropdown if it's open, so the two
+            // custom pickers never stay open and overlap at the same time
+            $cpDropdown.hide();
+
             if (opening) {
                 positionDropdown();
                 $dropdown.show();
@@ -405,6 +413,11 @@
         $('#cpSelected').on('click', function (e) {
             e.stopPropagation();
             var opening = !$cpDropdown.is(':visible');
+
+            // FIX: close the Country Code dropdown if it's open, so the two
+            // custom pickers never stay open and overlap at the same time
+            $dropdown.hide();
+
             if (opening) {
                 positionCpDropdown();
                 $cpDropdown.show();

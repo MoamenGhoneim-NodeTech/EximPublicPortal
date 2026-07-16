@@ -13,6 +13,7 @@ using System.Drawing;
 using Microsoft.SharePoint.Administration;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
 {
@@ -53,6 +54,86 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 ucMessage.ShowUnexpectedError();
                 pnlFormBody.Visible = false;
             }
+        }
+
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            try
+            {
+                // The browser DOES resend selected files on every postback (e.g. a failed
+                // captcha attempt), but a fresh <input type="file"> always renders empty on
+                // the way back down — the files were never lost server-side, only the UI
+                // forgot about them. Re-embed what was posted so the client can restore the
+                // preview list and the file input's FileList via the existing fuSync() helper.
+                if (Page.IsPostBack && !Page.IsValid)
+                {
+                    RestoreFileUploadPreview();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.LogException(ex);
+            }
+        }
+
+        private void RestoreFileUploadPreview()
+        {
+            var httpFiles = System.Web.HttpContext.Current.Request.Files;
+            if (httpFiles == null || httpFiles.Count == 0) return;
+
+            string inputName = fuSupportingDocuments.UniqueID;
+            var sb = new StringBuilder();
+            bool any = false;
+
+            sb.Append("(function(){ if (typeof _fu === 'undefined' || typeof fuSync !== 'function' || typeof fuRender !== 'function') return; var __restored = [];");
+
+            for (int i = 0; i < httpFiles.Count; i++)
+            {
+                if (!string.Equals(httpFiles.GetKey(i), inputName, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var postedFile = httpFiles[i];
+                if (postedFile == null || postedFile.ContentLength == 0) continue;
+
+                byte[] bytes = new byte[postedFile.ContentLength];
+                postedFile.InputStream.Position = 0;
+                int totalRead = 0;
+                while (totalRead < bytes.Length)
+                {
+                    int read = postedFile.InputStream.Read(bytes, totalRead, bytes.Length - totalRead);
+                    if (read == 0) break;
+                    totalRead += read;
+                }
+                if (totalRead == 0) continue;
+
+                string base64 = Convert.ToBase64String(bytes);
+                string fileName = System.IO.Path.GetFileName(postedFile.FileName);
+                string safeName = HttpUtility.JavaScriptStringEncode(fileName);
+                string mime = string.IsNullOrEmpty(postedFile.ContentType) ? "application/octet-stream" : HttpUtility.JavaScriptStringEncode(postedFile.ContentType);
+
+                sb.Append("__restored.push({name:\"").Append(safeName).Append("\", type:\"").Append(mime).Append("\", data:\"").Append(base64).Append("\"});");
+                any = true;
+            }
+
+            if (!any) return;
+
+            sb.Append(@"
+                __restored.forEach(function(r){
+                    try {
+                        var byteChars = atob(r.data);
+                        var byteNumbers = new Array(byteChars.length);
+                        for (var i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+                        var byteArray = new Uint8Array(byteNumbers);
+                        var file = new File([byteArray], r.name, { type: r.type });
+                        var dup = _fu.files.some(function(ef){ return ef.name === file.name && ef.size === file.size; });
+                        if (!dup) _fu.files.push(file);
+                    } catch(e) {}
+                });
+                var __inp = document.querySelector(""[id$='fuSupportingDocuments']"");
+                if (__inp) { fuSync(__inp); fuRender(); }
+            })();");
+
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "RestoreFileUploadPreview", sb.ToString(), true);
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
@@ -361,6 +442,22 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
                 }
                 // Fallback: try parsing SelectedDate
                 args.IsValid = (dtViolationDate.SelectedDate != DateTime.MinValue);
+            }
+            catch { args.IsValid = false; }
+        }
+
+        // Mirrors the client-side show/hide rule for PartiesSection: required unless "No" ("2") is selected.
+        protected void cvPartiesRequired_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            try
+            {
+                if (rblCanIdentifyParties.SelectedItem == null || rblCanIdentifyParties.SelectedValue == "2")
+                {
+                    args.IsValid = true;
+                    return;
+                }
+                List<ViolationParty> parties = ParsePartiesFromHiddenField();
+                args.IsValid = parties != null && parties.Count > 0;
             }
             catch { args.IsValid = false; }
         }

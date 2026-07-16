@@ -24,7 +24,7 @@
     <div class="custom-form mt-5">
         <div class="row g-4">
 
-            <%-- Row 1: Name | Email --%>
+            <%-- Row 1: Name | Mobile --%>
             <div class="col-md-6">
                 <div class="form-group">
                     <span class="text-danger">*</span>
@@ -43,26 +43,8 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <span class="text-danger">*</span>
-                    <asp:Label runat="server" AssociatedControlID="txtEmail" meta:resourcekey="lblEmail"></asp:Label>
-                    <%-- SingleLine avoids browser-native email validation conflicts with ASP.NET validators --%>
-                    <asp:TextBox runat="server" ID="txtEmail" TextMode="SingleLine" CssClass="form-control" meta:resourcekey="txtEmail"></asp:TextBox>
-                    <asp:RequiredFieldValidator runat="server" ID="rfvtxtEmail" ControlToValidate="txtEmail"
-                        meta:resourcekey="RequiredField" ValidationGroup="subscribe"
-                        CssClass="text-danger" Display="Dynamic">
-                    </asp:RequiredFieldValidator>
-                    <asp:RegularExpressionValidator runat="server" ID="revtxtEmail" ControlToValidate="txtEmail"
-                        ValidationExpression="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$"
-                        meta:resourcekey="InvalidEmail" ValidationGroup="subscribe"
-                        CssClass="text-danger" Display="Dynamic">
-                    </asp:RegularExpressionValidator>
-                </div>
-            </div>
-
-            <%-- Row 2: Mobile | Company | Job Title  (3 × col-md-4) --%>
-            <div class="col-md-4">
+          
+                 <div class="col-md-6">
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" AssociatedControlID="txtMobileNumber" meta:resourcekey="lblMobileNumber"></asp:Label>
@@ -93,7 +75,26 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <%-- Row 2: Mobile | Company | Job Title  (3 × col-md-4) --%>
+         <div class="col-md-6">
+                <div class="form-group">
+                    <span class="text-danger">*</span>
+                    <asp:Label runat="server" AssociatedControlID="txtEmail" meta:resourcekey="lblEmail"></asp:Label>
+                    <%-- SingleLine avoids browser-native email validation conflicts with ASP.NET validators --%>
+                    <asp:TextBox runat="server" ID="txtEmail" TextMode="SingleLine" CssClass="form-control" meta:resourcekey="txtEmail"></asp:TextBox>
+                    <asp:RequiredFieldValidator runat="server" ID="rfvtxtEmail" ControlToValidate="txtEmail"
+                        meta:resourcekey="RequiredField" ValidationGroup="subscribe"
+                        CssClass="text-danger" Display="Dynamic">
+                    </asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator runat="server" ID="revtxtEmail" ControlToValidate="txtEmail"
+                        ValidationExpression="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$"
+                        meta:resourcekey="InvalidEmail" ValidationGroup="subscribe"
+                        CssClass="text-danger" Display="Dynamic">
+                    </asp:RegularExpressionValidator>
+                </div>
+            </div>
+
+            <div class="col-md-6">
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" AssociatedControlID="txtCompanyName" meta:resourcekey="lblCompanyName"></asp:Label>
@@ -112,7 +113,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="form-group">
                     <span class="text-danger">*</span>
                     <asp:Label runat="server" AssociatedControlID="txtJobTitle" meta:resourcekey="lblJobTitle"></asp:Label>
@@ -278,9 +279,19 @@
 
     // Outside document.ready — must be global so OnClientClick="return validateFormBeforeSubmit();"
     // can reach it. Mirrors the identical function in ReportAViolation.ascx.
-    function validateFormBeforeSubmit() {
-        var isValid = Page_ClientValidate('subscribe');
+    //function validateFormBeforeSubmit() {
+    //    var isValid = Page_ClientValidate('subscribe');
       
-        return typeof isValid === 'boolean' ? isValid : Page_IsValid;
+    //    return typeof isValid === 'boolean' ? isValid : Page_IsValid;
+    //}
+
+    function validateFormBeforeSubmit() {
+        try {
+            var isValid = Page_ClientValidate('subscribe');
+            return typeof isValid === 'boolean' ? isValid : Page_IsValid;
+        } catch (ex) {
+            console.error('Validation error, blocking submit:', ex);
+            return false; // fail closed, not open
+        }
     }
 </script>

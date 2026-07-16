@@ -204,6 +204,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvName;
 
         /// <summary>
+        /// revName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revName;
+
+        /// <summary>
         /// lblJobTitle control.
         /// </summary>
         /// <remarks>
@@ -220,6 +229,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtJobTitle;
+
+        /// <summary>
+        /// revJobTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revJobTitle;
 
         /// <summary>
         /// lblCompany control.
@@ -265,6 +283,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl vrTableBody;
+
+        /// <summary>
+        /// cvPartiesRequired control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvPartiesRequired;
 
         /// <summary>
         /// hfPartiesJson control.
@@ -472,6 +499,15 @@ namespace EXIM.Portal.WebParts.CONTROLTEMPLATES.Exim.Violations
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txt_Name;
+
+        /// <summary>
+        /// revName_NotAnon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revName_NotAnon;
 
         /// <summary>
         /// lblMobileNumber control.

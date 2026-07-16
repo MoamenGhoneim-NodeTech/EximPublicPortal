@@ -133,10 +133,10 @@
     <value>التسجيل في ورشة/فعالية</value>
   </data>
   <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
-    <value>يرجى التأكد من البريد الإلكتروني المدخل</value>
+    <value>البريد الإلكتروني غير صحيح</value>
   </data>
   <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
-    <value>يرجى التأكد من الرقم المدخل</value>
+    <value>رقم الجوال غير صحيح</value>
   </data>
   <data name="lblCommNumber.Text" xml:space="preserve">
     <value>رقم السجل التجاري:</value>

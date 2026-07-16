@@ -133,10 +133,10 @@
     <value>Event/Workshop subscribtion</value>
   </data>
   <data name="InvalidEmail.ErrorMessage" xml:space="preserve">
-    <value>Please check the entered e-mail</value>
+    <value>Invalid email address</value>
   </data>
   <data name="InvalidMobileNumber.ErrorMessage" xml:space="preserve">
-    <value>Please check the entered phone number</value>
+    <value>Invalid mobile number</value>
   </data>
   <data name="lblCommNumber.Text" xml:space="preserve">
     <value>Commercial Registration Number:</value>

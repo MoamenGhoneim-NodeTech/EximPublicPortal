@@ -448,7 +448,8 @@ namespace EXIM.Common.Lib.Utils
                     return;
                 }
 
-                string baseUrl = item.Web.Url.TrimEnd('/');
+                string rootwebURl = item.Web.Site.RootWeb.Url.TrimEnd('/');
+                string externalurl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["ExternalURL"]);
                 string attachmentPrefix = item.Attachments.UrlPrefix;
 
                 var htmlLinks = new StringBuilder();
@@ -466,6 +467,9 @@ namespace EXIM.Common.Lib.Utils
                     // UrlPrefix already ends with the list-relative path + item ID + "/"
                     // e.g. "/ar/ContactUs/Lists/Violations/Attachments/53/"
                     string fileUrl =  item.Attachments.UrlPrefix.TrimEnd('/') + "/" + encodedFileName;
+                    if (externalurl.Length > 0)
+                        fileUrl= fileUrl.Replace(rootwebURl, externalurl.TrimEnd('/'));
+
                     //baseUrl +
                     // Optionally append ?web=1 to match what SharePoint generates natively
                     // string fileUrl = baseUrl + item.Attachments.UrlPrefix.TrimEnd('/') + "/" + encodedFileName + "?web=1";
